@@ -19,11 +19,11 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M0 provides an executable, deterministic research contract for one bounded
-finite-state component. It includes authenticated fragments, resource-bounded
-reconstruction, independent certification, explicit refusal, and a controlled
-artifact-deletion experiment. It does not yet provide the general M1 loop,
-capability sandbox, adversarial evaluation, deployment, or production recovery.
+M1 provides a generalized deterministic reconstruction loop for the frozen
+finite-state DSL, checker-private candidate parsing, capability-empty and
+fuel-limited WebAssembly execution, an immutable evidence ledger, and a registered
+two-component stateless corpus. It does not provide modeled external state,
+deployment, comparative baseline results, or production recovery.
 Claim boundaries are in [NOVELTY](docs/NOVELTY.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with

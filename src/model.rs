@@ -90,6 +90,21 @@ impl Grammar {
         validate_symbols("inputs", &self.inputs)?;
         validate_symbols("outputs", &self.outputs)?;
         validate_symbols("states", &self.states)?;
+        if self.inputs.len() > 64 || self.outputs.len() > 64 || self.states.len() > 64 {
+            return Err(Error::InvalidRegistry(
+                "grammar symbol domains exceed the fsm-v1 maximum of 64".into(),
+            ));
+        }
+        let cells = self
+            .states
+            .len()
+            .checked_mul(self.inputs.len())
+            .ok_or_else(|| Error::InvalidRegistry("grammar cell count overflow".into()))?;
+        if cells > 256 {
+            return Err(Error::InvalidRegistry(
+                "grammar transition table exceeds 256 cells".into(),
+            ));
+        }
         if self.version.is_empty() {
             return Err(Error::InvalidRegistry("grammar version is empty".into()));
         }
@@ -117,6 +132,11 @@ fn validate_symbols(name: &str, values: &[String]) -> Result<(), Error> {
     if unique.len() != values.len() {
         return Err(Error::InvalidRegistry(format!(
             "{name} contains duplicate symbols"
+        )));
+    }
+    if values.iter().any(|value| value.len() > 256) {
+        return Err(Error::InvalidRegistry(format!(
+            "{name} contains a symbol longer than 256 bytes"
         )));
     }
     Ok(())
@@ -170,10 +190,28 @@ pub enum FragmentContent {
         initial_state: String,
     },
     Trace {
+        role: TraceRole,
         initial_state: String,
         inputs: Vec<String>,
         outputs: Vec<String>,
     },
+    NegativeCase {
+        initial_state: String,
+        inputs: Vec<String>,
+        forbidden_outputs: Vec<String>,
+    },
+    MetamorphicProperty {
+        initial_state: String,
+        input: String,
+        repetitions: u32,
+    },
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum TraceRole {
+    Training,
+    HeldOut,
 }
 
 impl FragmentContent {

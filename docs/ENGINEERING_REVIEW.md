@@ -59,3 +59,46 @@ Residual M0 risks and limitations:
 No M0 limitation weakens a certification obligation into success. Unsupported,
 ambiguous, contradictory, malformed, over-budget, or artifact-present cases fail
 closed. No product release or research tag is authorized by M0 completion.
+
+## M1 implementation review, 2026-08-10
+
+Scope reviewed: every M1 checkbox, `fsm-v1` enumeration, training/held-out
+separation, executable negative and metamorphic obligations, checker wire parser,
+generated WebAssembly, Wasmi configuration, corpus runner, evidence ledger, CLI,
+tests, documentation, and dependency graph.
+
+Material findings resolved:
+
+- Upgraded Wasmi to the latest stable 1.1.0 line and reran all sandbox evidence.
+- Capped grammar symbols, cells, checker-wire allocations, ledger snapshots,
+  corpus size, WebAssembly bytes, memory, instances, tables, and execution fuel.
+- Kept held-out traces outside synthesis and proved that only training traces can
+  select a candidate.
+- Added ambiguity refusal after detecting a second satisfying candidate and
+  budget refusal before work exceeds the registered limit.
+- Removed Serde JSON from candidate checking through a strict bounds-checked
+  binary wire decoder; malformed, truncated, oversized, and trailing data refuse.
+- Made generated modules import-free and compared every sandbox transition with
+  the independently checked table.
+- Added import-denial and infinite-loop fuel tests at the sandbox public boundary.
+- Made ledger entries content-addressed, create-new, synchronized, atomically
+  published, no-clobber, input-snapshotted, and replay-verified.
+- Rejected corpus path traversal and symlinked workspaces.
+
+Residual M1 limitations:
+
+- Enumeration is exponential by design. Candidate and grammar limits make work
+  finite, but larger supported grammars will often refuse on budget.
+- The checker has a private candidate parser and separate semantics but still
+  shares obligation types, dependencies, process, compiler, and host with the
+  synthesizer. Independent process/toolchain reproduction remains a release gate.
+- Wasmi provides a capability-empty VM boundary, not OS process isolation,
+  side-channel resistance, or proof against every engine defect.
+- Ledger fixtures contain synthetic HMAC keys. Real evidence needs encryption,
+  redaction, retention, access policy, key separation, and stale-lock governance.
+- The M1 corpus is intentionally small and synthetic. It establishes the loop,
+  not comparative value, generality, or production safety.
+
+Every unsupported, ambiguous, contradictory, malformed, capability-requesting,
+over-budget, checker-disagreeing, or artifact-present path refuses. M2 remains the
+first unchecked milestone. No release or tag is authorized by M1 completion.

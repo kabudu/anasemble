@@ -4,6 +4,7 @@ use std::fs;
 
 use anasemble::canonical::encode;
 use anasemble::checker::certify;
+use anasemble::checker_wire::encode_candidate;
 use anasemble::fragments::{Envelope, FragmentKind, IssuerPolicy, collect, sign};
 use anasemble::model::{Candidate, Error, RefusalCode};
 use anasemble::oracle::attest_absence;
@@ -21,6 +22,7 @@ fn reconstructs_and_certifies_turnstile_after_loss() {
     let RecoveryResult::Certified {
         candidate,
         certificate,
+        ..
     } = result
     else {
         panic!("expected certification");
@@ -211,6 +213,7 @@ fn checker_rejects_mutated_candidate() {
     candidate.transitions[0].output = "locked".into();
     let mut contents = transitions();
     contents.push(anasemble::model::FragmentContent::Trace {
+        role: anasemble::model::TraceRole::HeldOut,
         initial_state: "locked".into(),
         inputs: vec!["coin".into()],
         outputs: vec!["unlocked".into()],
@@ -220,7 +223,7 @@ fn checker_rejects_mutated_candidate() {
         initial_state: "locked".into(),
     });
     let error = certify(
-        &serde_json::to_vec(&candidate).unwrap(),
+        &encode_candidate(&candidate).unwrap(),
         "turnstile",
         "1",
         &contents,
@@ -241,7 +244,7 @@ fn checker_binds_candidate_identity() {
             .collect(),
     };
     let error = certify(
-        &serde_json::to_vec(&candidate).unwrap(),
+        &encode_candidate(&candidate).unwrap(),
         "turnstile",
         "1",
         &[],

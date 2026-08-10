@@ -13,15 +13,19 @@ Evidence and M0 claim limits are recorded in
 [M0_EXECUTABLE_CONTRACT](M0_EXECUTABLE_CONTRACT.md). The authoritative local CI
 executes the deletion-attested recovery in a fresh process.
 
-## M1 - independent reconstruction loop
+## M1 - independent reconstruction loop (complete)
 
-- [ ] Generalize fragment collection beyond the registered M0 component.
-- [ ] Implement bounded enumerative synthesis across the complete frozen DSL.
-- [ ] Add a capability-denied-by-default WebAssembly candidate sandbox.
-- [ ] Strengthen parser and semantic independence between synthesizer and checker.
-- [ ] Persist reproducible certificates and evidence-ledger entries.
-- [ ] Exit: reconstruct the registered stateless corpus without artifact access,
+- [x] Generalize fragment collection beyond the registered M0 component.
+- [x] Implement bounded enumerative synthesis across the complete frozen DSL.
+- [x] Add a capability-denied-by-default WebAssembly candidate sandbox.
+- [x] Strengthen parser and semantic independence between synthesizer and checker.
+- [x] Persist reproducible certificates and evidence-ledger entries.
+- [x] Exit: reconstruct the registered stateless corpus without artifact access,
   sandbox escape, checker disagreement, or unbounded work.
+
+Evidence, invariants, and limitations are recorded in
+[M1_RECONSTRUCTION_LOOP](M1_RECONSTRUCTION_LOOP.md). The authoritative local CI
+executes both registered stateless components through the public corpus workflow.
 
 ## M2 - state and adversarial evaluation
 

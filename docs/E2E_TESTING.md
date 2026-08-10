@@ -21,3 +21,10 @@ environment. The oracle checks registered paths, rejects
 symlinks and non-regular files, and performs a bounded streaming digest scan.
 This is a controlled local absence proof, not a kernel sandbox or secure-erasure
 claim. The remaining suites belong to M1 and M2.
+
+M1 adds the public `recover-corpus` and `recover --ledger` workflows, two distinct
+stateless components, full generated-Wasm/table equivalence, import denial, fuel
+exhaustion, checker-wire truncation and trailing-data rejection, enumerative
+ambiguity refusal, executable negative and metamorphic obligations, and immutable
+ledger replay. M2 retains poisoned provenance campaigns, state migration,
+arbitrary sandbox attacks, partial deployment, and matched baselines.
