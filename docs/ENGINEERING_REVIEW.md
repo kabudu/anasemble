@@ -34,6 +34,10 @@ Material findings resolved before delivery:
 - Used the HMAC implementation's constant-time verification path.
 - Corrected canonical JSON to sort nested object keys rather than relying on Rust
   declaration order.
+- Moved fragment and workspace entry limits inside enumeration so an attacker
+  cannot force unbounded path collection before refusal.
+- Made the checker independently bind candidate component, interface, and state
+  policy rather than checking transition behavior alone.
 - Qualified checker independence: synthesis and checking semantics are separate,
   but Serde parsing and protocol types are common-mode M0 dependencies.
 - Replaced hosted-CI assumptions with the repository-owned offline

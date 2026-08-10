@@ -215,8 +215,40 @@ fn checker_rejects_mutated_candidate() {
         inputs: vec!["coin".into()],
         outputs: vec!["unlocked".into()],
     });
-    let error = certify(&serde_json::to_vec(&candidate).unwrap(), &contents).unwrap_err();
+    contents.push(anasemble::model::FragmentContent::StatePolicy {
+        states: grammar().states,
+        initial_state: "locked".into(),
+    });
+    let error = certify(
+        &serde_json::to_vec(&candidate).unwrap(),
+        "turnstile",
+        "1",
+        &contents,
+    )
+    .unwrap_err();
     assert!(matches!(error, Error::CheckerRejected(_)));
+}
+
+#[test]
+fn checker_binds_candidate_identity() {
+    let candidate = Candidate {
+        component: "different-component".into(),
+        interface_version: "1".into(),
+        grammar: grammar(),
+        transitions: transitions()
+            .iter()
+            .filter_map(anasemble::model::FragmentContent::transition)
+            .collect(),
+    };
+    let error = certify(
+        &serde_json::to_vec(&candidate).unwrap(),
+        "turnstile",
+        "1",
+        &[],
+    )
+    .unwrap_err();
+    assert!(matches!(error, Error::CheckerRejected(_)));
+    assert!(error.to_string().contains("identity"));
 }
 
 #[cfg(unix)]

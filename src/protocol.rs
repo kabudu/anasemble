@@ -185,7 +185,12 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
             "candidate is byte-identical to a forbidden artifact".into(),
         ));
     }
-    let coverage = certify(&candidate_json, &contents)?;
+    let coverage = certify(
+        &candidate_json,
+        &registry.component,
+        &registry.interface_version,
+        &contents,
+    )?;
     let survivor_envelope_digests = evidence
         .envelopes
         .iter()
@@ -310,8 +315,17 @@ fn read_bounded(path: &Path, max_bytes: u64) -> Result<Vec<u8>, Error> {
 
 fn regular_json_files(directory: &Path, max_files: usize) -> Result<Vec<PathBuf>, Error> {
     let mut paths = Vec::new();
+    let mut entries = 0_usize;
     for entry in fs::read_dir(directory)? {
         let entry = entry?;
+        entries = entries
+            .checked_add(1)
+            .ok_or_else(|| Error::SearchExhausted("fragment entry counter overflow".into()))?;
+        if entries > max_files {
+            return Err(Error::SearchExhausted(
+                "fragment-directory entry bound exceeded".into(),
+            ));
+        }
         let metadata = fs::symlink_metadata(entry.path())?;
         if !metadata.is_file() || metadata.file_type().is_symlink() {
             return Err(Error::InvalidEvidence(
@@ -324,11 +338,10 @@ fn regular_json_files(directory: &Path, max_files: usize) -> Result<Vec<PathBuf>
             .is_some_and(|value| value == "json")
         {
             paths.push(entry.path());
-            if paths.len() > max_files {
-                return Err(Error::SearchExhausted(
-                    "fragment-count bound exceeded".into(),
-                ));
-            }
+        } else {
+            return Err(Error::InvalidEvidence(
+                "fragment directory contains a non-JSON file".into(),
+            ));
         }
     }
     Ok(paths)

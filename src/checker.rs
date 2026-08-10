@@ -18,13 +18,25 @@ pub struct Coverage {
     pub uncovered_obligations: usize,
 }
 
-pub fn certify(candidate_json: &[u8], contents: &[FragmentContent]) -> Result<Coverage, Error> {
+pub fn certify(
+    candidate_json: &[u8],
+    expected_component: &str,
+    expected_interface_version: &str,
+    contents: &[FragmentContent],
+) -> Result<Coverage, Error> {
     let candidate: Candidate = serde_json::from_slice(candidate_json)
         .map_err(|error| Error::CheckerRejected(format!("candidate parse failed: {error}")))?;
     candidate
         .grammar
         .validate()
         .map_err(|error| Error::CheckerRejected(error.to_string()))?;
+    if candidate.component != expected_component
+        || candidate.interface_version != expected_interface_version
+    {
+        return Err(Error::CheckerRejected(
+            "candidate identity does not match the recovery target".into(),
+        ));
+    }
     let mut table: BTreeMap<String, BTreeMap<String, (String, String)>> = candidate
         .grammar
         .states
@@ -59,6 +71,7 @@ pub fn certify(candidate_json: &[u8], contents: &[FragmentContent]) -> Result<Co
 
     let mut passed = 0;
     let mut trace_count = 0;
+    let mut state_policy_count = 0;
     for content in contents {
         match content {
             FragmentContent::Transition {
@@ -110,7 +123,19 @@ pub fn certify(candidate_json: &[u8], contents: &[FragmentContent]) -> Result<Co
                 }
                 trace_count += 1;
             }
-            FragmentContent::StatePolicy { .. } => {}
+            FragmentContent::StatePolicy {
+                states,
+                initial_state,
+            } => {
+                if states != &candidate.grammar.states
+                    || initial_state != &candidate.grammar.initial_state
+                {
+                    return Err(Error::CheckerRejected(
+                        "candidate grammar violates the state policy".into(),
+                    ));
+                }
+                state_policy_count += 1;
+            }
         }
     }
     if passed != expected {
@@ -121,6 +146,11 @@ pub fn certify(candidate_json: &[u8], contents: &[FragmentContent]) -> Result<Co
     if trace_count == 0 {
         return Err(Error::CheckerRejected(
             "checker requires a held-out trace".into(),
+        ));
+    }
+    if state_policy_count != 1 {
+        return Err(Error::CheckerRejected(
+            "checker requires exactly one matching state policy".into(),
         ));
     }
     Ok(Coverage {

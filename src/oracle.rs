@@ -1,5 +1,5 @@
 use std::fs::{self, File};
-use std::io::{Read, Result as IoResult};
+use std::io::Read;
 use std::path::{Path, PathBuf};
 
 use serde::Serialize;
@@ -85,9 +85,8 @@ fn collect_regular_files(
     visited_entries: &mut u64,
     max_entries: u64,
 ) -> Result<(), Error> {
-    let mut entries: Vec<_> = fs::read_dir(directory)?.collect::<IoResult<_>>()?;
-    entries.sort_by_key(std::fs::DirEntry::file_name);
-    for entry in entries {
+    let mut entries = Vec::new();
+    for entry in fs::read_dir(directory)? {
         *visited_entries = visited_entries
             .checked_add(1)
             .ok_or_else(|| Error::SearchExhausted("workspace entry counter overflow".into()))?;
@@ -96,6 +95,10 @@ fn collect_regular_files(
                 "workspace entry-count bound exceeded".into(),
             ));
         }
+        entries.push(entry?);
+    }
+    entries.sort_by_key(std::fs::DirEntry::file_name);
+    for entry in entries {
         let path = entry.path();
         let metadata = fs::symlink_metadata(&path)?;
         if metadata.file_type().is_symlink() {
