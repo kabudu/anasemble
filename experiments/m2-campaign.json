@@ -1,0 +1,8 @@
+{
+  "version": "m2-registration-v1",
+  "seed": 20260729,
+  "corpus": "turnstile",
+  "outcomes": ["positive", "refusal", "timeout", "disagreement", "negative"],
+  "baselines": ["backup-replica", "trace-only", "centralized-contract"],
+  "test": "tests/m2_campaign.rs::campaign_retains_positive_refusal_timeout_disagreement_and_negative_results"
+}

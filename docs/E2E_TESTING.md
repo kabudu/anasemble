@@ -26,5 +26,12 @@ M1 adds the public `recover-corpus` and `recover --ledger` workflows, two distin
 stateless components, full generated-Wasm/table equivalence, import denial, fuel
 exhaustion, checker-wire truncation and trailing-data rejection, enumerative
 ambiguity refusal, executable negative and metamorphic obligations, and immutable
-ledger replay. M2 retains poisoned provenance campaigns, state migration,
-arbitrary sandbox attacks, partial deployment, and matched baselines.
+ledger replay.
+
+M2 adds the public `deploy`, `rollback`, and `evaluate-campaign` workflows.
+Focused suites exercise mapped state, monotonic revision, activation failure,
+rollback restoration, freshness rejection, poisoned, omitted, contradictory and
+replayed fragments, shared-domain quorum collapse, forged provenance, held-out
+trace disagreement, matched baselines, and retained outcome classes. The M1
+import, memory and fuel tests remain the executable hidden-effect, sandbox escape,
+and resource-exhaustion evidence for the unchanged sandbox boundary.

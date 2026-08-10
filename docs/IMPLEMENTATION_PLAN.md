@@ -27,15 +27,20 @@ Evidence, invariants, and limitations are recorded in
 [M1_RECONSTRUCTION_LOOP](M1_RECONSTRUCTION_LOOP.md). The authoritative local CI
 executes both registered stateless components through the public corpus workflow.
 
-## M2 - state and adversarial evaluation
+## M2 - state and adversarial evaluation (complete)
 
-- [ ] Implement explicitly modeled state transformation and rollback.
-- [ ] Execute matched baseline and registered metric campaigns.
-- [ ] Test poisoned, omitted, contradictory, replayed, and stale fragments.
-- [ ] Test shared-fault domains, forged provenance, and trace overfitting.
-- [ ] Test resource exhaustion, hidden effects, sandbox escapes, and partial deploy.
-- [ ] Exit: publish retained positive, refusal, timeout, disagreement, and negative
+- [x] Implement explicitly modeled state transformation and rollback.
+- [x] Execute matched baseline and registered metric campaigns.
+- [x] Test poisoned, omitted, contradictory, replayed, and stale fragments.
+- [x] Test shared-fault domains, forged provenance, and trace overfitting.
+- [x] Test resource exhaustion, hidden effects, sandbox escapes, and partial deploy.
+- [x] Exit: publish retained positive, refusal, timeout, disagreement, and negative
   results for the pre-registered corpus.
+
+Evidence, failure bounds, units, and claim limits are recorded in
+[M2_STATE_AND_ADVERSARIAL](M2_STATE_AND_ADVERSARIAL.md). The authoritative local
+CI executes the public deployment and campaign boundaries. M3 remains the first
+unchecked milestone.
 
 ## M3 - productisation decision
 

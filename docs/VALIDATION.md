@@ -29,8 +29,8 @@ inside the stated model blocks productisation.
 
 The registered M0 fixture is the two-state turnstile in `tests/common/mod.rs`, with
 seed `20260729`. The fixture records backup/replica, trace-only, and centralized
-contract baselines and the registered primary and secondary metrics. Comparative
-baseline execution remains M2 work; M0 only freezes the experiment contract.
+contract baselines and the registered primary and secondary metrics. M0 freezes
+the experiment contract; M2 executes it.
 
 `./scripts/ci-local.sh` runs Rust formatting, Clippy with warnings denied, the
 deletion-attested fresh-process recovery,
@@ -48,3 +48,24 @@ and metamorphic obligations, independent candidate-wire rejection, generated
 WebAssembly equivalence, denied imports, fuel exhaustion, atomic ledger creation,
 and stable replay. This establishes engineering feasibility only; M2 executes the
 matched baseline and broader adversarial campaigns.
+
+## M2 evidence
+
+The M2 campaign runs five retained outcome classes against the pre-registered
+turnstile experiment: positive certification, ordinary refusal, search timeout,
+checker disagreement, and hostile negative evidence. Every case executes the
+same loss-scoped workspace through the registered backup/replica, trace-only, and
+centralized-contract baselines.
+
+Metric values use these units: certified recoveries and unsafe certifications are
+counts; refusal rate is basis points; search time is elapsed microseconds for the
+normal recovery path; candidate complexity is the total certified transition
+count; authoring cost is registry plus fragment bytes. Timing is environmental
+and is not expected to replay byte-for-byte.
+
+The retained result at `experiments/m2-results.json` records one correct
+certification, four refusals, one timeout, one checker disagreement, one hostile
+negative result, and zero unsafe certifications. The executable campaign test
+also covers freshness, replay, omission, contradiction, shared domains, forged
+provenance, overfitting, atomic activation failure, and rollback. M1 sandbox tests
+continue to cover imports, memory, and fuel because that boundary is unchanged.

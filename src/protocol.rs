@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
 
 use crate::canonical::digest;
@@ -24,6 +25,8 @@ pub struct Registry {
     loss_oracle: LossOraclePolicy,
     resource_limits: ResourceLimits,
     experiment: ExperimentRegistration,
+    #[serde(default)]
+    evidence_window: Option<EvidenceWindow>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -42,13 +45,20 @@ struct ResourceLimits {
     max_workspace_bytes: u64,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-struct ExperimentRegistration {
-    seed: u64,
-    baselines: Vec<String>,
-    primary_metrics: Vec<String>,
-    secondary_metrics: Vec<String>,
+pub struct ExperimentRegistration {
+    pub seed: u64,
+    pub baselines: Vec<String>,
+    pub primary_metrics: Vec<String>,
+    pub secondary_metrics: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct EvidenceWindow {
+    not_before: String,
+    not_after: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -106,7 +116,18 @@ impl RecoveryResult {
 }
 
 pub fn run(workspace: &Path) -> RecoveryResult {
-    match recover(workspace) {
+    run_with_mode(workspace, RecoveryMode::Full)
+}
+
+#[derive(Clone, Copy, Debug)]
+pub enum RecoveryMode {
+    Full,
+    TraceOnly,
+    CentralizedContract,
+}
+
+pub fn run_with_mode(workspace: &Path, mode: RecoveryMode) -> RecoveryResult {
+    match recover(workspace, mode) {
         Ok(result) => result,
         Err(error) => RecoveryResult::Refused {
             code: error.refusal_code(),
@@ -115,7 +136,7 @@ pub fn run(workspace: &Path) -> RecoveryResult {
     }
 }
 
-fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
+fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error> {
     let registry_bytes = read_bounded(&workspace.join("registry.json"), 131_072)?;
     let registry: Registry = serde_json::from_slice(&registry_bytes)
         .map_err(|error| Error::InvalidRegistry(format!("registry JSON is invalid: {error}")))?;
@@ -144,6 +165,7 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         &registry.component,
         &registry.interface_version,
     )?;
+    validate_freshness(&evidence.envelopes, registry.evidence_window.as_ref())?;
     let attestation = attest_absence(
         workspace,
         &registry.loss_oracle.forbidden_paths,
@@ -152,10 +174,19 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         registry.resource_limits.max_workspace_bytes,
     )?;
 
-    let contents: Vec<_> = evidence
+    let all_contents: Vec<_> = evidence
         .envelopes
         .iter()
         .map(|item| item.content.clone())
+        .collect();
+    let contents: Vec<_> = all_contents
+        .iter()
+        .filter(|content| match mode {
+            RecoveryMode::Full => true,
+            RecoveryMode::TraceOnly => !matches!(content, FragmentContent::Transition { .. }),
+            RecoveryMode::CentralizedContract => !matches!(content, FragmentContent::Trace { .. }),
+        })
+        .cloned()
         .collect();
     let schemas: Vec<_> = evidence
         .envelopes
@@ -236,6 +267,69 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         candidate_wasm_hex: hex::encode(candidate_wasm),
         certificate: Box::new(certificate),
     })
+}
+
+fn validate_freshness(
+    envelopes: &[crate::fragments::Envelope],
+    window: Option<&EvidenceWindow>,
+) -> Result<(), Error> {
+    let Some(window) = window else {
+        return Ok(());
+    };
+    let not_before = Timestamp::strptime("%Y-%m-%dT%H:%M:%S%:z", &window.not_before)
+        .map_err(|_| Error::InvalidRegistry("evidence not_before is invalid".into()))?;
+    let not_after = Timestamp::strptime("%Y-%m-%dT%H:%M:%S%:z", &window.not_after)
+        .map_err(|_| Error::InvalidRegistry("evidence not_after is invalid".into()))?;
+    if not_before > not_after {
+        return Err(Error::InvalidRegistry(
+            "evidence freshness window is inverted".into(),
+        ));
+    }
+    for envelope in envelopes {
+        let issued_at = Timestamp::strptime("%Y-%m-%dT%H:%M:%S%:z", &envelope.issued_at)
+            .map_err(|_| Error::InvalidEvidence("issued_at is invalid".into()))?;
+        if issued_at < not_before || issued_at > not_after {
+            return Err(Error::InvalidEvidence(
+                "fragment falls outside the registered freshness window".into(),
+            ));
+        }
+    }
+    Ok(())
+}
+
+pub fn registered_baselines(workspace: &Path) -> Result<Vec<String>, Error> {
+    Ok(registered_experiment(workspace)?.baselines)
+}
+
+pub fn registered_experiment(workspace: &Path) -> Result<ExperimentRegistration, Error> {
+    let registry_bytes = read_bounded(&workspace.join("registry.json"), 131_072)?;
+    let registry: Registry = serde_json::from_slice(&registry_bytes)
+        .map_err(|error| Error::InvalidRegistry(format!("registry JSON is invalid: {error}")))?;
+    validate_registry(&registry)?;
+    Ok(registry.experiment)
+}
+
+pub fn registered_backup_available(workspace: &Path) -> Result<bool, Error> {
+    let registry_bytes = read_bounded(&workspace.join("registry.json"), 131_072)?;
+    let registry: Registry = serde_json::from_slice(&registry_bytes)
+        .map_err(|error| Error::InvalidRegistry(format!("registry JSON is invalid: {error}")))?;
+    validate_registry(&registry)?;
+    for path in registry.loss_oracle.forbidden_paths {
+        match fs::symlink_metadata(path) {
+            Ok(_) => return Ok(true),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(Error::Io(error)),
+        }
+    }
+    Ok(false)
+}
+
+pub fn registered_candidate_limit(workspace: &Path) -> Result<u64, Error> {
+    let registry_bytes = read_bounded(&workspace.join("registry.json"), 131_072)?;
+    let registry: Registry = serde_json::from_slice(&registry_bytes)
+        .map_err(|error| Error::InvalidRegistry(format!("registry JSON is invalid: {error}")))?;
+    validate_registry(&registry)?;
+    Ok(registry.grammar.max_candidates)
 }
 
 fn validate_registry(registry: &Registry) -> Result<(), Error> {
