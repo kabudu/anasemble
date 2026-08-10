@@ -1,6 +1,6 @@
 # Brand Identity
 
-**Name:** Anasemble — a coined blend of Greek-derived “ana” (again/up) and
+**Name:** Anasemble, a coined blend of Greek-derived “ana” (again/up) and
 “assemble,” expressing reconstruction rather than restoration from a copy.
 
 **Tagline:** Regrow function from surviving meaning.

@@ -1,6 +1,6 @@
 # ADR 0001: Bound Anasemble to a finite typed component DSL
 
-**Status:** Accepted — 2026-07-29
+**Status:** Accepted, 2026-07-29
 
 We will test semantic reconstruction only for finite typed request/response
 components with explicit state and effects. We will not start with arbitrary

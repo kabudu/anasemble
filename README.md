@@ -19,9 +19,16 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-Research bootstrap complete; implementation begins only with the executable
-contract in [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md). Claim boundaries
-are in [NOVELTY](docs/NOVELTY.md).
+M0 provides an executable, deterministic research contract for one bounded
+finite-state component. It includes authenticated fragments, resource-bounded
+reconstruction, independent certification, explicit refusal, and a controlled
+artifact-deletion experiment. It does not yet provide the general M1 loop,
+capability sandbox, adversarial evaluation, deployment, or production recovery.
+Claim boundaries are in [NOVELTY](docs/NOVELTY.md).
+
+Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
+`cargo fetch --locked`, then run the authoritative private-repository CI with
+`./scripts/ci-local.sh`.
 
 ## Repository policy
 

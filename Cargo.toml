@@ -1,0 +1,25 @@
+[package]
+name = "anasemble"
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.97"
+description = "Bounded service-reconstruction research harness"
+publish = false
+
+[dependencies]
+hex = "0.4.3"
+hmac = "0.13.0"
+jiff = "0.2.35"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.11.0"
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+overflow-checks = true
+panic = "abort"
+strip = "symbols"
