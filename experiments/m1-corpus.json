@@ -1,0 +1,10 @@
+{
+  "version": "corpus-v1",
+  "seed": 20260810,
+  "components": [
+    {"name": "identity", "states": 1, "inputs": 2, "outputs": 2},
+    {"name": "inverter", "states": 1, "inputs": 2, "outputs": 2}
+  ],
+  "generator": "tests/m1_loop.rs::build_stateless",
+  "public_workflow": "anasemble recover-corpus <root>"
+}

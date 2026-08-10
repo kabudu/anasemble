@@ -38,3 +38,13 @@ deterministic replay, independent-checker mutation, evidence omission and tamper
 forged-domain, surviving-artifact, symlink, canonicalization, compilation, and
 repository-text checks. This local command is the authoritative CI for the
 private repository.
+
+## M1 evidence
+
+The registered M1 corpus contains stateless identity and inversion components
+under `fsm-v1`. The public corpus workflow reconstructs both after controlled
+artifact deletion. Focused tests cover unique and ambiguous enumeration, negative
+and metamorphic obligations, independent candidate-wire rejection, generated
+WebAssembly equivalence, denied imports, fuel exhaustion, atomic ledger creation,
+and stable replay. This establishes engineering feasibility only; M2 executes the
+matched baseline and broader adversarial campaigns.

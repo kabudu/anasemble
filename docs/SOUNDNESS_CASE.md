@@ -21,6 +21,12 @@ M0 separates synthesis and checking semantics but shares Rust protocol types and
 Serde JSON parsing. Its certificate names this limitation. Full parser and model
 independence remains an M1 obligation and is required before a research release.
 
+M1 removes Serde JSON and the shared candidate parser from the checker boundary by
+using a strict binary wire decoder. It still shares protocol obligation types and
+the Rust process, so the checker is semantically separate but not an independently
+deployed TCB. Generated WebAssembly is certified only after every transition is
+executed under the registered sandbox limits.
+
 ## Known limits
 
 Finite observations do not identify arbitrary programs. Contracts may be

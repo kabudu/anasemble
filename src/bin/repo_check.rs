@@ -71,12 +71,14 @@ fn validate() -> Result<(), String> {
     }
     let plan = fs::read_to_string("docs/IMPLEMENTATION_PLAN.md")
         .map_err(|error| format!("could not read implementation plan: {error}"))?;
-    if plan.contains("M0 - executable research contract (complete)")
-        && plan.lines().any(|line| line.starts_with("- [ ]"))
-    {
-        let m0 = plan.split("## M1").next().unwrap_or(&plan);
-        if m0.lines().any(|line| line.starts_with("- [ ]")) {
-            return Err("M0 is marked complete with unchecked M0 requirements".into());
+    for section in plan.split("\n## ") {
+        if section
+            .lines()
+            .next()
+            .is_some_and(|line| line.contains("(complete)"))
+            && section.lines().any(|line| line.starts_with("- [ ]"))
+        {
+            return Err("a completed milestone contains unchecked requirements".into());
         }
     }
     Ok(())

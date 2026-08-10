@@ -43,3 +43,12 @@ checker as separate Rust modules. The CLI consumes only file-based canonical
 JSON. It produces a candidate and certificate but does not install either.
 Capability isolation, transactional deployment, a durable ledger, and generalized
 state migration remain outside M0.
+
+## M1 implementation boundary
+
+M1 generalizes deterministic full-table enumeration under compiled and
+registry-selected bounds. Candidates cross a checker-private binary wire format,
+then compile to import-free WebAssembly and execute with an empty linker, fuel,
+instance, table, and memory limits. A content-addressed ledger atomically preserves
+inputs and outcomes. External state, deployment, production key identity, and a
+separate checker process remain outside M1.

@@ -110,6 +110,14 @@ pub fn collect(
                     FragmentKind::StateSchema,
                     FragmentContent::StatePolicy { .. }
                 )
+                | (
+                    FragmentKind::NegativeCase,
+                    FragmentContent::NegativeCase { .. }
+                )
+                | (
+                    FragmentKind::MetamorphicProperty,
+                    FragmentContent::MetamorphicProperty { .. }
+                )
         );
         if !kind_matches_content {
             return Err(Error::InvalidEvidence(

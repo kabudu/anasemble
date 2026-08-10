@@ -4,11 +4,13 @@ use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-use crate::canonical::{digest, encode};
+use crate::canonical::digest;
 use crate::checker::{Coverage, certify};
+use crate::checker_wire::encode_candidate as encode_checker_candidate;
 use crate::fragments::{FragmentKind, IssuerPolicy, collect};
 use crate::model::{Candidate, Error, FragmentContent, Grammar, RefusalCode};
 use crate::oracle::{LossAttestation, attest_absence};
+use crate::sandbox::{SandboxEvidence, compile as compile_wasm, verify as verify_wasm};
 use crate::synthesizer::reconstruct;
 
 #[derive(Debug, Deserialize)]
@@ -63,6 +65,7 @@ pub struct Certificate {
     non_identical_to_forbidden_artifacts: bool,
     checker_identity: &'static str,
     coverage: Coverage,
+    sandbox: SandboxEvidence,
     state_transform: StateTransform,
     loss_attestation: LossAttestation,
     experiment: ExperimentRegistration,
@@ -85,7 +88,8 @@ struct StateTransform {
 #[serde(tag = "decision", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum RecoveryResult {
     Certified {
-        candidate: Candidate,
+        candidate: Box<Candidate>,
+        candidate_wasm_hex: String,
         certificate: Box<Certificate>,
     },
     Refused {
@@ -174,7 +178,7 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         &registry.grammar,
         &contents,
     )?;
-    let candidate_json = encode(&candidate)?;
+    let checker_candidate = encode_checker_candidate(&candidate)?;
     let candidate_digest = digest(&candidate)?;
     if registry
         .loss_oracle
@@ -186,11 +190,13 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         ));
     }
     let coverage = certify(
-        &candidate_json,
+        &checker_candidate,
         &registry.component,
         &registry.interface_version,
         &contents,
     )?;
+    let candidate_wasm = compile_wasm(&candidate)?;
+    let sandbox = verify_wasm(&candidate, &candidate_wasm)?;
     let survivor_envelope_digests = evidence
         .envelopes
         .iter()
@@ -212,6 +218,7 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         non_identical_to_forbidden_artifacts: true,
         checker_identity: "anasemble.checker.separate-semantics-shared-serde-v0",
         coverage,
+        sandbox,
         state_transform: StateTransform {
             mode: "identity",
             schema_digest: digest(&schemas[0])?,
@@ -225,7 +232,8 @@ fn recover(workspace: &Path) -> Result<RecoveryResult, Error> {
         ],
     };
     Ok(RecoveryResult::Certified {
-        candidate,
+        candidate: Box::new(candidate),
+        candidate_wasm_hex: hex::encode(candidate_wasm),
         certificate: Box::new(certificate),
     })
 }

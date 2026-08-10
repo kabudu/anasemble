@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 
 use anasemble::canonical::{bytes_digest, encode};
 use anasemble::fragments::{Envelope, FragmentKind, sign};
-use anasemble::model::{FragmentContent, Grammar};
+use anasemble::model::{FragmentContent, Grammar, TraceRole};
 use serde::Serialize;
 use serde_json::json;
 
@@ -87,6 +87,7 @@ pub fn build_workspace(base: &Path, delete_artifact: bool) -> Workspace {
         "domain-b",
         1,
         FragmentContent::Trace {
+            role: TraceRole::HeldOut,
             initial_state: "locked".into(),
             inputs: vec!["coin".into(), "push".into(), "push".into()],
             outputs: vec!["unlocked".into(), "locked".into(), "locked".into()],
