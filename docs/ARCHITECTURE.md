@@ -52,3 +52,16 @@ then compile to import-free WebAssembly and execute with an empty linker, fuel,
 instance, table, and memory limits. A content-addressed ledger atomically preserves
 inputs and outcomes. External state, deployment, production key identity, and a
 separate checker process remain outside M1.
+
+## M2 implementation boundary
+
+M2 represents external FSM state as a versioned state symbol and monotonic
+revision. A total, operator-supplied mapping converts that symbol into the
+certified candidate schema. Candidate and transformed state are encoded in one
+bounded deployment bundle and activated by synchronized atomic rename. The prior
+bundle is independently persisted for rollback before replacement.
+
+The campaign runner executes each registered workspace through the normal
+recovery path and the backup/replica, trace-only, and centralized-contract
+baselines. It retains typed decisions and registered metric observations. This is
+local file transactionality, not a distributed deployment protocol.

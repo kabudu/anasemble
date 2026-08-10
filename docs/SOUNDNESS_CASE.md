@@ -27,6 +27,12 @@ the Rust process, so the checker is semantically separate but not an independent
 deployed TCB. Generated WebAssembly is certified only after every transition is
 executed under the registered sandbox limits.
 
+M2 makes state and deployment obligations executable for enumerated FSM state.
+The transform is schema-bound and can only target a state declared by the
+candidate. Atomic replacement prevents a pre-activation failure from exposing a
+partial bundle, while the saved prior bundle provides rollback. This does not
+make unmodeled external effects reversible.
+
 ## Known limits
 
 Finite observations do not identify arbitrary programs. Contracts may be

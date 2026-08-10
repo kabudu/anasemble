@@ -19,11 +19,11 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M1 provides a generalized deterministic reconstruction loop for the frozen
-finite-state DSL, checker-private candidate parsing, capability-empty and
-fuel-limited WebAssembly execution, an immutable evidence ledger, and a registered
-two-component stateless corpus. It does not provide modeled external state,
-deployment, comparative baseline results, or production recovery.
+M2 provides a bounded state migration and transactional deployment path, rollback,
+matched baseline execution, registered metric observations, freshness policy, and
+a retained adversarial campaign for the frozen finite-state DSL. It remains a
+synthetic research harness, not a production recovery system or a claim about
+arbitrary service reconstruction.
 Claim boundaries are in [NOVELTY](docs/NOVELTY.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with

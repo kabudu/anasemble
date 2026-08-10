@@ -1,0 +1,13 @@
+{
+  "version": "m2-results-v1",
+  "seed": 20260729,
+  "total_cases": 5,
+  "certified_correct_recoveries": 1,
+  "unsafe_certifications": 0,
+  "refusals": 4,
+  "timeouts": 1,
+  "checker_disagreements": 1,
+  "retained_negative_results": 1,
+  "timing": "environment-dependent; measured by executable campaign",
+  "claim": "synthetic bounded FSM evidence only"
+}

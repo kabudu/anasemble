@@ -102,3 +102,46 @@ Residual M1 limitations:
 Every unsupported, ambiguous, contradictory, malformed, capability-requesting,
 over-budget, checker-disagreeing, or artifact-present path refuses. M2 remains the
 first unchecked milestone. No release or tag is authorized by M1 completion.
+
+## M2 implementation review, 2026-08-10
+
+Scope reviewed: every M2 checkbox, state schema transformation, activation and
+rollback ordering, baseline semantics, metric registration, retained result
+classes, freshness, evidence adversaries, trust domains, trace separation,
+sandbox bounds, public CLI behavior, and documentation claims.
+
+Material findings resolved:
+
+- Encoded candidate and state in one synchronized deployment bundle so activation
+  cannot expose a mixed candidate/state pair.
+- Persisted the prior complete bundle before replacement and proved injected
+  pre-activation failure leaves the active image unchanged.
+- Required certified campaign expectations to pin a candidate digest and
+  revalidated candidate/state integrity before accepting rollback images.
+- Bound deployment, campaign manifest, case count, evidence count, individual
+  evidence bytes, aggregate byte and candidate-work counters, state inputs, and
+  path components.
+- Made backup/replica execution inspect the registered loss paths rather than
+  reporting the experimental assumption as an observation.
+- Required every case to share one baseline and metric registration and refused
+  unsupported registered measures instead of silently omitting them.
+- Added an explicit freshness window and refused stale but otherwise valid signed
+  fragments.
+- Retained typed positive, refusal, timeout, checker-disagreement, and negative
+  results with zero unsafe certifications in the synthetic campaign.
+
+Residual M2 limitations:
+
+- State is one finite FSM symbol. Databases, queues, files, clocks, remote effects,
+  and distributed transactions are not modeled or reversible.
+- Atomic rename and a create-new lock protect one local deployment file. The lock
+  is not a cross-host lease or consensus protocol and has no stale-owner recovery.
+- Search timing is environment-dependent. The retained stable result records
+  categories and counts, while the executable report records measured timing.
+- Baselines are matched to the same registered local loss scope but do not model
+  production backup systems or independent engineering teams.
+- The checker, Wasmi engine, HMAC policy, fixtures, and host remain synthetic TCB
+  elements. Independent reproduction and security review remain M3 gates.
+
+No M2 result authorizes productisation, a public release, or a general recovery
+claim. M3 is the first unchecked milestone.

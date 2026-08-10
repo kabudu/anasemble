@@ -58,4 +58,5 @@ process. Both must certify with no imports, checker disagreement, ambiguity,
 artifact access, or unbounded work.
 
 M1 does not execute matched baselines, model external state, deploy candidates,
-or claim production readiness. Those remain M2 and M3 gates.
+or claim production readiness. M2 addresses the bounded research cases for the
+first three; production readiness remains an M3 decision gate.
