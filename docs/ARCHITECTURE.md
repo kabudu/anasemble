@@ -1,5 +1,14 @@
 # Architecture
 
+## Technology boundary
+
+The control plane and all project implementation use Rust under
+[ADR 0002](DECISIONS/0002-rust-control-plane.md). This is a single-language
+system unless a separately approved ADR proves another technology is absolutely
+necessary. Future reconstructed executable components are expected to cross a
+capability-scoped WebAssembly boundary; M0 reconstructs data-defined finite-state
+machines and does not execute WebAssembly.
+
 ## Components
 
 1. **Fragment distributor** places contracts, schemas, and observations in
@@ -26,3 +35,11 @@ must not share an interpreter.
 Candidates receive capability-scoped I/O. Search, execution, memory, and output
 are bounded. Missing side-effect semantics, contradictory evidence, checker
 disagreement, state ambiguity, or budget exhaustion causes refusal.
+
+## M0 implementation boundary
+
+M0 implements the canonicalizer, a narrow bounded synthesizer, and an independent
+checker as separate Rust modules. The CLI consumes only file-based canonical
+JSON. It produces a candidate and certificate but does not install either.
+Capability isolation, transactional deployment, a durable ledger, and generalized
+state migration remain outside M0.

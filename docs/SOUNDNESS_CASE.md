@@ -17,6 +17,10 @@ satisfies the declared observable behavior.
 - All effects require explicit capabilities and modeled state transitions.
 - Deployment is atomic and reversible.
 
+M0 separates synthesis and checking semantics but shares Rust protocol types and
+Serde JSON parsing. Its certificate names this limitation. Full parser and model
+independence remains an M1 obligation and is required before a research release.
+
 ## Known limits
 
 Finite observations do not identify arbitrary programs. Contracts may be

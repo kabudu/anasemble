@@ -24,3 +24,17 @@ inside the stated model blocks productisation.
 - artifact-absence cannot be credibly demonstrated;
 - authoring or search cost dominates ordinary redundant backup;
 - bounded results do not generalize even within the declared DSL.
+
+## M0 evidence
+
+The registered M0 fixture is the two-state turnstile in `tests/common/mod.rs`, with
+seed `20260729`. The fixture records backup/replica, trace-only, and centralized
+contract baselines and the registered primary and secondary metrics. Comparative
+baseline execution remains M2 work; M0 only freezes the experiment contract.
+
+`./scripts/ci-local.sh` runs Rust formatting, Clippy with warnings denied, the
+deletion-attested fresh-process recovery,
+deterministic replay, independent-checker mutation, evidence omission and tamper,
+forged-domain, surviving-artifact, symlink, canonicalization, compilation, and
+repository-text checks. This local command is the authoritative CI for the
+private repository.
