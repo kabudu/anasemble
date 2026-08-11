@@ -5,7 +5,9 @@ project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$project_dir"
 
 docker info >/dev/null
-docker image inspect postgres:18-alpine quay.io/minio/minio:latest minio/mc:RELEASE.2025-08-13T08-35-41Z redis:8.8.0-alpine >/dev/null
+command -v kind >/dev/null
+command -v kubectl >/dev/null
+docker image inspect postgres:18-alpine quay.io/minio/minio:latest minio/mc:RELEASE.2025-08-13T08-35-41Z redis:8.8.0-alpine registry:2 debian:bookworm-slim sha256:3489c7674813ba5d8b1a9977baea8a6e553784dab7b84759d1014dbd78f7ebd5 >/dev/null
 
 cargo fmt --all --check
 cargo clippy --all-targets --all-features --locked --offline -- -D warnings

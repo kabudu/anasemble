@@ -98,3 +98,26 @@ Negative paths cover a compromised store signature, insufficient store quorum, i
 The P2 drill starts dedicated disposable PostgreSQL 18, MinIO, and Redis 8 containers. It snapshots a relational schema with referential constraints, destroys the source schema, restores into a staged schema, verifies rows and foreign-key enforcement, and rolls back to the prior target. It also restores and rolls back exact object bytes and Redis Stream entries while preserving a consumer-group cursor. A pending Redis delivery is refused.
 
 The same drill reconstructs a certified `service-v1` HTTP service and binds its certificate, service manifest, three schemas, snapshots, and migration plans into one canonical activation plan. A mismatched service digest is rejected. This is backend recovery evidence, not OS-isolated runtime activation or cross-backend atomicity; those remain P3 work.
+
+## P3 isolated activation validation
+
+The P3 suite executes a digest-pinned Debian candidate with no network, no Linux
+capabilities, a read-only root, bounded tmpfs, CPU, memory, PID, output, and wall
+time. The candidate observes the PID and capability limits, cannot write the root
+filesystem, has no default route, and is forcibly stopped at its deadline.
+
+A disposable OCI registry drill refuses an unlabeled artifact, publishes a
+plan/candidate-labelled image, verifies its immutable digest, and activates it
+only with a matching Ed25519 operator approval. Injected interruption after the
+active-name transition leaves an exclusive same-plan lease and is reconciled by
+retry; a competing plan is refused. The test verifies secret-value absence,
+disabled runtime logging, zero external egress, idempotency, and restoration of
+the prior container.
+
+A disposable kind cluster receives its image through a local Docker export. The
+Kubernetes drill stages immutable Deployments, uses Secret references, disables
+service-account token mounting, installs a zero-egress NetworkPolicy, waits for
+readiness, switches one Service selector, retains a Lease across interruption,
+refuses a competing plan, resumes idempotently, and rolls back to the prior
+selector. The drill validates Kubernetes control objects; production egress
+enforcement additionally trusts a NetworkPolicy-enforcing CNI.

@@ -84,3 +84,19 @@ The Rust CLI remains the initial control plane and the file protocol remains the
 P1 adds an in-process evidence plane rather than a daemon or plugin runtime. Issuer envelopes and store bundles have separate Ed25519 identities. Store workers fetch one bounded signed bundle each through a local-directory or HTTPS transport, then return to a deterministic coordinator that enforces store quorum, decrypts retained evidence, deduplicates exact replicas, and invokes the existing collector. XChaCha20-Poly1305 protects each signed envelope independently, so a store cannot read or silently alter semantic evidence.
 
 Concurrency is bounded by configured batches rather than one thread per store. HTTPS performs one request per attempt and has a global timeout and retry budget. The output boundary is an explicitly temporary owner-only directory compatible with the existing kernel; deletion is a separate fail-closed operator action.
+
+## P3 activation plane
+
+P3 remains a Rust library boundary and delegates established mechanisms to Docker,
+an OCI Distribution registry, and Kubernetes through bounded command adapters. A
+validated activation plan is carried into OCI labels and a canonical registry
+receipt. Operator approval signs the plan and artifact binding before any traffic
+switch.
+
+Docker provides the directly exercised candidate sandbox and a single-host
+activation drill. Kubernetes is the production orchestrator adapter: immutable
+Deployments are staged behind a zero-egress NetworkPolicy, a Lease serializes each
+service, and one Service selector patch switches traffic. Both adapters retain the
+prior workload until commit and reconcile a same-plan interruption idempotently.
+The exact supported profile and trust boundary are in
+[P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).

@@ -18,6 +18,17 @@ P0.2 treats state source files, manifests, content-addressed objects, destinatio
 
 P1 assumes stores can be unavailable, stale, corrupted, malicious, or mutually replicated. Store identity, administrative-domain uniqueness, signed generation, authenticated encryption, issuer policy, store quorum, and per-fragment copy quorum are checked independently. HTTPS prevents cleartext remote transport but does not make a store trustworthy. Bounded workers, one-request bundles, timeouts, retry ceilings, body limits, fragment limits, and store limits constrain resource exhaustion.
 
+P3 treats candidate images, commands, health probes, artifact metadata, approvals,
+secret references, stale staging resources, and concurrent activation attempts as
+untrusted. Immutable digests, exact plan/candidate labels, signature-bound operator
+approval, zero egress, capability dropping, read-only filesystems, resource bounds,
+exclusive leases, health gates, atomic traffic switching, idempotent reconciliation,
+and retained rollback targets constrain them. Docker, Kubernetes, the host kernel,
+the OCI registry, admission control, and NetworkPolicy enforcement remain trusted.
+A cluster administrator, runtime escape, policy-ignoring CNI, malicious registry,
+or application that deliberately exfiltrates a mounted secret through an allowed
+effect is outside this boundary.
+
 Issuer signing keys and recovery keys are high-impact secrets. The CLI creates owner-only files, refuses permissive key files, and excludes secret bytes from receipts. Equal-authority host compromise, copied secrets, weak administrator-domain assertions, TLS-root compromise, rollback of the configuration itself, memory disclosure, filesystem snapshots, and secure erasure remain outside P1 guarantees. Revocation rejects all evidence under that key; recovery floors and store generation floors must be advanced after a replay incident.
 
 Controls include signed canonical envelopes, domain attestations, explicit

@@ -175,6 +175,39 @@ pub fn bind_activation_plan(
     Ok(plan)
 }
 
+pub fn validate_activation_plan(plan: &ActivationPlan) -> Result<(), Error> {
+    if plan.version != "activation-plan-v1" || plan.states.is_empty() || plan.states.len() > 16 {
+        return Err(invalid("activation plan version or state count is invalid"));
+    }
+    for value in [
+        &plan.candidate_sha256,
+        &plan.certificate_sha256,
+        &plan.service_manifest_sha256,
+        &plan.plan_sha256,
+    ] {
+        require_digest(value)?;
+    }
+    let mut resources = BTreeSet::new();
+    for state in &plan.states {
+        if !resources.insert((&state.backend, &state.resource)) {
+            return Err(invalid("activation plan resources must be unique"));
+        }
+        for value in [
+            &state.schema_sha256,
+            &state.snapshot_sha256,
+            &state.migration_sha256,
+        ] {
+            require_digest(value)?;
+        }
+    }
+    let mut unsigned = plan.clone();
+    let expected = std::mem::take(&mut unsigned.plan_sha256);
+    if digest(&unsigned)? != expected {
+        return Err(invalid("activation plan digest is invalid"));
+    }
+    Ok(())
+}
+
 pub struct PostgresAdapter {
     client: Client,
     source_schema: String,
