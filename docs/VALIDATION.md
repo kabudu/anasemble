@@ -129,7 +129,7 @@ The P4 restart test admits two jobs into a capacity-two store, durably interrupt
 The sustained test admits 128 separately durable records, proves the 129th is
 refused, drains exactly two 64-job batches, and requires completion within 20
 seconds on the local arm64 development profile. A separate contention test
-proves that a transient lock succeeds within the 500 ms retry bound and a
+proves that a transient lock succeeds within the 495 ms retry-delay budget and a
 persistent lock still refuses. This is a regression ceiling for the supported
 file store, not a universal throughput claim.
 

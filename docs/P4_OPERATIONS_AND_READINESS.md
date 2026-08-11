@@ -8,8 +8,8 @@ P4 completes the implementation boundary for the explicitly supported Anasemble 
 
 Claiming is durable before execution. A heartbeat renews the runner lease from
 the system clock while the shorter store lock protects each transition. The
-store lock retries transient heartbeat contention for at most 500 ms before
-refusing a persistent or stale lock. Process death stops the heartbeat and
+store lock uses a 495 ms retry-delay budget for transient heartbeat contention
+before refusing a persistent or stale lock. Process death stops the heartbeat and
 allows a new runner after the bounded lease. An expired running job lease is
 returned to pending until its attempt budget is exhausted. Queue admission
 counts pending and running records and fails closed at capacity. Workspaces are

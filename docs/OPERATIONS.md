@@ -90,8 +90,8 @@ subject to the cluster trust boundary in [P3_ISOLATED_ACTIVATION](P3_ISOLATED_AC
 Create an operations root from a reviewed `operations-config-v1` file with `init-operations <root> <config>`. Submit only canonical deleted-artifact workspaces with `enqueue-recovery <root> <workspace> <submitted-unix>`. Queue capacity covers pending and running work; saturation rejects new jobs. `run-jobs <root> <now-unix>` claims at most the configured batch size and executes one worker at a time.
 
 Do not run two control-plane processes against one store. A create-new store lock
-retries transient contention for at most 500 ms and then rejects overlap or a
-stale lock. If a runner stops after claim, preserve the running record until its
+uses a 495 ms retry-delay budget for transient contention and then rejects
+overlap or a stale lock. If a runner stops after claim, preserve the running record until its
 lease expires; the next run then records restart recovery and retries within the
 attempt budget. Do not edit job or result files. Digest, audit-chain,
 unknown-entry, symlink, staging, and size failures require incident review.
