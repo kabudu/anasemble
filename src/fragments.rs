@@ -73,6 +73,19 @@ pub fn sign_with_key_file(envelope: Envelope, key: &SigningKeyFile) -> Result<En
     result
 }
 
+pub fn sign_detached_with_key_file(payload: &[u8], key: &SigningKeyFile) -> Result<String, Error> {
+    validate_signing_key(key)?;
+    if payload.is_empty() || payload.len() > 65_536 {
+        return Err(Error::InvalidRegistry(
+            "detached signing payload is empty or exceeds 64 KiB".into(),
+        ));
+    }
+    let mut secret = key.secret_bytes()?;
+    let signature = SigningKey::from_bytes(&secret).sign(payload);
+    secret.zeroize();
+    Ok(hex::encode(signature.to_bytes()))
+}
+
 impl Drop for SigningKeyFile {
     fn drop(&mut self) {
         self.secret_key_hex.zeroize();

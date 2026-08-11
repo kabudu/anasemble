@@ -14,6 +14,7 @@ use anasemble::ledger::persist;
 use anasemble::lifecycle;
 use anasemble::operations::{OperationsConfig, OperationsStore, RunFailurePoint};
 use anasemble::protocol::{RecoveryResult, run};
+use anasemble::reference;
 use anasemble::service::ServiceManifest;
 use anasemble::state_store;
 
@@ -139,6 +140,63 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
         write_json_stdout(
             &OperationsStore::open(&root)?.prune_terminal(submitted_before, max_remove)?,
         )?;
+        return Ok(true);
+    }
+    if command == "prepare-reference-recovery" {
+        let config_path = PathBuf::from(arguments.next().ok_or("reference config is required")?);
+        let output = PathBuf::from(arguments.next().ok_or("state bundle output is required")?);
+        reject_extra(
+            &mut arguments,
+            "prepare-reference-recovery accepts config and a new bundle path",
+        )?;
+        let config = reference::read_config(&config_path)?;
+        let bundle = reference::prepare(&config)?;
+        write_new_private_json(&output, &bundle)?;
+        write_json_stdout(&serde_json::json!({
+            "version": bundle.version,
+            "bundle_sha256": bundle.bundle_sha256
+        }))?;
+        return Ok(true);
+    }
+    if command == "recover-activate-reference" {
+        let config_path = PathBuf::from(arguments.next().ok_or("reference config is required")?);
+        let bundle_path = PathBuf::from(arguments.next().ok_or("state bundle is required")?);
+        let output = PathBuf::from(
+            arguments
+                .next()
+                .ok_or("recovery receipt output is required")?,
+        );
+        reject_extra(
+            &mut arguments,
+            "recover-activate-reference accepts config, bundle, and a new receipt path",
+        )?;
+        let config = reference::read_config(&config_path)?;
+        let bundle = reference::read_bundle(&bundle_path)?;
+        let receipt = reference::recover_and_activate(&config, &bundle)?;
+        write_new_private_json(&output, &receipt)?;
+        write_json_stdout(&serde_json::json!({
+            "version": receipt.version,
+            "plan_sha256": receipt.activation_plan.plan_sha256,
+            "immutable_image": receipt.artifact.immutable_image,
+            "service": receipt.activation.service,
+            "rollback_available": receipt.activation.rollback_available
+        }))?;
+        return Ok(true);
+    }
+    if command == "rollback-reference-recovery" {
+        let config_path = PathBuf::from(arguments.next().ok_or("reference config is required")?);
+        let receipt_path = PathBuf::from(arguments.next().ok_or("recovery receipt is required")?);
+        reject_extra(
+            &mut arguments,
+            "rollback-reference-recovery accepts config and receipt",
+        )?;
+        let config = reference::read_config(&config_path)?;
+        let receipt = reference::read_receipt(&receipt_path)?;
+        reference::rollback_recovery(&config, &receipt)?;
+        write_json_stdout(&serde_json::json!({
+            "rolled_back": true,
+            "plan_sha256": receipt.activation_plan.plan_sha256
+        }))?;
         return Ok(true);
     }
     if command == "create-signing-key" {
@@ -402,7 +460,7 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
             .all(|entry| entry.result.is_certified()));
     }
     if command != "recover" {
-        return Err("usage: anasemble <install|uninstall|init-operations|migrate-operations-config|enqueue-recovery|run-jobs|operations-status|job-result|create-support-bundle|prune-jobs|create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
+        return Err("usage: anasemble <install|uninstall|init-operations|migrate-operations-config|enqueue-recovery|run-jobs|operations-status|job-result|create-support-bundle|prune-jobs|prepare-reference-recovery|recover-activate-reference|rollback-reference-recovery|create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
     }
     let workspace = PathBuf::from(arguments.next().ok_or("workspace path is required")?);
     let mut output = None;
