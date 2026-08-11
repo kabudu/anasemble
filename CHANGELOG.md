@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Prepare a static TailwindCSS GitHub Pages product foundation, record its bounded
+  build-time web exception, refresh publication-date name diligence, define the
+  first binary artifact contract, and reconcile release notes with supported
+  AWS recovery profiles.
+
+- Enforce PostgreSQL stream, S3 object and listing, and Redis preflight resource
+  bounds before remote state can exceed the declared in-memory recovery ceiling.
+
 - Add fail-closed rustls transport profiles for remote PostgreSQL and Redis,
   including DNS identity, explicit PostgreSQL CA trust, authenticated URIs,
   bounded connection and operation timeouts, short-lived S3 session credentials,

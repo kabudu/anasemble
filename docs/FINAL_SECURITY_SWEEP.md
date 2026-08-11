@@ -2,7 +2,8 @@
 
 ## Scope and method
 
-The 2026-08-11 Lazarus sweep covers the complete merged Rust implementation,
+The 2026-08-11 Lazarus sweep was refreshed against the public release-candidate
+branch after the AWS transport and provider validation increment. It covers the complete Rust implementation,
 public CLI, state and activation adapters, file lifecycle, tests, scripts,
 dependency graph, compatibility claims and operator documentation. It inventories
 trust boundaries, destructive operations, secrets, remote transports, process
@@ -37,10 +38,17 @@ not a command shell.
    could block later work. The public acceptance command verifies all active
    state before deleting any rollback resource, then commits every backend and
    Kubernetes. Tampering, drift and unavailable verification fail closed.
+5. PostgreSQL COPY and S3 object payload limits were checked only after complete
+   buffering, and S3 prefix listings were collected before the item limit was
+   applied. PostgreSQL now caps each stream while reading, schema queries and S3
+   listings stop at the declared item ceiling, S3 rejects oversized metadata
+   before payload collection and verifies the received length, and Redis checks
+   the trusted server's stream memory estimate before its bounded XRANGE. The
+   cumulative 64 MiB and 10,000-item checks remain mandatory after collection.
 
 ## Result and residual trust
 
-No unresolved critical or high internal finding remains after the final gates.
+No unresolved critical or high internal finding remains after the refreshed source review and focused bounds tests. The final exact-commit local CI, Linux matrix, package check and source-archive lifecycle remain publication gates rather than evidence already claimed by this paragraph.
 Cargo Deny reports warning-level duplicate transitive versions but no advisory,
 ban or untrusted source failure. The host, compiler, locked dependencies, local
 filesystem, operator and clock, Wasmi, Docker daemon and kernel, registry,

@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@source "./index.html";
+
+@theme {
+  --color-ink: #f7fbff;
+  --color-night: #071426;
+  --color-panel: #0d213d;
+  --color-panel-deep: #09172b;
+  --color-muted: #a9bfd9;
+  --color-line: #254566;
+  --color-fit-blue: #2d62ad;
+  --color-fit-teal: #1ba38f;
+  --color-fit-orange: #f27a2b;
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { overflow-x: hidden; }
+
+.hero-glow {
+  background: radial-gradient(circle, rgb(27 163 143 / 18%), transparent 66%);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgb(71 116 160 / 8%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(71 116 160 / 8%) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+.text-spectrum {
+  color: transparent;
+  background: linear-gradient(90deg, #72a9f4, #5de2cf 52%, #ff9a5b);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.orbit { border: 1px solid rgb(130 175 216 / 22%); border-radius: 9999px; }
+.orbit-dashed { border-style: dashed; animation: spin 44s linear infinite; }
+.mark-float { animation: float 7s ease-in-out infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes float { 50% { transform: translateY(-12px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .orbit-dashed, .mark-float { animation: none; }
+}

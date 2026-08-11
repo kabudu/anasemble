@@ -39,7 +39,7 @@ experimental.
 Productisation completion is now followed by an Apache-2.0 open-source
 preparation increment. The source candidate version, community policies and
 curated release metadata are prepared, but the repository remains private.
-Preparation does not perform publication-date legal/name clearance, make the
-repository public, enable hosted CI, publish packages or images, create a tag or
-GitHub Release, or authorize production deployment. Those actions remain
-separate gates in `PUBLIC_OPENING.md`.
+Preparation does not by itself make the repository public, enable hosted CI,
+publish packages or images, create a tag or GitHub Release, or authorize
+production deployment. Those actions remain separately sequenced gates in
+`PUBLIC_OPENING.md` even when the owner approves them as one release mandate.

@@ -11,7 +11,7 @@ documentation = "https://github.com/kabudu/anasemble/tree/master/docs"
 readme = "README.md"
 keywords = ["disaster-recovery", "reconstruction", "resilience"]
 categories = ["command-line-utilities", "development-tools"]
-publish = false
+publish = ["crates-io"]
 
 [dependencies]
 chacha20poly1305 = "0.11.0"

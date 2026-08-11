@@ -54,6 +54,15 @@ const REQUIRED: &[&str] = &[
     "examples/reference-recovery-config-v1.json",
     "tests/aws_compatibility.rs",
     "docs/DECISIONS/0002-rust-control-plane.md",
+    "docs/DECISIONS/0003-static-project-website.md",
+    "docs/NAME_DILIGENCE.md",
+    "docs/RELEASE_ARTIFACTS.md",
+    "website/index.html",
+    "website/input.css",
+    "website/styles.css",
+    "website/package.json",
+    "website/package-lock.json",
+    "scripts/build-site.sh",
     "assets/anasemble-mark.svg",
     "assets/anasemble-wordmark.svg",
     "assets/brand/BRAND_ASSET_MANIFEST.json",
@@ -101,6 +110,7 @@ fn validate() -> Result<(), String> {
     anasemble::brand::validate(Path::new("."))?;
     validate_open_source_metadata()?;
     validate_product_readme()?;
+    validate_website()?;
     if Path::new(".github/workflows").exists() {
         return Err("hosted CI is prohibited while the repository is private".into());
     }
@@ -222,6 +232,37 @@ fn validate() -> Result<(), String> {
     Ok(())
 }
 
+fn validate_website() -> Result<(), String> {
+    let html = fs::read_to_string("website/index.html")
+        .map_err(|error| format!("could not read website: {error}"))?;
+    let css = fs::read_to_string("website/input.css")
+        .map_err(|error| format!("could not read website styles: {error}"))?;
+    let generated_css = fs::read_to_string("website/styles.css")
+        .map_err(|error| format!("could not read generated website styles: {error}"))?;
+    for required in [
+        "Regrow function from surviving meaning.",
+        "fail closed by design.",
+        "docs/COMPATIBILITY.md",
+        "SECURITY.md",
+        "prefers-reduced-motion",
+    ] {
+        if !html.contains(required) && !css.contains(required) {
+            return Err(format!("website release invariant is absent: {required}"));
+        }
+    }
+    for forbidden in ["<script", "http://", "analytics", "<form"] {
+        if html.contains(forbidden) || css.contains(forbidden) {
+            return Err(format!(
+                "website forbidden boundary is present: {forbidden}"
+            ));
+        }
+    }
+    if generated_css.contains("@import") {
+        return Err("generated website CSS contains a remote import".into());
+    }
+    Ok(())
+}
+
 fn validate_product_readme() -> Result<(), String> {
     let readme = fs::read_to_string("README.md")
         .map_err(|error| format!("could not read README: {error}"))?;
@@ -258,7 +299,7 @@ fn validate_open_source_metadata() -> Result<(), String> {
         "version = \"0.1.0-rc.1\"",
         "license = \"Apache-2.0\"",
         "repository = \"https://github.com/kabudu/anasemble\"",
-        "publish = false",
+        "publish = [\"crates-io\"]",
     ] {
         if !manifest.contains(required) {
             return Err(format!(

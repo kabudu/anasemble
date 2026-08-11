@@ -9,7 +9,7 @@ use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
-use futures_util::TryStreamExt;
+use futures_util::{StreamExt, TryStreamExt};
 use object_store::{
     ObjectStore, ObjectStoreExt, PutPayload, aws::AmazonS3Builder, path::Path as ObjectPath,
 };
@@ -295,11 +295,14 @@ impl PostgresAdapter {
 
     fn snapshot_schema(&mut self, schema: &str) -> Result<StateSchema, Error> {
         let rows = self.client.query(
-            "SELECT table_name, column_name, data_type, is_nullable, ordinal_position FROM information_schema.columns WHERE table_schema=$1 ORDER BY table_name, ordinal_position",
+            "SELECT table_name, column_name, data_type, is_nullable, ordinal_position FROM information_schema.columns WHERE table_schema=$1 ORDER BY table_name, ordinal_position LIMIT 10001",
             &[&schema],
         ).map_err(backend)?;
         if rows.is_empty() {
             return Err(invalid("PostgreSQL schema has no discoverable tables"));
+        }
+        if rows.len() > MAX_STATE_ITEMS {
+            return Err(invalid("PostgreSQL schema exceeds metadata item bound"));
         }
         let mut tables = BTreeMap::<String, PgTable>::new();
         for row in rows {
@@ -331,9 +334,12 @@ impl PostgresAdapter {
                 });
         }
         let constraints = self.client.query(
-            "SELECT t.relname, c.conname, pg_get_constraintdef(c.oid) FROM pg_constraint c JOIN pg_class t ON t.oid=c.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace WHERE n.nspname=$1 AND c.contype IN ('p','u','f') ORDER BY t.relname,c.conname",
+            "SELECT t.relname, c.conname, pg_get_constraintdef(c.oid) FROM pg_constraint c JOIN pg_class t ON t.oid=c.conrelid JOIN pg_namespace n ON n.oid=t.relnamespace WHERE n.nspname=$1 AND c.contype IN ('p','u','f') ORDER BY t.relname,c.conname LIMIT 10001",
             &[&schema],
         ).map_err(backend)?;
+        if constraints.len() > MAX_STATE_ITEMS {
+            return Err(invalid("PostgreSQL schema exceeds constraint bound"));
+        }
         let mut invariants = Vec::new();
         for row in constraints {
             let table: String = row.get(0);
@@ -362,7 +368,10 @@ impl PostgresAdapter {
     }
 
     fn capture(&mut self, schema: &str) -> Result<Vec<StateItem>, Error> {
-        let tables = self.client.query("SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_type='BASE TABLE' ORDER BY table_name", &[&schema]).map_err(backend)?;
+        let tables = self.client.query("SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_type='BASE TABLE' ORDER BY table_name LIMIT 10001", &[&schema]).map_err(backend)?;
+        if tables.len() > MAX_STATE_ITEMS {
+            return Err(invalid("PostgreSQL schema exceeds table bound"));
+        }
         let mut items = Vec::new();
         for table in tables {
             let table: String = table.get(0);
@@ -377,9 +386,8 @@ impl PostgresAdapter {
                 quote(&table),
                 order
             );
-            let mut reader = self.client.copy_out(&query).map_err(backend)?;
-            let mut payload = Vec::new();
-            reader.read_to_end(&mut payload).map_err(Error::Io)?;
+            let reader = self.client.copy_out(&query).map_err(backend)?;
+            let payload = read_bounded(reader, MAX_STATE_BYTES, "PostgreSQL table")?;
             items.push(StateItem {
                 key: table,
                 fields: BTreeMap::new(),
@@ -407,7 +415,10 @@ impl TransactionalStateAdapter for PostgresAdapter {
             .read_only(true)
             .start()
             .map_err(backend)?;
-        let tables = transaction.query("SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_type='BASE TABLE' ORDER BY table_name", &[&source]).map_err(backend)?;
+        let tables = transaction.query("SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_type='BASE TABLE' ORDER BY table_name LIMIT 10001", &[&source]).map_err(backend)?;
+        if tables.len() > MAX_STATE_ITEMS {
+            return Err(invalid("PostgreSQL schema exceeds table bound"));
+        }
         let mut items = Vec::new();
         for row in tables {
             let table: String = row.get(0);
@@ -422,9 +433,8 @@ impl TransactionalStateAdapter for PostgresAdapter {
                 quote(&table),
                 order
             );
-            let mut reader = transaction.copy_out(&query).map_err(backend)?;
-            let mut payload = Vec::new();
-            reader.read_to_end(&mut payload).map_err(Error::Io)?;
+            let reader = transaction.copy_out(&query).map_err(backend)?;
+            let payload = read_bounded(reader, MAX_STATE_BYTES, "PostgreSQL table")?;
             items.push(StateItem {
                 key: table,
                 fields: BTreeMap::new(),
@@ -710,6 +720,9 @@ impl S3Adapter {
         })
     }
     pub fn put_object(&self, key: &str, payload: &[u8]) -> Result<(), Error> {
+        if payload.len() > MAX_STATE_BYTES {
+            return Err(invalid("S3 object exceeds state byte bound"));
+        }
         let path = object_path(key)?;
         self.runtime
             .block_on(self.store.put(&path, PutPayload::from(payload.to_vec())))
@@ -718,17 +731,34 @@ impl S3Adapter {
     }
     pub fn get_object(&self, key: &str) -> Result<Vec<u8>, Error> {
         let path = object_path(key)?;
-        Ok(self
+        let result = self
             .runtime
-            .block_on(async { self.store.get(&path).await?.bytes().await })
-            .map_err(backend)?
-            .to_vec())
+            .block_on(self.store.get(&path))
+            .map_err(backend)?;
+        if result.meta.size > MAX_STATE_BYTES as u64 {
+            return Err(invalid("S3 object exceeds state byte bound"));
+        }
+        let payload = self.runtime.block_on(result.bytes()).map_err(backend)?;
+        if payload.len() > MAX_STATE_BYTES {
+            return Err(invalid("S3 object exceeded its bounded metadata size"));
+        }
+        Ok(payload.to_vec())
     }
     fn metadata(&self, prefix: &str) -> Result<Vec<object_store::ObjectMeta>, Error> {
         let path = ObjectPath::parse(prefix).map_err(backend)?;
-        self.runtime
-            .block_on(self.store.list(Some(&path)).try_collect())
-            .map_err(backend)
+        let objects: Vec<object_store::ObjectMeta> = self
+            .runtime
+            .block_on(
+                self.store
+                    .list(Some(&path))
+                    .take(MAX_STATE_ITEMS + 1)
+                    .try_collect(),
+            )
+            .map_err(backend)?;
+        if objects.len() > MAX_STATE_ITEMS {
+            return Err(invalid("S3 prefix exceeds item bound"));
+        }
+        Ok(objects)
     }
 
     fn capture(&self, prefix: &str) -> Result<Vec<StateItem>, Error> {
@@ -957,6 +987,14 @@ impl RedisStreamAdapter {
         })
     }
     fn capture(&mut self, key: &str) -> Result<Vec<StateItem>, Error> {
+        let estimated_bytes: Option<u64> = redis::cmd("MEMORY")
+            .arg("USAGE")
+            .arg(key)
+            .query(&mut self.connection)
+            .map_err(backend)?;
+        if estimated_bytes.is_some_and(|size| size > MAX_STATE_BYTES as u64) {
+            return Err(invalid("Redis stream exceeds state byte bound"));
+        }
         let raw: redis::Value = redis::cmd("XRANGE")
             .arg(key)
             .arg("-")
@@ -1387,6 +1425,21 @@ fn enforce_bounds(items: &[StateItem]) -> Result<(), Error> {
     }
     Ok(())
 }
+
+fn read_bounded(reader: impl Read, maximum: usize, resource: &str) -> Result<Vec<u8>, Error> {
+    let limit = u64::try_from(maximum)
+        .map_err(|_| invalid("state byte bound is not representable"))?
+        .saturating_add(1);
+    let mut payload = Vec::with_capacity(maximum.min(1024 * 1024));
+    reader
+        .take(limit)
+        .read_to_end(&mut payload)
+        .map_err(Error::Io)?;
+    if payload.len() > maximum {
+        return Err(invalid(&format!("{resource} exceeds state byte bound")));
+    }
+    Ok(payload)
+}
 fn validate_identifier(v: &str) -> Result<(), Error> {
     if v.is_empty()
         || v.len() > 63
@@ -1447,9 +1500,11 @@ fn object_path(value: &str) -> Result<ObjectPath, Error> {
 
 #[cfg(test)]
 mod transport_tests {
+    use std::io::Cursor;
+
     use super::{
-        validate_loopback_postgres, validate_loopback_redis, validate_remote_postgres,
-        validate_remote_redis,
+        read_bounded, validate_loopback_postgres, validate_loopback_redis,
+        validate_remote_postgres, validate_remote_redis,
     };
 
     #[test]
@@ -1499,5 +1554,14 @@ mod transport_tests {
         ] {
             assert!(validate_remote_redis(url).is_err(), "{url}");
         }
+    }
+
+    #[test]
+    fn bounded_reader_refuses_before_consuming_unbounded_state() {
+        assert_eq!(
+            read_bounded(Cursor::new(b"1234"), 4, "fixture").unwrap(),
+            b"1234"
+        );
+        assert!(read_bounded(Cursor::new(b"12345"), 4, "fixture").is_err());
     }
 }

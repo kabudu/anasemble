@@ -7,8 +7,14 @@ Preparation does not authorize a visibility change, tag, GitHub Release, package
 publication, container publication, hosted CI activation or deployment.
 
 The intended first public source candidate is `v0.1.0-rc.1`, titled “Anasemble
-v0.1.0-rc.1: Evidence-bound recovery.” `Cargo.toml` remains `publish = false`:
-opening the source does not reserve or publish a crates.io package.
+v0.1.0-rc.1: Evidence-bound recovery.” Opening the source does not itself
+publish the crates.io package. Registry publication occurs only from the exact
+tag after package inspection and release approval.
+
+The static GitHub Pages foundation under `website/` is a presentation-only
+exception governed by ADR 0003. It is not deployed while the repository is
+private and has no JavaScript, telemetry, data collection, external resources,
+or product trust-boundary role.
 
 The repository landing page must lead with the recovery outcome, supported
 profiles, runnable evaluation path, and safety boundaries. Before opening,

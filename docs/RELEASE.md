@@ -12,7 +12,14 @@ published limitations.
 
 The M3 decision authorizes production engineering, not release. P4 completes the implementation roadmap for the profiles in `COMPATIBILITY.md`, but no tag, GitHub Release, package, hosted CI, visibility change, or deployment is authorized without a new explicit user decision. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
 
-`v0.1.0-rc.1` is the prepared first public source candidate. Public packages, hosted recovery, real service traces, production deployment and commercial claims each require a separate gate. `Cargo.toml` remains `publish = false`, so this candidate is not a crates.io publication.
+`v0.1.0-rc.1` is the prepared first public source candidate. The owner has authorized publication of the existing `anasemble` Rust package from the exact release tag through the protected release workflow. Hosted recovery, real service traces, container publication, production deployment and commercial claims each require a separate gate.
+
+The first release artifact set is defined in `docs/RELEASE_ARTIFACTS.md`: the
+annotated source tag, GitHub source archives, the `anasemble` crates.io package,
+native Amazon Linux 2023 arm64 and x86_64 binary archives, checksums, and
+per-target build provenance. Container images, macOS binary distribution, hosted
+recovery, SBOM assertions, and detached artifact signing remain separate future
+gates.
 
 The source and project-authored assets are licensed under Apache License 2.0, subject to `NOTICE` and the trademark boundary in `TRADEMARKS.md`. Dependency licences must pass `cargo deny --locked check licenses`. Community, support, governance and security policies are repository-owned release surfaces.
 
@@ -37,7 +44,7 @@ metadata that differs from the approved preview.
 
 ## Prepared release-candidate evidence
 
-`release/0.1.0-rc.1.title` and `release/0.1.0-rc.1.md` are the repository-owned curated preview. Apache License 2.0 and the source candidate version are recorded, but the files are intentionally unpublished. Before release authority can be exercised, refresh legal/name clearance, approve the exact version and title, complete every private gate in `PUBLIC_OPENING.md`, render the exact notes at desktop and narrow widths, run both local validation entry points, test install/upgrade/rollback/uninstall from the clean candidate source and verify that `Cargo.toml` publication policy still matches source-only release intent.
+`release/0.1.0-rc.1.title` and `release/0.1.0-rc.1.md` are the repository-owned curated preview. Apache License 2.0 and the source candidate version are recorded, but the files are intentionally unpublished. Before release authority can be exercised, refresh legal/name diligence, approve the exact version and title, complete every private gate in `PUBLIC_OPENING.md`, render the exact notes at desktop and narrow widths, run both local validation entry points, test install/upgrade/rollback/uninstall from the clean candidate source and verify the exact crates.io package inventory.
 
 Hosted CI remains prohibited while the repository is private. The public-opening request must separately authorize visibility and hosted-CI activation. The first workflow is added only after public visibility, reviewed in its own pull request and tested without privileged secrets before becoming required.
 
