@@ -102,16 +102,18 @@ jobs:
         run: |
           version=${RELEASE_TAG#v}
           test "${RELEASE_TAG}" = "v$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')"
-          sha256sum dist/* | sort -k2 > dist/SHA256SUMS
+          (cd dist && sha256sum * | sort -k2 > SHA256SUMS)
           if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
             gh release edit "${RELEASE_TAG}" \
               --draft \
+              --prerelease \
               --title "$(cat "release/${version}.title")" \
               --notes-file "release/${version}.md"
             gh release upload "${RELEASE_TAG}" dist/* --clobber
           else
             gh release create "${RELEASE_TAG}" dist/* \
               --draft \
+              --prerelease \
               --title "$(cat "release/${version}.title")" \
               --notes-file "release/${version}.md"
           fi

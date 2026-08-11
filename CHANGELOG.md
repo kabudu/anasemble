@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-rc.1 - 2026-08-11
+
 - Prepare a static TailwindCSS GitHub Pages product foundation, record its bounded
   build-time web exception, refresh publication-date name diligence, define the
   first binary artifact contract, and reconcile release notes with supported
