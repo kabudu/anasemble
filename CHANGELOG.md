@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add fail-closed rustls transport profiles for remote PostgreSQL and Redis,
+  including DNS identity, explicit PostgreSQL CA trust, authenticated URIs,
+  bounded connection and operation timeouts, short-lived S3 session credentials,
+  and retained destructive AWS state, native Linux, and EKS+CNI evidence.
+
 - Correct architecture-diagram labels that touched or crossed component borders
   under GitHub's rendered font metrics.
 

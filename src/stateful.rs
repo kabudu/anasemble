@@ -5,6 +5,9 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::io::{Read, Write};
+use std::net::IpAddr;
+use std::sync::Arc;
+use std::time::Duration;
 
 use futures_util::TryStreamExt;
 use object_store::{
@@ -12,7 +15,11 @@ use object_store::{
 };
 use postgres::{Client, IsolationLevel, NoTls};
 use redis::{Commands, Connection};
+use rustls::pki_types::{CertificateDer, pem::PemObject};
+use rustls::{ClientConfig, RootCertStore};
 use serde::{Deserialize, Serialize};
+use tokio_postgres_rustls::MakeRustlsConnect;
+use url::{Host, Url};
 
 use crate::canonical::{bytes_digest, digest};
 use crate::model::Error;
@@ -243,6 +250,45 @@ impl PostgresAdapter {
         validate_loopback_postgres(connection)?;
         Ok(Self {
             client: Client::connect(connection, NoTls).map_err(backend)?,
+            source_schema: source_schema.into(),
+        })
+    }
+
+    pub fn connect_tls(
+        connection: &str,
+        source_schema: &str,
+        ca_pem: &[u8],
+    ) -> Result<Self, Error> {
+        validate_identifier(source_schema)?;
+        validate_remote_postgres(connection)?;
+        if ca_pem.is_empty() || ca_pem.len() > 64 * 1024 {
+            return Err(invalid("PostgreSQL TLS CA bundle is empty or too large"));
+        }
+        let mut roots = RootCertStore::empty();
+        let certificates = CertificateDer::pem_slice_iter(ca_pem)
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|_| invalid("PostgreSQL TLS CA bundle is malformed"))?;
+        if certificates.is_empty() {
+            return Err(invalid("PostgreSQL TLS CA bundle contains no certificates"));
+        }
+        for certificate in certificates {
+            roots
+                .add(certificate)
+                .map_err(|_| invalid("PostgreSQL TLS CA certificate is invalid"))?;
+        }
+        let provider = Arc::new(rustls::crypto::ring::default_provider());
+        let tls = ClientConfig::builder_with_provider(provider)
+            .with_safe_default_protocol_versions()
+            .map_err(|_| invalid("PostgreSQL TLS protocol configuration is invalid"))?
+            .with_root_certificates(roots)
+            .with_no_client_auth();
+        let mut client =
+            Client::connect(connection, MakeRustlsConnect::new(tls)).map_err(backend)?;
+        client
+            .batch_execute("SET statement_timeout = '30s'; SET lock_timeout = '10s';")
+            .map_err(backend)?;
+        Ok(Self {
+            client,
             source_schema: source_schema.into(),
         })
     }
@@ -619,6 +665,20 @@ impl S3Adapter {
         secret_key: &str,
         prefix: &str,
     ) -> Result<Self, Error> {
+        Self::connect_with_token(
+            endpoint, region, bucket, access_key, secret_key, None, prefix,
+        )
+    }
+
+    pub fn connect_with_token(
+        endpoint: &str,
+        region: &str,
+        bucket: &str,
+        access_key: &str,
+        secret_key: &str,
+        session_token: Option<&str>,
+        prefix: &str,
+    ) -> Result<Self, Error> {
         validate_prefix(prefix)?;
         let loopback_http =
             endpoint.starts_with("http://127.0.0.1:") || endpoint.starts_with("http://localhost:");
@@ -627,16 +687,21 @@ impl S3Adapter {
                 "S3-compatible endpoints require HTTPS except for loopback evaluation",
             ));
         }
-        let store = AmazonS3Builder::new()
+        let mut builder = AmazonS3Builder::new()
             .with_endpoint(endpoint)
             .with_region(region)
             .with_bucket_name(bucket)
             .with_access_key_id(access_key)
             .with_secret_access_key(secret_key)
             .with_virtual_hosted_style_request(false)
-            .with_allow_http(loopback_http)
-            .build()
-            .map_err(backend)?;
+            .with_allow_http(loopback_http);
+        if let Some(token) = session_token {
+            if token.is_empty() {
+                return Err(invalid("S3 session token must not be empty when supplied"));
+            }
+            builder = builder.with_token(token);
+        }
+        let store = builder.build().map_err(backend)?;
         let runtime = tokio::runtime::Runtime::new().map_err(Error::Io)?;
         Ok(Self {
             store,
@@ -870,10 +935,24 @@ pub struct RedisStreamAdapter {
 impl RedisStreamAdapter {
     pub fn connect(url: &str, stream: &str) -> Result<Self, Error> {
         validate_redis_key(stream)?;
-        validate_loopback_redis(url)?;
+        if url.starts_with("rediss://") {
+            validate_remote_redis(url)?;
+        } else {
+            validate_loopback_redis(url)?;
+        }
+        let _ = rustls::crypto::ring::default_provider().install_default();
         let client = redis::Client::open(url).map_err(backend)?;
+        let connection = client
+            .get_connection_with_timeout(Duration::from_secs(10))
+            .map_err(backend)?;
+        connection
+            .set_read_timeout(Some(Duration::from_secs(30)))
+            .map_err(backend)?;
+        connection
+            .set_write_timeout(Some(Duration::from_secs(30)))
+            .map_err(backend)?;
         Ok(Self {
-            connection: client.get_connection().map_err(backend)?,
+            connection,
             stream: stream.into(),
         })
     }
@@ -1150,6 +1229,55 @@ fn validate_loopback_postgres(connection: &str) -> Result<(), Error> {
     Ok(())
 }
 
+fn validate_remote_postgres(connection: &str) -> Result<(), Error> {
+    if connection.chars().any(char::is_control) {
+        return Err(invalid("PostgreSQL TLS connection is invalid"));
+    }
+    let parsed =
+        Url::parse(connection).map_err(|_| invalid("PostgreSQL TLS connection must be a URI"))?;
+    if !matches!(parsed.scheme(), "postgres" | "postgresql")
+        || parsed.username().is_empty()
+        || parsed.password().is_none_or(str::is_empty)
+        || parsed.fragment().is_some()
+    {
+        return Err(invalid(
+            "PostgreSQL TLS URI requires credentials and no fragment",
+        ));
+    }
+    let Host::Domain(host) = parsed
+        .host()
+        .ok_or_else(|| invalid("PostgreSQL TLS URI requires a hostname"))?
+    else {
+        return Err(invalid(
+            "PostgreSQL TLS URI requires a DNS hostname for certificate verification",
+        ));
+    };
+    if host.eq_ignore_ascii_case("localhost") || host.parse::<IpAddr>().is_ok() {
+        return Err(invalid("PostgreSQL TLS URI requires a remote DNS hostname"));
+    }
+    let mut sslmode = None;
+    let mut connect_timeout = None;
+    for (key, value) in parsed.query_pairs() {
+        match key.as_ref() {
+            "sslmode" if sslmode.is_none() => sslmode = Some(value.into_owned()),
+            "connect_timeout" if connect_timeout.is_none() => {
+                connect_timeout = Some(value.parse::<u64>().unwrap_or(0))
+            }
+            _ => {
+                return Err(invalid(
+                    "PostgreSQL TLS URI contains an unsupported query parameter",
+                ));
+            }
+        }
+    }
+    if sslmode.as_deref() != Some("require") || !matches!(connect_timeout, Some(1..=30)) {
+        return Err(invalid(
+            "PostgreSQL TLS URI requires sslmode=require and connect_timeout from 1 to 30 seconds",
+        ));
+    }
+    Ok(())
+}
+
 fn validate_loopback_redis(url: &str) -> Result<(), Error> {
     let authority = url
         .strip_prefix("redis://")
@@ -1164,6 +1292,37 @@ fn validate_loopback_redis(url: &str) -> Result<(), Error> {
         || !port.bytes().all(|byte| byte.is_ascii_digit())
     {
         return Err(invalid("the Redis adapter supports loopback URLs only"));
+    }
+    Ok(())
+}
+
+fn validate_remote_redis(value: &str) -> Result<(), Error> {
+    if value.chars().any(char::is_control) {
+        return Err(invalid("Redis TLS URL is invalid"));
+    }
+    let parsed = Url::parse(value).map_err(|_| invalid("Redis TLS URL is invalid"))?;
+    if parsed.scheme() != "rediss"
+        || parsed.password().is_none_or(str::is_empty)
+        || parsed.fragment().is_some()
+        || parsed.query().is_some()
+    {
+        return Err(invalid(
+            "Redis TLS URL requires authentication and no query or fragment",
+        ));
+    }
+    let Host::Domain(host) = parsed
+        .host()
+        .ok_or_else(|| invalid("Redis TLS URL requires a hostname"))?
+    else {
+        return Err(invalid(
+            "Redis TLS URL requires a DNS hostname for certificate verification",
+        ));
+    };
+    if host.eq_ignore_ascii_case("localhost") || host.parse::<IpAddr>().is_ok() {
+        return Err(invalid("Redis TLS URL requires a remote DNS hostname"));
+    }
+    if parsed.port().is_none() {
+        return Err(invalid("Redis TLS URL requires an explicit port"));
     }
     Ok(())
 }
@@ -1288,7 +1447,10 @@ fn object_path(value: &str) -> Result<ObjectPath, Error> {
 
 #[cfg(test)]
 mod transport_tests {
-    use super::{validate_loopback_postgres, validate_loopback_redis};
+    use super::{
+        validate_loopback_postgres, validate_loopback_redis, validate_remote_postgres,
+        validate_remote_redis,
+    };
 
     #[test]
     fn remote_and_override_state_transports_are_refused() {
@@ -1300,5 +1462,42 @@ mod transport_tests {
         assert!(validate_loopback_redis("redis://127.0.0.1:6379/").is_ok());
         assert!(validate_loopback_redis("redis://cache.example:6379/").is_err());
         assert!(validate_loopback_redis("rediss://127.0.0.1:6379/").is_err());
+    }
+
+    #[test]
+    fn remote_state_transports_require_authenticated_tls_and_dns_identity() {
+        assert!(
+            validate_remote_postgres(
+                "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=10"
+            )
+            .is_ok()
+        );
+        for connection in [
+            "postgresql://operator:secret@database.example:5432/service?sslmode=disable&connect_timeout=10",
+            "postgresql://operator@database.example:5432/service?sslmode=require&connect_timeout=10",
+            "postgresql://operator:secret@127.0.0.1:5432/service?sslmode=require&connect_timeout=10",
+            "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=60",
+            "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=10&hostaddr=127.0.0.1",
+            "postgresql://operator:@database.example:5432/service?sslmode=require&connect_timeout=10",
+            "postgresql://operator:secret@database.example:5432/service?sslmode=require&sslmode=disable&connect_timeout=10",
+            "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=bad&connect_timeout=10",
+        ] {
+            assert!(
+                validate_remote_postgres(connection).is_err(),
+                "{connection}"
+            );
+        }
+
+        assert!(validate_remote_redis("rediss://default:secret@cache.example:6379/").is_ok());
+        for url in [
+            "redis://default:secret@cache.example:6379/",
+            "rediss://cache.example:6379/",
+            "rediss://default:@cache.example:6379/",
+            "rediss://default:secret@127.0.0.1:6379/",
+            "rediss://default:secret@cache.example/",
+            "rediss://default:secret@cache.example:6379/?insecure=true",
+        ] {
+            assert!(validate_remote_redis(url).is_err(), "{url}");
+        }
     }
 }

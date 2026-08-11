@@ -286,9 +286,10 @@ fn public_cli_runs_recovery_reports_status_migrates_config_and_uninstalls_exactl
             && !profile.evidence.is_empty()
     }));
     assert!(matrix.profiles.iter().any(|profile| {
-        profile.id == "remote-postgresql-or-redis"
-            && profile.implementation == lifecycle::ImplementationStatus::NotImplemented
-            && profile.support == lifecycle::SupportStatus::Unsupported
+        profile.id == "aws-managed-state-eu-west-1"
+            && profile.implementation == lifecycle::ImplementationStatus::Implemented
+            && profile.validation == lifecycle::ValidationStatus::Tested
+            && profile.support == lifecycle::SupportStatus::Supported
     }));
     let original = fs::read(&compatibility).unwrap();
     fs::write(&compatibility, b"changed").unwrap();

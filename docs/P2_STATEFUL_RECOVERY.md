@@ -16,7 +16,15 @@ The durable queue adapter supports Redis Streams. It retains ordered entry IDs, 
 
 ## Trust and failure boundaries
 
-Backend credentials and TLS termination remain operator responsibilities. PostgreSQL currently uses `NoTls`, so version 0.0.1 supports it only across a trusted local transport. The MinIO and Redis drills use isolated loopback transports, and Redis remains local-only. Production remote object endpoints must use HTTPS. A later compatibility revision, not P4 completion itself, is required before remote PostgreSQL or Redis can become supported.
+Backend credentials and endpoint authorization remain operator responsibilities.
+The local PostgreSQL profile uses `NoTls` only on loopback. Remote PostgreSQL
+requires an authenticated URI, `sslmode=require`, a bounded connection timeout,
+a DNS hostname, and an explicit bounded CA bundle used by rustls for chain and
+hostname verification. Remote Redis requires an authenticated `rediss://` URL,
+a DNS hostname, an explicit port, and bounded connect, read, and write timeouts.
+The MinIO drill remains an isolated loopback profile, while production object
+endpoints require HTTPS. Remote profiles become supported only after their exact
+provider combinations have retained destructive restore and rollback evidence.
 
 There is no distributed transaction across PostgreSQL, S3, and Redis. P3 must orchestrate their prepared receipts and rollbacks around runtime activation. Verification failure triggers rollback where a prior target exists; a rollback failure is surfaced for operator action and retained backend state must not be deleted.
 

@@ -44,9 +44,10 @@ The current supported release-candidate profiles are deliberately narrow:
 | macOS arm64 control plane | Supported | Rust 1.97.0 and local filesystem |
 | macOS arm64 state recovery | Supported | PostgreSQL 18, MinIO S3 API, and Redis Streams 8.8 on trusted loopback |
 | macOS arm64 Docker activation | Supported | Docker Engine 29 on one trusted host |
-| Kubernetes and integrated end-to-end recovery | Experimental | Kubernetes 1.36; production CNI enforcement is not yet validated |
-| Linux arm64 and x86_64 control plane | Experimental | Clean-container evidence; x86_64 is emulated and production hosts are unverified |
-| Remote PostgreSQL or Redis | Unsupported | Authenticated TLS transports are not implemented |
+| Amazon Linux 2023 arm64 and x86_64 control plane | Supported | Native EC2 evidence on the exact AMIs, instance types, and kernels in the compatibility contract |
+| AWS managed state recovery | Supported | RDS PostgreSQL 18.3, S3, and ElastiCache Redis 7.1 in `eu-west-1` over authenticated TLS/HTTPS |
+| Amazon EKS activation | Supported | EKS 1.36/`eks.9`, VPC CNI 1.22.4 strict NetworkPolicy, one AL2023 arm64 node |
+| Other Kubernetes, Linux, or remote-state combinations | Experimental | Implemented boundaries exist, but support does not extend beyond retained exact-profile evidence |
 
 The authoritative [compatibility contract](docs/COMPATIBILITY.md) distinguishes
 implemented, tested, supported, experimental, and unsupported combinations. A

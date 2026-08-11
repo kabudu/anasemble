@@ -40,7 +40,7 @@ artifacts under the supported Docker isolation profile, and provides
 restart-safe operator jobs, audit, diagnostics, installation, removal, and
 runbooks. It still does not outperform a surviving centralized contract on the
 synthetic corpus and does not support arbitrary services, hidden effects,
-undeclared state, remote PostgreSQL or Redis, or a cross-backend distributed
-transaction.
+undeclared state, remote providers outside the exact compatibility profiles, or
+a cross-backend distributed transaction.
 
 Implementation completion is not release authority or a claim of universal production suitability. Public release, deployment, package publication, legal clearance, and visibility remain separate explicit decisions. Independent reproduction and external review are optional post-release assurance.

@@ -44,6 +44,8 @@ pub struct ReferenceRecoveryConfig {
 #[serde(deny_unknown_fields)]
 pub struct PostgresReference {
     pub connection_file: PathBuf,
+    #[serde(default)]
+    pub tls_ca_file: Option<PathBuf>,
     pub source_schema: String,
     pub target_schema: String,
 }
@@ -56,6 +58,8 @@ pub struct S3Reference {
     pub bucket: String,
     pub access_key_file: PathBuf,
     pub secret_key_file: PathBuf,
+    #[serde(default)]
+    pub session_token_file: Option<PathBuf>,
     pub source_prefix: String,
     pub target_prefix: String,
 }
@@ -592,19 +596,31 @@ fn read_service(config: &ReferenceRecoveryConfig) -> Result<ServiceManifest, Err
 }
 
 fn postgres_adapter(config: &ReferenceRecoveryConfig) -> Result<PostgresAdapter, Error> {
-    PostgresAdapter::connect(
-        &read_secret_string(&config.postgres.connection_file)?,
-        &config.postgres.source_schema,
-    )
+    let connection = read_secret_string(&config.postgres.connection_file)?;
+    match &config.postgres.tls_ca_file {
+        Some(path) => PostgresAdapter::connect_tls(
+            &connection,
+            &config.postgres.source_schema,
+            &read_regular(path, MAX_CONFIG_BYTES, false, "PostgreSQL TLS CA bundle")?,
+        ),
+        None => PostgresAdapter::connect(&connection, &config.postgres.source_schema),
+    }
 }
 
 fn s3_adapter(config: &ReferenceRecoveryConfig) -> Result<S3Adapter, Error> {
-    S3Adapter::connect(
+    let session_token = config
+        .s3
+        .session_token_file
+        .as_ref()
+        .map(|path| read_secret_string(path))
+        .transpose()?;
+    S3Adapter::connect_with_token(
         &config.s3.endpoint,
         &config.s3.region,
         &config.s3.bucket,
         &read_secret_string(&config.s3.access_key_file)?,
         &read_secret_string(&config.s3.secret_key_file)?,
+        session_token.as_deref(),
         &config.s3.source_prefix,
     )
 }

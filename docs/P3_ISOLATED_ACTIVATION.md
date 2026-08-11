@@ -41,9 +41,11 @@ The Docker daemon, OCI registry, `kubectl`, Kubernetes API server, scheduler,
 container runtime, admission configuration, and cluster network-policy
 implementation are trusted. A production Kubernetes cluster must use a CNI that
 enforces NetworkPolicy; creating a policy is not proof that the CNI enforces it.
-The kind drill validates object construction and switching, while the Docker
-sandbox test directly demonstrates denied egress and capability, filesystem, PID,
-and wall-time bounds.
+The kind drill validates object construction and switching. The exact EKS 1.36
+and VPC CNI profile in `AWS_COMPATIBILITY.md` additionally demonstrates strict
+zero-egress enforcement, signed switching, and rollback on a provider cluster.
+The Docker sandbox test directly demonstrates denied egress and capability,
+filesystem, PID, and wall-time bounds.
 
 The Docker adapter is a single-host recovery profile, not a highly available
 orchestrator. The Kubernetes Service selector update is the atomic traffic switch;

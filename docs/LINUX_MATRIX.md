@@ -25,16 +25,17 @@ From a clean committed checkout with Docker running:
 ./scripts/ci-linux-matrix.sh
 ```
 
-The matrix intentionally excludes Docker-backed PostgreSQL, S3, Redis, OCI and
-Kubernetes integration tests because the validator itself runs inside Docker.
-Those destructive integrations remain in `./scripts/ci-local.sh`. Hosted CI is
-prohibited while the repository is private.
+The local container matrix intentionally excludes Docker-backed PostgreSQL, S3,
+Redis, OCI and Kubernetes integration tests because the validator itself runs
+inside Docker. Those destructive integrations remain in `./scripts/ci-local.sh`.
+Native Amazon Linux 2023 arm64 and x86_64 evidence is retained separately in
+`AWS_COMPATIBILITY.md`. Hosted CI is prohibited while the repository is private.
 
 ## Remaining evidence gaps
 
-- Run the same clean-clone gate on native x86_64 Linux hardware before describing
-  that profile as fully tested.
-- Validate named production Linux distributions, kernels, container runtimes and
-  Kubernetes CNIs before promoting their combinations from experimental.
+- Treat only the exact Amazon Linux AMIs, kernels and instance families in
+  `AWS_COMPATIBILITY.md` as supported native Linux profiles.
+- Validate any additional distribution, kernel, instance family, container
+  runtime or Kubernetes CNI before promoting that combination.
 - Retain exact machine, kernel, Docker and commit metadata for each future
   compatibility promotion.

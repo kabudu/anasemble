@@ -220,7 +220,7 @@ Review required queue capacity to include running work, same-store runners to fa
 
 The 128-job sustained profile, public operator lifecycle, destructive backend/runtime matrix, offline build, RustSec audit, Cargo Deny advisory/ban/source checks, compatibility contract, runbook, release preview, and repository completion audit are retained. Cargo Deny's duplicate transitive-version findings remain warning-level dependency-convergence work; no advisory, ban, or untrusted-source failure exists. No critical or high internal finding remains.
 
-Residual limitations are explicit: a trusted operator supplies time; the filesystem and host remain trusted; one store supports one runner at a time; there is no distributed transaction across state and activation; remote PostgreSQL and Redis are unsupported; support digests remain metadata; the project licence and public release still require explicit authority. These limit the supported profiles but do not leave a P4 implementation requirement unchecked.
+Residual limitations are explicit: a trusted operator supplies time; the filesystem and host remain trusted; one store supports one runner at a time; there is no distributed transaction across state and activation; remote PostgreSQL and Redis require authenticated TLS and only the exact retained AWS combination is supported; support digests remain metadata; the project licence and public release still require explicit authority. These limit the supported profiles without weakening their implemented fail-closed boundaries.
 
 ## Final security and productisation review
 
