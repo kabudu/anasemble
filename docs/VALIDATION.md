@@ -143,3 +143,19 @@ not infer support for their Cartesian product. CI also runs Rustfmt, Clippy with
 warnings denied, all tests and docs offline, RustSec audit against the
 pre-fetched local database, Cargo Deny advisory/ban/source checks,
 release-presentation checks, text-policy checks, and diff checks.
+
+## Integrated evaluation and Linux validation
+
+`tests/reference_workflow.rs` exercises the public preparation, recovery,
+activation and rollback commands as one destructive drill. After preparing its
+state bundle, it removes the original component artifact, PostgreSQL source
+schema, source S3 object and source Redis stream. It then verifies certified
+reconstruction, exact three-backend restoration, plan-bound OCI publication,
+operator-approved Kubernetes activation and reverse-order rollback. The
+candidate image is artifact-level evidence and does not claim generated HTTP
+server behavior. kind control-object checks do not establish CNI enforcement.
+
+`scripts/ci-linux-matrix.sh` separately performs clean-clone, network-disabled
+build and bounded control-plane validation on Linux arm64 and Linux x86_64. The
+2026-08-11 arm64 run used the host ISA; the x86_64 run used Docker emulation on
+the arm64 host. Exact scope and promotion gaps are in `LINUX_MATRIX.md`.

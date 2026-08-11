@@ -26,6 +26,8 @@ Install the pinned Rust toolchain with `rustup show`, fetch dependencies once wi
 `./scripts/ci-local.sh`.
 
 The supported Rust-native installation and disaster procedures are in [INSTALLATION](docs/INSTALLATION.md) and [DISASTER_RUNBOOK](docs/DISASTER_RUNBOOK.md).
+Evaluators can follow the bounded integrated flow in [QUICKSTART](docs/QUICKSTART.md)
+and inspect the clean-clone Linux evidence in [LINUX_MATRIX](docs/LINUX_MATRIX.md).
 
 ## Repository policy
 
