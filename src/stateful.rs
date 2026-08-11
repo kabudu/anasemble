@@ -1261,7 +1261,7 @@ fn validate_remote_postgres(connection: &str) -> Result<(), Error> {
         match key.as_ref() {
             "sslmode" if sslmode.is_none() => sslmode = Some(value.into_owned()),
             "connect_timeout" if connect_timeout.is_none() => {
-                connect_timeout = value.parse::<u64>().ok()
+                connect_timeout = Some(value.parse::<u64>().unwrap_or(0))
             }
             _ => {
                 return Err(invalid(
@@ -1480,6 +1480,7 @@ mod transport_tests {
             "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=10&hostaddr=127.0.0.1",
             "postgresql://operator:@database.example:5432/service?sslmode=require&connect_timeout=10",
             "postgresql://operator:secret@database.example:5432/service?sslmode=require&sslmode=disable&connect_timeout=10",
+            "postgresql://operator:secret@database.example:5432/service?sslmode=require&connect_timeout=bad&connect_timeout=10",
         ] {
             assert!(
                 validate_remote_postgres(connection).is_err(),
