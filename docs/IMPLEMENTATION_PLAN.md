@@ -94,7 +94,7 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 - [x] Add durable job state, restart recovery, bounded scheduling and backpressure, structured audit events, metrics, diagnostics, and privacy-safe support bundles.
 - [x] Define compatibility, upgrade, configuration migration, backup interoperability, installation, uninstallation, and disaster-runbook contracts for supported platforms.
 - [x] Execute destructive staging-environment drills, sustained performance tests, dependency and supply-chain checks, and operator usability trials across every supported adapter combination.
-- [x] Complete bounded positioning, brand, adoption, packaging, curated release presentation, and release rollback evidence.
+- [x] Complete bounded positioning, full brand identity, adoption, packaging, curated release presentation, and release rollback evidence.
 - [x] Exit: every production claim maps to retained executable evidence, all supported failure paths have an operator response, local CI is green, and no unresolved critical or high internal review finding remains.
 
 ## Optional post-release assurance
@@ -104,6 +104,17 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 - [ ] Broader third-party deployments and academic replication.
 
 These stages are optional evidence amplifiers. They are not milestone or release blockers unless a later regulated deployment contract explicitly makes them mandatory.
+
+## Brand productisation (complete)
+
+- [x] Obtain owner approval for productisation and select the enduring `Semantic Fit` direction from multiple distinct concepts.
+- [x] Freeze the permanent brand platform, maturity overlay, claim vocabulary, voice and cross-audience messaging.
+- [x] Provide horizontal, stacked, symbol, wordmark, monochrome, reversed and small-size vector variants with construction and misuse rules.
+- [x] Provide accessible light, dark, high-contrast, forced-colour, print, semantic and chart systems with machine-readable tokens.
+- [x] Provide canonical result/evidence icons and diagram, chart, illustration, motion and plain-text conventions.
+- [x] Retain source, exports, templates, licences and a digest-bound provenance manifest with deterministic Rust validation.
+- [x] Validate contrast, colour-state redundancy, grayscale, colour-vision safety, SVG sanitisation, size matrices, maturity-overlay separation and prohibited claims.
+- [x] Record product, design, legal, security, accessibility, engineering and research-claim governance, migration and archive rules.
 
 ## Productisation boundary (complete)
 

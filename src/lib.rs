@@ -1,6 +1,7 @@
 //! Bounded service-reconstruction research harness.
 
 pub mod activation;
+pub mod brand;
 pub mod campaign;
 pub mod canonical;
 pub mod checker;

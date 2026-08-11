@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Anasemble social card template</title><desc id="desc">Maturity-neutral social artwork with editable message and overlay fields.</desc><rect width="1200" height="630" fill="#F1F5F9"/><text x="80" y="120" fill="#0B1628" font-family="system-ui" font-size="64" font-weight="700">Anasemble</text><text x="80" y="330" fill="#0B1628" font-family="system-ui" font-size="58">{MESSAGE}</text><text x="80" y="400" fill="#9A6700" font-family="system-ui" font-size="28">{MATURITY_OVERLAY}</text><text x="80" y="540" fill="#334155" font-family="system-ui" font-size="28">Regrow function from surviving meaning.</text>
+</svg>

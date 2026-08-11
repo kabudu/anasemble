@@ -1,0 +1,21 @@
+:root {
+  --anasemble-ink: #0b1628;
+  --anasemble-mineral: #2457a6;
+  --anasemble-teal: #169c8c;
+  --anasemble-amber: #e57a2f;
+  --anasemble-paper: #ffffff;
+  --anasemble-mist: #f1f5f9;
+  --anasemble-slate: #334155;
+  --anasemble-refusal: #b42318;
+  --anasemble-uncertain: #9a6700;
+  --anasemble-font-ui: Inter, ui-sans-serif, system-ui, sans-serif;
+  --anasemble-font-technical: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+
+@media (forced-colors: active) {
+  :root { --anasemble-mineral: LinkText; --anasemble-teal: CanvasText; --anasemble-amber: Highlight; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -26,6 +26,8 @@ const REQUIRED: &[&str] = &[
     "docs/FINAL_SECURITY_SWEEP.md",
     "docs/LINUX_MATRIX.md",
     "docs/PRODUCTISATION.md",
+    "docs/BRAND_IDENTITY.md",
+    "docs/BRAND_VALIDATION.md",
     "docs/QUICKSTART.md",
     "docs/DISASTER_RUNBOOK.md",
     "docs/INDEPENDENT_REPRODUCTION.md",
@@ -40,6 +42,22 @@ const REQUIRED: &[&str] = &[
     "docs/DECISIONS/0002-rust-control-plane.md",
     "assets/anasemble-mark.svg",
     "assets/anasemble-wordmark.svg",
+    "assets/brand/BRAND_ASSET_MANIFEST.json",
+    "assets/brand/source/anasemble-symbol.svg",
+    "assets/brand/source/anasemble-horizontal.svg",
+    "assets/brand/source/anasemble-result-icons.svg",
+    "assets/brand/source/anasemble-stacked.svg",
+    "assets/brand/source/anasemble-symbol-mono.svg",
+    "assets/brand/source/anasemble-symbol-reversed.svg",
+    "assets/brand/source/anasemble-small.svg",
+    "assets/brand/tokens/brand-tokens.json",
+    "assets/brand/tokens/brand-tokens.css",
+    "assets/brand/templates/diagram-key.svg",
+    "assets/brand/templates/chart-key.svg",
+    "assets/brand/templates/release-card.svg",
+    "assets/brand/templates/social-card.svg",
+    "assets/brand/templates/presentation-title.svg",
+    "assets/brand/LICENSES/OWNED-ASSETS.md",
     "release/0.1.0-rc.1.md",
 ];
 
@@ -59,6 +77,7 @@ fn validate() -> Result<(), String> {
             return Err(format!("required file is absent: {required}"));
         }
     }
+    anasemble::brand::validate(Path::new("."))?;
     if Path::new(".github/workflows").exists() {
         return Err("hosted CI is prohibited while the repository is private".into());
     }
@@ -130,7 +149,7 @@ fn validate() -> Result<(), String> {
         "Add durable job state, restart recovery, bounded scheduling and backpressure",
         "Define compatibility, upgrade, configuration migration, backup interoperability",
         "Execute destructive staging-environment drills, sustained performance tests",
-        "Complete bounded positioning, brand, adoption, packaging",
+        "Complete bounded positioning, full brand identity, adoption, packaging",
         "Exit: every production claim maps to retained executable evidence",
     ] {
         if !plan.contains(&format!("- [x] {completed}")) {

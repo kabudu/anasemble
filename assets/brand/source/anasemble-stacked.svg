@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 320" role="img" aria-labelledby="title desc">
+  <title id="title">Anasemble stacked lockup</title><desc id="desc">Semantic Fit symbol above the Anasemble wordmark.</desc>
+  <g transform="translate(196 16)" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round"><path fill="#2457A6" d="M64 8 107 33 91 61H72V49a8 8 0 1 0-16 0v12H37L21 33Z"/><path fill="#0B1628" d="m17 41 32 19v20H37a8 8 0 1 0 0 16h12v18H17L5 93Z"/><path fill="#169C8C" d="m111 41 12 21v5h-14v22h14v4l-32 21-32-19V76h12a8 8 0 1 0 0-16H59v-1l32-19Z"/><path fill="none" stroke="#E57A2F" stroke-width="4" stroke-linecap="round" d="M109 70v16"/></g>
+  <text x="260" y="238" text-anchor="middle" fill="#0B1628" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="68" font-weight="650">Anasemble</text>
+  <text x="260" y="282" text-anchor="middle" fill="#334155" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22">Regrow function from surviving meaning.</text>
+</svg>
