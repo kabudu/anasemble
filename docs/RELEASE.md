@@ -10,7 +10,7 @@ oracle, reproducible artifact-absence proof, complete baselines, adversarial
 results, sandbox and soundness review, refreshed novelty/name diligence, and
 published limitations.
 
-The M3 decision authorizes production engineering, not release. The production-complete roadmap remains unfinished. Therefore `0.1.0-research` is not authorized, and no tag, release notes, package, hosted CI, visibility change, or deployment may be created from this milestone. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
+The M3 decision authorizes production engineering, not release. P4 completes the implementation roadmap for the profiles in `COMPATIBILITY.md`, but no tag, GitHub Release, package, hosted CI, visibility change, or deployment is authorized without a new explicit user decision. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
 
 `0.1.0-research` may identify the first reproducible artifact. Public packages,
 hosted recovery, real service traces, production deployment, and commercial
@@ -34,3 +34,9 @@ Before publication, inspect a rendered preview at desktop and narrow widths for
 heading hierarchy, wrapping, lists, code fences, links, and placeholder text.
 After publication, inspect the canonical release URL and immediately correct any
 metadata that differs from the approved preview.
+
+## P4 release-candidate evidence
+
+`release/0.1.0-rc.1.md` is the repository-owned curated preview. It is intentionally not a published release and does not select the final public version. Before release authority can be exercised, choose and record a product licence, refresh legal/name clearance, approve the version and title, render the exact notes at desktop and narrow widths, run `./scripts/ci-local.sh`, test install/upgrade/rollback/uninstall from the candidate binary, and verify that `Cargo.toml` publication policy matches the intended release mode.
+
+Release rollback preserves the prior exact-prefix installation, configuration, job store, backend rollback receipts, OCI digest, and Kubernetes prior deployment until acceptance. Roll back the executable reference first, runtime activation second, and backend state in reverse receipt order. A release must not delete an operations root or rewrite job records during downgrade.

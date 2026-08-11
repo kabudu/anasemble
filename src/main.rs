@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::io::{self, Write};
+use std::os::unix::fs::OpenOptionsExt;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
@@ -10,6 +11,8 @@ use anasemble::deployment::{StateSnapshot, StateTransform, deploy, rollback};
 use anasemble::evidence_plane::{self, StoreBundle};
 use anasemble::fragments::{self, Envelope};
 use anasemble::ledger::persist;
+use anasemble::lifecycle;
+use anasemble::operations::{OperationsConfig, OperationsStore, RunFailurePoint};
 use anasemble::protocol::{RecoveryResult, run};
 use anasemble::service::ServiceManifest;
 use anasemble::state_store;
@@ -33,6 +36,111 @@ fn main() -> ExitCode {
 fn execute() -> Result<bool, Box<dyn std::error::Error>> {
     let mut arguments = env::args_os().skip(1);
     let command = arguments.next().ok_or("command is required")?;
+    if command == "install" {
+        let prefix = PathBuf::from(arguments.next().ok_or("installation prefix is required")?);
+        reject_extra(&mut arguments, "install accepts only a new prefix")?;
+        write_json_stdout(&lifecycle::install(&prefix)?)?;
+        return Ok(true);
+    }
+    if command == "uninstall" {
+        let prefix = PathBuf::from(arguments.next().ok_or("installation prefix is required")?);
+        reject_extra(&mut arguments, "uninstall accepts only an installed prefix")?;
+        write_json_stdout(&lifecycle::uninstall(&prefix)?)?;
+        return Ok(true);
+    }
+    if command == "init-operations" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let config_path = PathBuf::from(arguments.next().ok_or("operations config is required")?);
+        reject_extra(
+            &mut arguments,
+            "init-operations accepts root and configuration",
+        )?;
+        let config = OperationsConfig::migrate(&read_bounded_regular(&config_path)?)?;
+        OperationsStore::create(&root, config)?;
+        write_json_stdout(&serde_json::json!({"created": true, "version": "operations-store-v1"}))?;
+        return Ok(true);
+    }
+    if command == "migrate-operations-config" {
+        let input = PathBuf::from(arguments.next().ok_or("input config is required")?);
+        let output = PathBuf::from(arguments.next().ok_or("output config is required")?);
+        reject_extra(
+            &mut arguments,
+            "migrate-operations-config accepts input and output paths",
+        )?;
+        let config = OperationsConfig::migrate(&read_bounded_regular(&input)?)?;
+        write_new_json(&output, &config)?;
+        write_json_stdout(&serde_json::json!({
+            "migrated": true,
+            "version": config.version
+        }))?;
+        return Ok(true);
+    }
+    if command == "enqueue-recovery" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let workspace = PathBuf::from(arguments.next().ok_or("workspace is required")?);
+        let submitted_unix = u64_argument(arguments.next(), "submitted unix time")?;
+        reject_extra(
+            &mut arguments,
+            "enqueue-recovery accepts root, workspace, and submitted unix time",
+        )?;
+        write_json_stdout(&OperationsStore::open(&root)?.enqueue(&workspace, submitted_unix)?)?;
+        return Ok(true);
+    }
+    if command == "run-jobs" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let now_unix = u64_argument(arguments.next(), "current unix time")?;
+        reject_extra(
+            &mut arguments,
+            "run-jobs accepts root and current unix time",
+        )?;
+        let receipt =
+            OperationsStore::open(&root)?.run_recovery_batch(now_unix, RunFailurePoint::None)?;
+        write_json_stdout(&receipt)?;
+        return Ok(true);
+    }
+    if command == "operations-status" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        reject_extra(&mut arguments, "operations-status accepts only a root")?;
+        write_json_stdout(&OperationsStore::open(&root)?.status()?)?;
+        return Ok(true);
+    }
+    if command == "job-result" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let job_id = utf8_argument(arguments.next(), "job id")?;
+        reject_extra(&mut arguments, "job-result accepts root and job id")?;
+        write_json_stdout(&OperationsStore::open(&root)?.result(&job_id)?)?;
+        return Ok(true);
+    }
+    if command == "create-support-bundle" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let generated_unix = u64_argument(arguments.next(), "generated unix time")?;
+        let output = PathBuf::from(
+            arguments
+                .next()
+                .ok_or("support bundle output is required")?,
+        );
+        reject_extra(
+            &mut arguments,
+            "create-support-bundle accepts root, generated unix time, and output",
+        )?;
+        let bundle = OperationsStore::open(&root)?.support_bundle(generated_unix)?;
+        write_new_private_json(&output, &bundle)?;
+        write_json_stdout(&serde_json::json!({"bundle_sha256": bundle.bundle_sha256}))?;
+        return Ok(true);
+    }
+    if command == "prune-jobs" {
+        let root = PathBuf::from(arguments.next().ok_or("operations root is required")?);
+        let submitted_before = u64_argument(arguments.next(), "submitted-before unix time")?;
+        let max_remove = usize::try_from(u64_argument(arguments.next(), "maximum removals")?)?;
+        reject_extra(
+            &mut arguments,
+            "prune-jobs accepts root, submitted-before unix time, and maximum removals",
+        )?;
+        write_json_stdout(
+            &OperationsStore::open(&root)?.prune_terminal(submitted_before, max_remove)?,
+        )?;
+        return Ok(true);
+    }
     if command == "create-signing-key" {
         let path = PathBuf::from(arguments.next().ok_or("signing key path is required")?);
         let key_id = utf8_argument(arguments.next(), "key id")?;
@@ -294,7 +402,7 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
             .all(|entry| entry.result.is_certified()));
     }
     if command != "recover" {
-        return Err("usage: anasemble <create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
+        return Err("usage: anasemble <install|uninstall|init-operations|migrate-operations-config|enqueue-recovery|run-jobs|operations-status|job-result|create-support-bundle|prune-jobs|create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
     }
     let workspace = PathBuf::from(arguments.next().ok_or("workspace path is required")?);
     let mut output = None;
@@ -353,6 +461,22 @@ fn write_new_json<T: serde::Serialize>(
     Ok(())
 }
 
+fn write_new_private_json<T: serde::Serialize>(
+    path: &std::path::Path,
+    value: &T,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(path)?;
+    let mut bytes = anasemble::canonical::encode(value)?;
+    bytes.push(b'\n');
+    file.write_all(&bytes)?;
+    file.sync_all()?;
+    Ok(())
+}
+
 fn utf8_argument(
     argument: Option<std::ffi::OsString>,
     label: &str,
@@ -360,6 +484,13 @@ fn utf8_argument(
     argument
         .and_then(|value| value.into_string().ok())
         .ok_or_else(|| format!("{label} is required and must be UTF-8").into())
+}
+
+fn u64_argument(
+    argument: Option<std::ffi::OsString>,
+    label: &str,
+) -> Result<u64, Box<dyn std::error::Error>> {
+    Ok(utf8_argument(argument, label)?.parse()?)
 }
 
 fn reject_extra(

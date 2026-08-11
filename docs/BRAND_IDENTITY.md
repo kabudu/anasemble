@@ -6,12 +6,22 @@
 **Tagline:** Regrow function from surviving meaning.
 
 Voice: rigorous, resilient, modest, and concrete. Avoid resurrection, sentience,
-perfect recovery, and “code from nothing.” A future visual direction may show
-distributed semantic shards forming a new, visibly non-identical component.
-Complete logo, palette, typography, domain, and launch assets are deferred until
-validation.
+perfect recovery, and “code from nothing.” Lead with the bounded disaster outcome,
+name the supported profile, and pair every recovery claim with its refusal and
+rollback boundary.
 
-The 2026-08-11 M3 decision approves production engineering but not public release. The restrained text identity remains appropriate while P3 and P4 are unfinished. Full visual directions, assets, tokens, trademark work, and launch materials remain part of the P4 product-readiness gate and must not be inferred from P0 through P2 progress.
+The visual identity uses six green semantic fragments converging around an amber protected void. The void represents the artifact that is genuinely absent; the fragments never form a copy of the original. The owned assets are [anasemble-mark.svg](../assets/anasemble-mark.svg) and [anasemble-wordmark.svg](../assets/anasemble-wordmark.svg).
+
+| Token | Value | Use |
+|---|---|---|
+| `anasemble-ink` | `#0B1220` | Primary field and high-contrast technical surfaces |
+| `anasemble-signal` | `#45D6A8` | Surviving semantic fragments and successful bounded outcomes |
+| `anasemble-caution` | `#F4B860` | Missing-artifact void, operator gates, and rollback emphasis |
+| `anasemble-paper` | `#F5F7FA` | Light text and document background |
+
+Use Inter when available and the system sans-serif stack otherwise. Technical evidence uses the platform monospace stack. Preserve clear space equal to the central void radius around the mark, never recolour the void as a success state, and never animate fragments as self-aware agents.
+
+The P4 assets support private review and future release preparation. They do not grant trademark, domain, package, or public-launch authority.
 
 The 2026-07-29 preliminary collision sweep found no exact Anasemble project,
 GitHub account/repository, npm package, or prominent English-language software

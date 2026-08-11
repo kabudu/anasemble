@@ -30,6 +30,11 @@
 | PROD-3 | Publish and activate only plan-bound immutable artifacts with explicit operator authority | OCI labels and receipt binding, Ed25519 approval, health-gated Docker and Kubernetes staging | P3 registry and orchestrator drills |
 | REL-5 | Converge safely after interrupted or concurrent activation | per-service lease, same-plan reconciliation, atomic name or Service-selector switch, retained rollback target | Docker and Kubernetes interruption, competing-plan, idempotency, and rollback tests |
 | SEC-6 | Keep runtime secret values outside reconstruction and activation evidence | owner-only Docker file references, Kubernetes Secret name/key references, disabled Docker workload logging | P3 receipt, deployment-object, mount, and log-driver assertions |
+| OPS-1 | Preserve recovery work across process interruption | atomic digest-sealed job records, expiring leases, bounded attempts, and restart requeue | P4 injected-after-claim restart test and public CLI lifecycle |
+| OPS-2 | Bound admission and execution while exposing actionable operations state | queue backpressure, fixed batch size, single store lock, derived metrics, and diagnostic codes | P4 saturation, 128-job sustained, metrics, and status tests |
+| SEC-7 | Produce useful support evidence without exposing recovery inputs or secrets | allowlisted support schema containing identifiers, digests, states, counts, and refusal codes only | P4 path and private-diagnostic exclusion assertions |
+| COMP-1 | Install, migrate, upgrade, roll back, and remove without implicit mutation or data deletion | out-of-place config migration, atomic exact-prefix installation, digest-verified manifest removal, preserved operations root | P4 public CLI migration/install/uninstall test and lifecycle contracts |
+| PROD-4 | Map every supported production claim and failure path to retained evidence and operator action | compatibility manifest, staging matrix, disaster runbook, curated preview, roadmap and traceability audit | repository checker plus complete local CI |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

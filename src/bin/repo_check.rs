@@ -6,6 +6,7 @@ const REQUIRED: &[&str] = &[
     "AGENTS.md",
     "Cargo.lock",
     "Cargo.toml",
+    "deny.toml",
     "README.md",
     "rust-toolchain.toml",
     "scripts/ci-local.sh",
@@ -17,6 +18,11 @@ const REQUIRED: &[&str] = &[
     "docs/M3_DILIGENCE_LOG.md",
     "docs/P0_PRODUCTION_FOUNDATIONS.md",
     "docs/P1_EVIDENCE_PLANE.md",
+    "docs/P3_ISOLATED_ACTIVATION.md",
+    "docs/P4_OPERATIONS_AND_READINESS.md",
+    "docs/COMPATIBILITY.md",
+    "docs/INSTALLATION.md",
+    "docs/DISASTER_RUNBOOK.md",
     "docs/INDEPENDENT_REPRODUCTION.md",
     "docs/RELEASE.md",
     "docs/REQUIREMENTS_TRACEABILITY.md",
@@ -26,6 +32,9 @@ const REQUIRED: &[&str] = &[
     "experiments/m3-costs.json",
     "examples/service-v1.json",
     "docs/DECISIONS/0002-rust-control-plane.md",
+    "assets/anasemble-mark.svg",
+    "assets/anasemble-wordmark.svg",
+    "release/0.1.0-rc.1.md",
 ];
 
 fn main() -> ExitCode {
@@ -111,6 +120,17 @@ fn validate() -> Result<(), String> {
     {
         return Err("optional post-release assurance must remain explicit".into());
     }
+    for completed in [
+        "Add durable job state, restart recovery, bounded scheduling and backpressure",
+        "Define compatibility, upgrade, configuration migration, backup interoperability",
+        "Execute destructive staging-environment drills, sustained performance tests",
+        "Complete bounded positioning, brand, adoption, packaging",
+        "Exit: every production claim maps to retained executable evidence",
+    ] {
+        if !plan.contains(&format!("- [x] {completed}")) {
+            return Err(format!("P4 completion invariant is absent: {completed}"));
+        }
+    }
     let comparison: serde_json::Value = serde_json::from_slice(
         &fs::read("experiments/m3-comparison.json")
             .map_err(|error| format!("could not read M3 comparison: {error}"))?,
@@ -129,5 +149,27 @@ fn validate() -> Result<(), String> {
     service
         .validate()
         .map_err(|error| format!("service example is invalid: {error}"))?;
+    let release = fs::read_to_string("release/0.1.0-rc.1.md")
+        .map_err(|error| format!("could not read release candidate notes: {error}"))?;
+    for required in [
+        "## Highlights",
+        "## Installation",
+        "## Compatibility and claims",
+        "docs/COMPATIBILITY.md",
+        "docs/P4_OPERATIONS_AND_READINESS.md",
+    ] {
+        if !release.contains(required) {
+            return Err(format!(
+                "release presentation section is absent: {required}"
+            ));
+        }
+    }
+    if release
+        .lines()
+        .next()
+        .is_none_or(|line| line.starts_with('#'))
+    {
+        return Err("release presentation must open with the user-visible outcome".into());
+    }
     Ok(())
 }

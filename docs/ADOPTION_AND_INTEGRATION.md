@@ -12,4 +12,6 @@ Brownfield cost is the central adoption risk: contracts, effects, state, and
 failure-domain provenance must be explicit. Anasemble must quantify this authoring
 cost rather than treating it as free.
 
-M3 quantifies that cost for the synthetic turnstile but does not establish user demand, onboarding effort, or ecosystem priority. Production engineering is authorized, beginning with versioned service manifests and a local filesystem state adapter. Evaluation remains offline, disposable, credential-free, removable, and advisory-only until the later identity, backend, isolation, activation, and operations milestones pass.
+M3 quantifies that cost for the synthetic turnstile but does not establish user demand, onboarding effort, or ecosystem priority. P4 provides a removable exact-prefix binary, migrated bounded operations configuration, a disaster runbook, redacted support artifacts, and a complete local staging drill. The initial adoption motion is therefore a time-boxed catastrophe exercise on one disposable supported component, compared directly with its ordinary backup path.
+
+Adopters should begin with the reference arm64 local profile, preserve the prior binary prefix, retain ordinary backups, and stop when the compatibility manifest refuses an adapter or transport. Success means the operator can prepare evidence before loss, execute the runbook without developer intervention, explain every refusal and rollback, and remove the product without deleting state or evidence. It does not mean Anasemble should replace the team's primary recovery system.

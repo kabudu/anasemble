@@ -182,7 +182,7 @@ Residual blockers:
 - The current comparison shows no advantage over surviving centralized contracts.
 - Warm-cache local timing and one fixture's bytes do not predict production cost.
 
-M3 remains in progress because the internal production-complete roadmap is unfinished. P0 through P3 are complete; P4 remains unchecked. External reproduction and review are optional post-release assurance, not the remaining gate. Merging this work must not be described as production completion or a release.
+M3's research decision is complete and the internal P0 through P4 implementation roadmap is now complete for the profiles in `COMPATIBILITY.md`. External reproduction and review are optional post-release assurance. Implementation completion must not be described as release authority, arbitrary service recovery, or suitability for an unsupported platform or adapter.
 
 ## P1 review
 
@@ -208,6 +208,16 @@ backends, and a conflicting plan cannot acquire the same service lease.
 Remaining boundaries are the trusted Docker daemon, host kernel, registry,
 Kubernetes control plane, admission system, and CNI enforcement. Docker activation
 is single-host. Kubernetes NetworkPolicy construction is tested, but enforcement
-must be established for the production cluster. P4 still owns durable jobs,
-telemetry, support diagnostics, compatibility, installation, sustained tests, and
-product readiness.
+must be established for the production cluster. P4 supplies durable jobs,
+operational metrics and diagnostics, compatibility, installation, sustained tests,
+and product-readiness evidence without changing that cluster trust boundary.
+
+## P4 review
+
+P4 keeps operational state in bounded files because one local control-plane process is the proven scale and failure boundary. It does not introduce a daemon, database, distributed scheduler, telemetry service, or plugin host. Claiming is durable before work starts, execution occurs outside the store lock, and completion validates the running state before atomic replacement.
+
+Review required queue capacity to include running work, same-store runners to fail closed, restart attempts to terminate, result and audit growth to be capped, support output to use an allowlist rather than redaction patterns, and installation to stage beside the final prefix before atomic rename. Uninstallation verifies exact paths and digests and never removes operations data.
+
+The 128-job sustained profile, public operator lifecycle, destructive backend/runtime matrix, offline build, RustSec audit, Cargo Deny advisory/ban/source checks, compatibility contract, runbook, release preview, and repository completion audit are retained. Cargo Deny's duplicate transitive-version findings remain warning-level dependency-convergence work; no advisory, ban, or untrusted-source failure exists. No critical or high internal finding remains.
+
+Residual limitations are explicit: a trusted operator supplies time; the filesystem and host remain trusted; one store supports one runner at a time; there is no distributed transaction across state and activation; remote PostgreSQL and Redis are unsupported; support digests remain metadata; the project licence and public release still require explicit authority. These limit the supported profiles but do not leave a P4 implementation requirement unchecked.

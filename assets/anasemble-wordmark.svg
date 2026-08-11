@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 128" role="img" aria-labelledby="title description">
+  <title id="title">Anasemble</title>
+  <desc id="description">Anasemble wordmark with the fragment convergence mark.</desc>
+  <rect width="620" height="128" rx="24" fill="#0B1220"/>
+  <g transform="translate(8)" fill="#45D6A8">
+    <path d="M60 18h8l10 28-14 10-14-10z"/><path d="m96 36 4 7-19 23-16-7 2-17z"/><path d="m100 85-4 7-29-5-2-17 16-7z"/><path d="M68 110h-8L50 82l14-10 14 10z"/><path d="m32 92-4-7 19-23 16 7-2 17z"/><path d="m28 43 4-7 29 5 2 17-16 7z"/>
+  </g>
+  <circle cx="72" cy="64" r="10" fill="#0B1220" stroke="#F4B860" stroke-width="4"/>
+  <text x="132" y="80" fill="#F5F7FA" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="54" font-weight="650" letter-spacing="1">Anasemble</text>
+</svg>

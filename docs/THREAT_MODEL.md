@@ -29,6 +29,10 @@ A cluster administrator, runtime escape, policy-ignoring CNI, malicious registry
 or application that deliberately exfiltrates a mounted secret through an allowed
 effect is outside this boundary.
 
+P4 treats job directories, records, results, configuration, locks, leases, timestamps, installation prefixes, manifests, and support-bundle destinations as untrusted inputs. Closed schemas, safe job IDs, canonical workspace references, owner-only creation, record and event digests, atomic replacement, create-new locks, bounded scans, queue admission, fixed batches, attempt ceilings, result caps, staged installation, exact manifest paths, and file-digest verification constrain tampering and resource exhaustion.
+
+The operator supplies Unix timestamps. A clock moved forward can trigger early retry; a clock moved backward delays recovery. Equal-authority host processes can read job results, substitute directories between checks, alter the binary before installation, or interfere with filesystem durability. Support bundles omit values by construction but expose stable job and workspace-reference digests, which remain sensitive metadata and require access control.
+
 Issuer signing keys and recovery keys are high-impact secrets. The CLI creates owner-only files, refuses permissive key files, and excludes secret bytes from receipts. Equal-authority host compromise, copied secrets, weak administrator-domain assertions, TLS-root compromise, rollback of the configuration itself, memory disclosure, filesystem snapshots, and secure erasure remain outside P1 guarantees. Revocation rejects all evidence under that key; recovery floors and store generation floors must be advanced after a replay incident.
 
 Controls include signed canonical envelopes, domain attestations, explicit
