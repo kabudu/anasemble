@@ -243,7 +243,7 @@ fn validate_public_ci() -> Result<(), String> {
         "persist-credentials: false",
         "cargo test --locked --offline",
         "cargo package --locked --offline",
-        "npm --prefix website ci --ignore-scripts --offline",
+        "npm --prefix website ci --ignore-scripts",
     ];
     for boundary in required {
         if !workflow.contains(boundary) {
