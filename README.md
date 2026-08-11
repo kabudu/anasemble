@@ -19,11 +19,13 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M0 through M2 establish a viable bounded reconstruction kernel. P0 adds real-service contracts and durable local-file state; P1 adds Ed25519 identity lifecycle, signed multi-domain stores, bounded quorum retrieval, encrypted retention, provenance, and deletion workflows. P2 adds bounded PostgreSQL, S3-compatible object, and Redis Stream recovery with stable snapshots or refusal, verified migration, rollback, and certificate-bound activation plans. P3 adds OCI artifact binding, Docker isolation, operator-approved Docker and Kubernetes activation, secret references, leases, interruption reconciliation, and rollback. P4 still requires operational control and product-readiness evidence before Anasemble is called production-complete. Independent reproduction and external security review are optional post-release assurance, not implementation gates. Anasemble is not yet approved for public release, production recovery, or arbitrary service reconstruction claims. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and the production roadmap is in [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md).
+M0 through M2 establish the bounded reconstruction kernel. P0 through P3 add real-service contracts, authenticated and encrypted evidence, filesystem plus PostgreSQL/S3/Redis state recovery, and isolated operator-approved OCI activation. P4 adds restart-safe recovery jobs, queue backpressure, audit chains, metrics, diagnostics, redacted support bundles, configuration migration, exact-prefix installation and removal, compatibility contracts, destructive local drills, sustained scheduler evidence, dependency checks, and release-candidate presentation. Anasemble is implementation-complete for the explicitly supported profiles in [COMPATIBILITY](docs/COMPATIBILITY.md), not for arbitrary service reconstruction. Independent reproduction and external security review are optional post-release assurance, not implementation gates. No public release, production deployment, package publication, or repository visibility change is authorized. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and operational limits are in [P4 operations](docs/P4_OPERATIONS_AND_READINESS.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
 `cargo fetch --locked`, then run the authoritative private-repository CI with
 `./scripts/ci-local.sh`.
+
+The supported Rust-native installation and disaster procedures are in [INSTALLATION](docs/INSTALLATION.md) and [DISASTER_RUNBOOK](docs/DISASTER_RUNBOOK.md).
 
 ## Repository policy
 

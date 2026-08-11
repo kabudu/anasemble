@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title description">
+  <title id="title">Anasemble mark</title>
+  <desc id="description">Six fragments converge around a protected central void.</desc>
+  <rect width="128" height="128" rx="24" fill="#0B1220"/>
+  <g fill="#45D6A8">
+    <path d="M60 18h8l10 28-14 10-14-10z"/>
+    <path d="m96 36 4 7-19 23-16-7 2-17z"/>
+    <path d="m100 85-4 7-29-5-2-17 16-7z"/>
+    <path d="M68 110h-8L50 82l14-10 14 10z"/>
+    <path d="m32 92-4-7 19-23 16 7-2 17z"/>
+    <path d="m28 43 4-7 29 5 2 17-16 7z"/>
+  </g>
+  <circle cx="64" cy="64" r="10" fill="#0B1220" stroke="#F4B860" stroke-width="4"/>
+</svg>

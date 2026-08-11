@@ -32,4 +32,6 @@ Unsupported protocols, effects, state backends, consistency models, or deploymen
 
 ## Current status
 
-The implementation satisfies the bounded kernel behaviors and outperforms unavailable backup and trace-only baselines under the stipulated total-loss scope. It does not outperform a surviving centralized contract on the synthetic corpus. The narrow state and runtime model, not absent external review, blocks a production-complete claim. Product engineering proceeds through the dependency-ordered roadmap in `IMPLEMENTATION_PLAN.md`; independent reproduction and external review are optional post-release assurance.
+The implementation is complete for the exact arm64, protocol, state, transport, and activation profiles in `COMPATIBILITY.md`. It reconstructs and certifies the bounded kernel, restores each supported state model, activates immutable artifacts under declared isolation, and provides restart-safe operator jobs, audit, diagnostics, installation, removal, and runbooks. It still does not outperform a surviving centralized contract on the synthetic corpus and does not support arbitrary services, hidden effects, undeclared state, remote PostgreSQL or Redis, or a cross-backend distributed transaction.
+
+Implementation completion is not release authority or a claim of universal production suitability. Public release, deployment, package publication, legal clearance, and visibility remain separate explicit decisions. Independent reproduction and external review are optional post-release assurance.

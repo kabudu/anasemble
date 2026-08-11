@@ -100,3 +100,11 @@ service, and one Service selector patch switches traffic. Both adapters retain t
 prior workload until commit and reconcile a same-plan interruption idempotently.
 The exact supported profile and trust boundary are in
 [P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).
+
+## P4 operations plane
+
+P4 adds a file-backed Rust operations store rather than a daemon or control-plane database. Owner-only digest-sealed job records, atomic replacement, immutable results, hash-chained events, one store lock, and expiring execution leases make each CLI invocation restart-safe. Queue capacity, batch size, attempts, leases, event count, record size, result size, and total job count are bounded.
+
+The scheduler claims under the store lock, releases it during reconstruction, then reacquires it to finalize the same running record. This keeps producer and status latency independent of candidate execution while preventing two runners from mutating the store concurrently. Expired work returns to pending; exhausted work becomes a retained failure. Aggregate metrics and diagnostics are derived from validated records rather than a second mutable database.
+
+Installation uses a sibling staging prefix, syncs the binary and machine-readable compatibility/configuration files, then atomically renames the complete prefix. Uninstallation is manifest-driven and refuses changed files or unexpected topology. See [P4_OPERATIONS_AND_READINESS](P4_OPERATIONS_AND_READINESS.md).

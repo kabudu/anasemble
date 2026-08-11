@@ -121,3 +121,13 @@ readiness, switches one Service selector, retains a Lease across interruption,
 refuses a competing plan, resumes idempotently, and rolls back to the prior
 selector. The drill validates Kubernetes control objects; production egress
 enforcement additionally trusts a NetworkPolicy-enforcing CNI.
+
+## P4 operations and readiness validation
+
+The P4 restart test admits two jobs into a capacity-two store, durably interrupts one after claim, verifies backpressure, executes the other, advances beyond the lease, and proves the interrupted job is recovered exactly once. Metrics retain two refusals, three total attempts, and one restart recovery. The support bundle excludes both the canonical workspace path and private refusal messages.
+
+The sustained test admits 128 separately durable records, proves the 129th is refused, drains exactly two 64-job batches, and requires completion within 20 seconds on the local arm64 development profile. This is a regression ceiling for the supported file store, not a universal throughput claim.
+
+The public operator trial migrates `operations-config-v0`, initializes a store, enqueues a real workspace only after artifact deletion, executes normal reconstruction, observes certification through `operations-status`, creates a redacted support bundle, installs the running Rust binary to a staged exact prefix, and removes it through its verified manifest.
+
+The complete staging matrix is the union of the P2 PostgreSQL 18, S3-compatible, and Redis 8 destructive drill; the P3 Docker sandbox, OCI registry, Docker activation, and disposable Kubernetes drill; and the P4 public operations lifecycle. CI also runs Rustfmt, Clippy with warnings denied, all tests and docs offline, RustSec audit against the pre-fetched local database, Cargo Deny advisory/ban/source checks, release-presentation checks, text-policy checks, and diff checks.

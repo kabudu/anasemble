@@ -91,11 +91,11 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 
 ### P4 - operations, compatibility, and product readiness
 
-- [ ] Add durable job state, restart recovery, bounded scheduling and backpressure, structured audit events, metrics, diagnostics, and privacy-safe support bundles.
-- [ ] Define compatibility, upgrade, configuration migration, backup interoperability, installation, uninstallation, and disaster-runbook contracts for supported platforms.
-- [ ] Execute destructive staging-environment drills, sustained performance tests, dependency and supply-chain checks, and operator usability trials across every supported adapter combination.
-- [ ] Complete bounded positioning, brand, adoption, packaging, curated release presentation, and release rollback evidence.
-- [ ] Exit: every production claim maps to retained executable evidence, all supported failure paths have an operator response, local CI is green, and no unresolved critical or high internal review finding remains.
+- [x] Add durable job state, restart recovery, bounded scheduling and backpressure, structured audit events, metrics, diagnostics, and privacy-safe support bundles.
+- [x] Define compatibility, upgrade, configuration migration, backup interoperability, installation, uninstallation, and disaster-runbook contracts for supported platforms.
+- [x] Execute destructive staging-environment drills, sustained performance tests, dependency and supply-chain checks, and operator usability trials across every supported adapter combination.
+- [x] Complete bounded positioning, brand, adoption, packaging, curated release presentation, and release rollback evidence.
+- [x] Exit: every production claim maps to retained executable evidence, all supported failure paths have an operator response, local CI is green, and no unresolved critical or high internal review finding remains.
 
 ## Optional post-release assurance
 
