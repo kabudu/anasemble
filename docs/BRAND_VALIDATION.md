@@ -20,6 +20,12 @@ specified in tokens and the identity guide. Raster concepts are not release
 assets. Cultural, trademark and user-comprehension review remain release gates;
 they do not invalidate private productisation but constrain public use.
 
+Brand version 1.1.0 adds the README architecture illustration. Human review at
+1600 px and repository-width scale verified the three trust regions, solid
+evidence flow, dashed candidate flow, blunt refusal boundary, explicit operator
+approval, acceptance and rollback, and readable non-colour labels. The fixed ink
+background provides the same presentation in light and dark repository themes.
+
 The bootstrap validator was also run with `--implementation-authorized`. Its
 repository-wide Markdown pass reports the deliberate missing H1 in
 `release/0.1.0-rc.1.md`: Anasemble's release renderer contract requires the body

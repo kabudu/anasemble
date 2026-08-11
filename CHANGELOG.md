@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add a branded, accessible architecture illustration to the README that shows
+  independent evidence, bounded reconstruction, independent certification,
+  explicit refusal, operator approval, activation, acceptance, and rollback.
+
 - Replace the research-led README with a product-first entry point covering the
   recovery outcome, workflow, supported profiles, evaluation path, and safety
   boundaries, with repository validation to preserve that presentation.

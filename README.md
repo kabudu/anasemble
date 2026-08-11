@@ -33,6 +33,8 @@ Every stage is fail-closed. Evidence, reconstructed behaviour, state, activation
 and rollback are bound by hashes and explicit receipts rather than inferred from
 ambient infrastructure.
 
+<img src="assets/brand/exports/anasemble-architecture.svg" alt="Anasemble architecture: independent evidence enters a bounded Rust recovery pipeline, a separate checker certifies or refuses the candidate, and an operator controls state restoration, activation, acceptance, and rollback">
+
 ## Supported today
 
 The current supported release-candidate profiles are deliberately narrow:

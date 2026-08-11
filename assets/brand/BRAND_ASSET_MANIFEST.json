@@ -1,12 +1,23 @@
 {
   "schema": "anasemble-brand-asset-manifest-v1",
-  "brand_version": "1.0.0",
+  "brand_version": "1.1.0",
   "entries": [
     {
       "path": "assets/brand/LICENSES/OWNED-ASSETS.md",
       "sha256": "bc9736dab77c76ad505d4f58762d1e1ed1568257e591688a8283ce2125fa5a9c",
       "source_sha256": "bc9736dab77c76ad505d4f58762d1e1ed1568257e591688a8283ce2125fa5a9c",
       "dimensions": "not applicable",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-architecture.svg",
+      "sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
+      "source_sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
+      "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
       "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
@@ -94,6 +105,17 @@
       "path": "assets/brand/exports/anasemble-wordmark.svg",
       "sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
       "source_sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-architecture.svg",
+      "sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
+      "source_sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -257,8 +279,8 @@
     },
     {
       "path": "assets/brand/tokens/brand-tokens.json",
-      "sha256": "23c7b35dc6a3163c36e2f94940e1daba3165ec44f6a20f1f0d4327814ffa05a9",
-      "source_sha256": "23c7b35dc6a3163c36e2f94940e1daba3165ec44f6a20f1f0d4327814ffa05a9",
+      "sha256": "10986a8bb2c47416c04501edd32a486b46b938ebdc0aef2c711ca7a56fc6236e",
+      "source_sha256": "10986a8bb2c47416c04501edd32a486b46b938ebdc0aef2c711ca7a56fc6236e",
       "dimensions": "not applicable",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",

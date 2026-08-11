@@ -55,6 +55,8 @@ const REQUIRED: &[&str] = &[
     "assets/anasemble-mark.svg",
     "assets/anasemble-wordmark.svg",
     "assets/brand/BRAND_ASSET_MANIFEST.json",
+    "assets/brand/source/anasemble-architecture.svg",
+    "assets/brand/exports/anasemble-architecture.svg",
     "assets/brand/source/anasemble-symbol.svg",
     "assets/brand/source/anasemble-horizontal.svg",
     "assets/brand/source/anasemble-result-icons.svg",
@@ -225,6 +227,7 @@ fn validate_product_readme() -> Result<(), String> {
         "## Supported today",
         "## Quick start",
         "## Safety and scope",
+        "assets/brand/exports/anasemble-architecture.svg",
         "docs/COMPATIBILITY.md",
         "docs/QUICKSTART.md",
     ] {
