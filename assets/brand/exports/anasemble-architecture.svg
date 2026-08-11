@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">How Anasemble reconstructs and activates a lost service component</title>
+  <desc id="desc">Independently retained contracts, traces, and state snapshots cross into the Rust control plane. Anasemble authenticates evidence, performs bounded synthesis, independently certifies the candidate, restores supported state, and activates an immutable artifact only with operator approval. Insufficient evidence is refused and activated recovery remains reversible.</desc>
+  <defs>
+    <linearGradient id="background" x1="80" y1="40" x2="1360" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1628"/>
+      <stop offset="0.52" stop-color="#102542"/>
+      <stop offset="1" stop-color="#07111F"/>
+    </linearGradient>
+    <linearGradient id="evidence" x1="80" y1="190" x2="360" y2="580" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2457A6" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#12305F" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="control" x1="470" y1="180" x2="1040" y2="690" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18375D"/>
+      <stop offset="1" stop-color="#0E223C"/>
+    </linearGradient>
+    <linearGradient id="outcome" x1="1110" y1="210" x2="1360" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#11695F"/>
+      <stop offset="1" stop-color="#0B3A37"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000814" flood-opacity="0.45"/>
+    </filter>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M1 1 11 6 1 11Z" fill="#8FB8F4"/>
+    </marker>
+    <marker id="arrowTeal" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M1 1 11 6 1 11Z" fill="#56D6C5"/>
+    </marker>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M36 0H0V36" fill="none" stroke="#FFFFFF" stroke-opacity="0.035"/>
+    </pattern>
+  </defs>
+
+  <rect width="1440" height="900" rx="32" fill="url(#background)"/>
+  <rect width="1440" height="900" rx="32" fill="url(#grid)"/>
+  <circle cx="1240" cy="90" r="190" fill="#169C8C" opacity="0.06"/>
+  <circle cx="180" cy="820" r="240" fill="#2457A6" opacity="0.08"/>
+  <g transform="translate(1292 24) scale(.48)" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round">
+    <path fill="#2457A6" d="M64 8 107 33 91 61H72V49a8 8 0 1 0-16 0v12H37L21 33Z"/>
+    <path fill="#0B1628" d="m17 41 32 19v20H37a8 8 0 1 0 0 16h12v18H17L5 93Z"/>
+    <path fill="#169C8C" d="m111 41 12 21v5h-14v22h14v4l-32 21-32-19V76h12a8 8 0 1 0 0-16H59v-1l32-19Z"/>
+    <path fill="none" stroke="#E57A2F" stroke-width="4" stroke-linecap="round" d="M109 70v16"/>
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="72" y="74" fill="#FFFFFF" font-size="34" font-weight="700">From surviving meaning to recoverable function</text>
+    <text x="72" y="110" fill="#A9BED8" font-size="17">Evidence-bound reconstruction · independent certification · operator-controlled activation</text>
+
+    <g filter="url(#shadow)">
+      <rect x="72" y="160" width="328" height="548" rx="24" fill="url(#evidence)" stroke="#5E8ED2" stroke-width="1.5"/>
+      <rect x="456" y="160" width="590" height="548" rx="24" fill="url(#control)" stroke="#416993" stroke-width="1.5"/>
+      <rect x="1102" y="160" width="266" height="548" rx="24" fill="url(#outcome)" stroke="#2AAE9E" stroke-width="1.5"/>
+    </g>
+
+    <text x="100" y="205" fill="#DCEAFF" font-size="13" font-weight="700" letter-spacing="2">BEFORE LOSS</text>
+    <text x="100" y="237" fill="#FFFFFF" font-size="23" font-weight="700">Independent evidence</text>
+    <text x="100" y="263" fill="#BFD4F2" font-size="14">Stored outside the artifact failure domain</text>
+
+    <g>
+      <rect x="100" y="298" width="272" height="94" rx="15" fill="#0B1628" fill-opacity="0.58" stroke="#79A4E4"/>
+      <rect x="119" y="318" width="34" height="42" rx="4" fill="none" stroke="#8FB8F4" stroke-width="2"/>
+      <path d="M127 329h18M127 338h18M127 347h12" stroke="#8FB8F4" stroke-width="2" stroke-linecap="round"/>
+      <text x="172" y="331" fill="#FFFFFF" font-size="17" font-weight="650">Signed contracts</text>
+      <text x="172" y="356" fill="#A9BED8" font-size="13">interfaces · effects · policies</text>
+      <text x="172" y="376" fill="#79A4E4" font-size="11" letter-spacing="1">FAILURE DOMAIN A</text>
+    </g>
+    <g>
+      <rect x="100" y="410" width="272" height="94" rx="15" fill="#0B1628" fill-opacity="0.58" stroke="#63B9D2"/>
+      <path d="M119 455h10l8-22 10 35 9-24 8 11h10" fill="none" stroke="#63C8DC" stroke-width="2.5" stroke-linejoin="round"/>
+      <text x="190" y="443" fill="#FFFFFF" font-size="17" font-weight="650">Protocol traces</text>
+      <text x="190" y="468" fill="#A9BED8" font-size="13">positive · negative · held-out</text>
+      <text x="190" y="488" fill="#63C8DC" font-size="11" letter-spacing="1">FAILURE DOMAIN B</text>
+    </g>
+    <g>
+      <rect x="100" y="522" width="272" height="94" rx="15" fill="#0B1628" fill-opacity="0.58" stroke="#56D6C5"/>
+      <ellipse cx="139" cy="546" rx="21" ry="8" fill="none" stroke="#56D6C5" stroke-width="2"/>
+      <path d="M118 546v25c0 5 9 8 21 8s21-3 21-8v-25M118 558c0 5 9 8 21 8s21-3 21-8" fill="none" stroke="#56D6C5" stroke-width="2"/>
+      <text x="180" y="555" fill="#FFFFFF" font-size="17" font-weight="650">State snapshots</text>
+      <text x="180" y="580" fill="#A9BED8" font-size="13">filesystem · SQL · S3 · streams</text>
+      <text x="180" y="600" fill="#56D6C5" font-size="11" letter-spacing="1">FAILURE DOMAIN C</text>
+    </g>
+
+    <rect x="100" y="647" width="272" height="36" rx="18" fill="#081221" stroke="#E57A2F" stroke-width="1.5"/>
+    <circle cx="121" cy="665" r="6" fill="#E57A2F"/>
+    <text x="138" y="670" fill="#FFD2AC" font-size="12" font-weight="650">Original artifact no longer survives</text>
+
+    <text x="484" y="205" fill="#DCEAFF" font-size="13" font-weight="700" letter-spacing="2">RUST CONTROL PLANE</text>
+    <text x="484" y="237" fill="#FFFFFF" font-size="23" font-weight="700">Bounded recovery pipeline</text>
+    <rect x="839" y="192" width="177" height="36" rx="18" fill="#0B1628" stroke="#416993"/>
+    <circle cx="861" cy="210" r="6" fill="#56D6C5"/>
+    <text x="877" y="215" fill="#C9E9E4" font-size="12" font-weight="650">Fail-closed by design</text>
+
+    <path d="M400 437H480" fill="none" stroke="#8FB8F4" stroke-width="3" marker-end="url(#arrow)"/>
+    <circle cx="428" cy="437" r="4" fill="#8FB8F4" filter="url(#glow)"/>
+
+    <g>
+      <rect x="484" y="282" width="230" height="118" rx="17" fill="#0B1628" stroke="#5E8ED2"/>
+      <circle cx="515" cy="316" r="16" fill="#2457A6"/>
+      <text x="509" y="322" fill="#FFFFFF" font-size="16" font-weight="700">1</text>
+      <text x="544" y="315" fill="#FFFFFF" font-size="13" font-weight="650">Collect &amp; authenticate</text>
+      <text x="510" y="349" fill="#A9BED8" font-size="13">Quorum · identity · freshness</text>
+      <text x="510" y="373" fill="#79A4E4" font-size="12">Encrypted evidence → typed constraints</text>
+    </g>
+    <g>
+      <rect x="758" y="282" width="230" height="118" rx="17" fill="#0B1628" stroke="#E57A2F"/>
+      <circle cx="789" cy="316" r="16" fill="#E57A2F"/>
+      <text x="783" y="322" fill="#0B1628" font-size="16" font-weight="800">2</text>
+      <text x="818" y="315" fill="#FFFFFF" font-size="17" font-weight="650">Bounded synthesis</text>
+      <text x="784" y="349" fill="#A9BED8" font-size="13">Finite typed grammar · fixed budgets</text>
+      <text x="784" y="373" fill="#FFD2AC" font-size="12">One candidate or explicit refusal</text>
+    </g>
+    <path d="M714 341H758" fill="none" stroke="#8FB8F4" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+    <g>
+      <rect x="484" y="446" width="230" height="118" rx="17" fill="#0B1628" stroke="#56D6C5"/>
+      <circle cx="515" cy="480" r="16" fill="#169C8C"/>
+      <text x="509" y="486" fill="#FFFFFF" font-size="16" font-weight="700">3</text>
+      <text x="544" y="479" fill="#FFFFFF" font-size="17" font-weight="650">Independent checker</text>
+      <text x="510" y="513" fill="#A9BED8" font-size="13">Separate interpreter · held-out duties</text>
+      <text x="510" y="537" fill="#8BE1D5" font-size="12">Candidate + evidence → certificate</text>
+    </g>
+    <g>
+      <rect x="758" y="446" width="230" height="118" rx="17" fill="#0B1628" stroke="#56D6C5"/>
+      <circle cx="789" cy="480" r="16" fill="#169C8C"/>
+      <text x="783" y="486" fill="#FFFFFF" font-size="16" font-weight="700">4</text>
+      <text x="818" y="479" fill="#FFFFFF" font-size="17" font-weight="650">Restore &amp; stage</text>
+      <text x="784" y="513" fill="#A9BED8" font-size="13">Receipt-bound state · immutable OCI</text>
+      <text x="784" y="537" fill="#8BE1D5" font-size="12">Prior state retained for rollback</text>
+    </g>
+    <path d="M873 400V421H599V446" fill="none" stroke="#E57A2F" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+    <text x="668" y="416" fill="#FFD2AC" font-size="11" font-weight="650" letter-spacing="1">UNTRUSTED CANDIDATE</text>
+    <path d="M714 505H758" fill="none" stroke="#56D6C5" stroke-width="2.5" marker-end="url(#arrowTeal)"/>
+
+    <rect x="484" y="610" width="504" height="65" rx="15" fill="#091729" stroke="#416993"/>
+    <path d="M505 631h18l9 9-9 9h-18l-9-9Z" fill="#2457A6" stroke="#8FB8F4"/>
+    <text x="548" y="637" fill="#FFFFFF" font-size="14" font-weight="650">Trusted boundary</text>
+    <text x="548" y="659" fill="#A9BED8" font-size="12">Checker · resource monitor · receipt integrity · deployment transaction</text>
+
+    <path d="M988 505H1128" fill="none" stroke="#56D6C5" stroke-width="3" marker-end="url(#arrowTeal)"/>
+    <circle cx="1066" cy="505" r="4" fill="#56D6C5" filter="url(#glow)"/>
+
+    <text x="1130" y="205" fill="#C9E9E4" font-size="13" font-weight="700" letter-spacing="2">OPERATOR BOUNDARY</text>
+    <text x="1130" y="237" fill="#FFFFFF" font-size="23" font-weight="700">Controlled outcome</text>
+
+    <g>
+      <rect x="1130" y="282" width="210" height="90" rx="16" fill="#071B1A" stroke="#56D6C5"/>
+      <path d="M1152 323h12l7-12 8 25 7-13h12" fill="none" stroke="#56D6C5" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="1212" y="317" fill="#FFFFFF" font-size="16" font-weight="650">Health gate</text>
+      <text x="1212" y="341" fill="#9ADFD6" font-size="12">Isolated verification</text>
+    </g>
+    <path d="M1235 372V402" fill="none" stroke="#56D6C5" stroke-width="2.5" marker-end="url(#arrowTeal)"/>
+    <g>
+      <rect x="1130" y="414" width="210" height="126" rx="16" fill="#071B1A" stroke="#56D6C5" stroke-width="1.5"/>
+      <rect x="1151" y="439" width="36" height="43" rx="5" fill="#169C8C"/>
+      <path d="M1159 460l7 7 14-17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="1202" y="453" fill="#FFFFFF" font-size="16" font-weight="650">Signed approval</text>
+      <text x="1202" y="477" fill="#9ADFD6" font-size="12">Switch traffic once</text>
+      <text x="1151" y="505" fill="#FFFFFF" font-size="13" font-weight="650">Immutable replacement</text>
+      <text x="1151" y="523" fill="#FFFFFF" font-size="13" font-weight="650">active</text>
+    </g>
+    <path d="M1235 540V570" fill="none" stroke="#56D6C5" stroke-width="2.5" marker-end="url(#arrowTeal)"/>
+    <g>
+      <rect x="1130" y="582" width="210" height="92" rx="16" fill="#071B1A" stroke="#E57A2F"/>
+      <path d="M1154 618a18 18 0 1 1 3 21M1154 618v14h14" fill="none" stroke="#FFB36B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="1202" y="615" fill="#FFFFFF" font-size="16" font-weight="650">Accept or roll back</text>
+      <text x="1202" y="640" fill="#FFD2AC" font-size="12">Sealed recovery receipt</text>
+    </g>
+
+    <path d="M873 400V250H1080V746H1030" fill="none" stroke="#B42318" stroke-width="2.5" stroke-dasharray="4 7"/>
+    <path d="M1030 728v36" stroke="#B42318" stroke-width="7" stroke-linecap="round"/>
+    <rect x="700" y="724" width="320" height="44" rx="22" fill="#2A1117" stroke="#B42318"/>
+    <text x="727" y="752" fill="#FFB4AC" font-size="13" font-weight="700">REFUSE · evidence or boundary insufficient</text>
+
+    <line x1="72" y1="802" x2="1368" y2="802" stroke="#FFFFFF" stroke-opacity="0.13"/>
+    <path d="M76 844H130" stroke="#8FB8F4" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="144" y="849" fill="#B8CCE5" font-size="12">committed evidence / state flow</text>
+    <path d="M382 844H436" stroke="#E57A2F" stroke-width="3" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
+    <text x="450" y="849" fill="#B8CCE5" font-size="12">untrusted candidate flow</text>
+    <path d="M680 826v36" stroke="#B42318" stroke-width="7" stroke-linecap="round"/>
+    <text x="700" y="849" fill="#B8CCE5" font-size="12">refusal boundary</text>
+    <rect x="1018" y="824" width="322" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.14"/>
+    <text x="1042" y="850" fill="#DCEAFF" font-size="12" font-weight="650">No source · binary · image · identical replica required</text>
+  </g>
+</svg>
