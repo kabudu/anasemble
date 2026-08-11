@@ -36,6 +36,7 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$project_dir:/source:ro" \
     --volume "$volume:/workspace" \
     "$image" \
@@ -53,6 +54,7 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$volume:/workspace" \
     "$image" \
     sh -euc '
