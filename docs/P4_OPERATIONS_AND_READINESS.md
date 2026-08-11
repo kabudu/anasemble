@@ -30,8 +30,9 @@ The authoritative local CI also executes the destructive P2 PostgreSQL/S3/Redis
 state drill and P3 Docker/OCI/Kubernetes activation drills. P2 local state and
 Docker activation are supported profiles; the kind drill provides partial
 evidence for the experimental Kubernetes profile. Arbitrary Cartesian
-combinations, remote PostgreSQL or Redis, x86 hosts, and policy-ignoring
-Kubernetes CNIs are unsupported.
+combinations beyond the exact AWS profiles, unvalidated remote PostgreSQL or
+Redis providers, other x86 hosts, and policy-ignoring Kubernetes CNIs remain
+experimental or unsupported as stated in the compatibility contract.
 
 Dependency checks use the current local RustSec database with `cargo audit --no-fetch` and Cargo Deny in locked offline mode for advisories, bans, and sources. Cargo Deny reports warning-level duplicate transitive versions from the supported dependency graph; there are no advisory, ban, or source failures. License policy is not asserted because the private repository has no user-approved product licence; selecting one is a legal and release-authority decision.
 

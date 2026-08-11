@@ -177,5 +177,6 @@ external state changes. After exercising rollback, it repeats recovery, removes
 stale staged evaluation resources, accepts the new state through
 `commit-reference-recovery`, and proves the active Kubernetes selector and three
 backend states survive while rollback becomes unavailable. Unit validation
-rejects remote PostgreSQL, PostgreSQL host overrides, remote Redis, Redis TLS
-profiles outside the supported loopback contract, and unsupported S3 schemes.
+rejects unauthenticated, non-TLS, IP-addressed, unbounded, or
+parameter-ambiguous remote PostgreSQL and Redis endpoints and unsupported S3
+schemes. The AWS drill separately exercises the accepted provider transports.

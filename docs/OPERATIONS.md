@@ -60,7 +60,7 @@ P2 adapters are Rust library interfaces and are not yet exposed as unattended pr
 
 Preserve staging and rollback resources until activation is accepted. PostgreSQL uses `<target>_anasemble_stage` and `<target>_anasemble_rollback` schemas. Redis uses corresponding staging and rollback keys. S3 rollback objects live under a digest-addressed top-level `anasemble-rollback/` prefix that is deliberately outside the target prefix. A stale resource requires operator investigation; do not delete it automatically.
 
-No transaction spans all backends. If activation fails, invoke rollback for every successful receipt in reverse activation order and retain errors and backend state for incident handling. Local PostgreSQL and Redis transports are trusted-loopback profiles only. Remote PostgreSQL and Redis remain unsupported in version 0.0.1; a later compatibility revision requires authenticated TLS and credential references.
+No transaction spans all backends. If activation fails, invoke rollback for every successful receipt in reverse activation order and retain errors and backend state for incident handling. Local PostgreSQL and Redis transports are trusted-loopback profiles. Remote PostgreSQL requires an authenticated URI, explicit CA bundle, DNS identity, `sslmode=require`, and bounded connection timeout. Remote Redis requires authenticated `rediss://`, DNS identity, an explicit port, and bounded socket timeouts. Only the exact AWS combination in the compatibility contract is supported; other provider combinations remain experimental.
 
 ## P3 isolated activation operations
 
@@ -81,9 +81,11 @@ existing lease. A different plan must not bypass or delete that lease. Inspect t
 staged, active, rollback, and lease resources, preserve evidence, then either retry
 the exact approved plan or invoke rollback. Commit only after service-level
 acceptance; commit removes the retained rollback target and lease. Docker is a
-single-host recovery profile. Kubernetes is the production-shaped orchestrator
-adapter, but remains experimental until a named CNI enforcement drill is retained,
-subject to the cluster trust boundary in [P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).
+single-host recovery profile. Kubernetes is the production orchestrator adapter.
+The exact EKS 1.36 and VPC CNI strict-policy profile in the compatibility
+contract is supported; other clusters and CNIs remain experimental, subject to
+the cluster trust boundary in
+[P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).
 
 ## P4 durable job operations
 

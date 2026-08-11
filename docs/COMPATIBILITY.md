@@ -24,10 +24,14 @@ authoritative repository drills and documentation for each tested claim.
 | macOS arm64 kind activation | macOS, aarch64, local kind cluster | Kubernetes 1.36, kubectl 1.36, kind 0.32 | Implemented | Partially tested | Experimental | Control objects, leases, switching, and rollback are tested; NetworkPolicy enforcement is not |
 | Linux arm64 control plane | Linux GNU, aarch64, clean local container | Rust 1.97.0 control plane | Implemented | Tested | Experimental | `scripts/ci-linux-matrix.sh`; native host ISA, clean clone, offline build/test/doc/repository gate; production distributions and kernels remain unverified |
 | Linux x86_64 control plane | Linux GNU, x86_64, emulated local container | Rust 1.97.0 control plane | Implemented | Partially tested | Experimental | `scripts/ci-linux-matrix.sh`; clean clone and offline build/test/doc/repository gate under amd64 emulation; native x86_64 hardware remains unverified |
+| AWS AL2023 arm64 control plane | Amazon Linux 2023, native aarch64 EC2 | Rust 1.97.0 control plane | Implemented | Tested | Supported | `docs/AWS_COMPATIBILITY.md`; AMI `ami-053d8df569ac57bbb`, `t4g.medium`, kernel `6.1.177-224.371.amzn2023.aarch64`; no other AMI, kernel or family implied |
+| AWS AL2023 x86_64 control plane | Amazon Linux 2023, native x86_64 EC2 | Rust 1.97.0 control plane | Implemented | Tested | Supported | `docs/AWS_COMPATIBILITY.md`; AMI `ami-062a8901a5ddcf280`, `t3.medium`, kernel `6.1.177-224.371.amzn2023.x86_64`; no other AMI, kernel or family implied |
+| AWS managed state in `eu-west-1` | Private provider endpoints, arm64 AL2023 runner | RDS PostgreSQL 18.3, S3, ElastiCache Redis 7.1 | Implemented | Tested | Supported | `tests/aws_compatibility.rs`; certificate-verified PostgreSQL TLS, authenticated Redis TLS, temporary-role S3 HTTPS; writers quiesced and no cross-backend transaction |
+| Amazon EKS strict-policy activation | EKS 1.36/`eks.9`, one AL2023 arm64 `t4g.medium` node | VPC CNI `v1.22.4-eksbuild.3`, immutable deployment, approval, switch, rollback | Implemented | Tested | Supported | `tests/aws_compatibility.rs`; strict zero-egress probe denied; EKS, VPC CNI, admission, IAM and administrators remain trusted |
 | Generic S3-compatible HTTPS | Provider-managed HTTPS | S3-compatible object adapter | Implemented | Partially tested | Experimental | MinIO exercises the S3 API; named provider behavior remains unverified |
-| Production Kubernetes with enforcing CNI | Linux, provider-dependent Kubernetes API | Kubernetes 1.36 and NetworkPolicy-enforcing CNI | Implemented | Partially tested | Experimental | No named production CNI has been validated |
+| Other production Kubernetes with enforcing CNI | Linux, provider-dependent Kubernetes API | Kubernetes 1.36 and NetworkPolicy-enforcing CNI | Implemented | Partially tested | Experimental | The exact EKS/VPC CNI row is validated; no other provider or CNI is implied |
 | Integrated recovery through activation | macOS, aarch64, mixed local transports | Reconstruction, PostgreSQL 18, MinIO S3 API, Redis Streams 8.8, OCI Distribution v2, Kubernetes 1.36, public reference CLI | Implemented | Tested | Experimental | `tests/reference_workflow.rs`; restores after deliberate source deletion, activates, rolls back, and separately accepts while retiring rollback resources; candidate artifact is not a generated HTTP server and kind does not prove NetworkPolicy enforcement |
-| Remote PostgreSQL or Redis | Provider-managed remote network | PostgreSQL or Redis Streams | Not implemented | Untested | Unsupported | Authenticated TLS transports and credential references are required |
+| Other remote PostgreSQL or Redis | Provider-managed remote network | PostgreSQL or Redis Streams | Implemented | Partially tested | Experimental | Fail-closed authenticated TLS boundaries exist, but only the exact AWS managed-state combination above is supported |
 
 The installed `share/compatibility-v2.json` manifest carries the same status
 definitions, exact profiles, evidence paths, and limitations. Version 2 replaces
@@ -70,9 +74,9 @@ tested alongside native restore. If a native backup survives and satisfies the
 recovery objective, operators should prefer it. Anasemble is the bounded path
 for the declared total-artifact-loss case.
 
-PostgreSQL and Redis remote transports are unsupported. S3-compatible
-production endpoints require HTTPS. Kubernetes evaluation requires a CNI that
-enforces NetworkPolicy, but that production enforcement profile remains
-experimental until a named CNI drill is retained. Unsupported architecture,
-protocol, backend version, transport, CNI, configuration version, or combination
-must be refused rather than presumed compatible.
+Remote PostgreSQL and Redis require authenticated TLS and DNS identity;
+S3-compatible production endpoints require HTTPS. The exact AWS managed-state
+and EKS profiles above are supported. Other providers, versions, architectures,
+instance families, certificate policies, authentication modes and CNIs remain
+experimental until their own retained drills pass. An unlisted combination must
+never be inferred from independently supported rows.
