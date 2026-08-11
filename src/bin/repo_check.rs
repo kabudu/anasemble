@@ -57,6 +57,10 @@ const REQUIRED: &[&str] = &[
     "assets/brand/BRAND_ASSET_MANIFEST.json",
     "assets/brand/source/anasemble-architecture.svg",
     "assets/brand/exports/anasemble-architecture.svg",
+    "assets/brand/source/anasemble-readme-hero.svg",
+    "assets/brand/exports/anasemble-readme-hero.svg",
+    "assets/brand/source/anasemble-readme-hero-narrow.svg",
+    "assets/brand/exports/anasemble-readme-hero-narrow.svg",
     "assets/brand/source/anasemble-symbol.svg",
     "assets/brand/source/anasemble-horizontal.svg",
     "assets/brand/source/anasemble-result-icons.svg",
@@ -221,7 +225,8 @@ fn validate_product_readme() -> Result<(), String> {
         .map_err(|error| format!("could not read README: {error}"))?;
     let opening = readme.lines().take(24).collect::<Vec<_>>().join("\n");
     for required in [
-        "assets/anasemble-mark.svg",
+        "assets/brand/exports/anasemble-readme-hero.svg",
+        "assets/brand/exports/anasemble-readme-hero-narrow.svg",
         "Recover a lost service component",
         "## What Anasemble does",
         "## Supported today",

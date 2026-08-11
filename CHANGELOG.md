@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Replace the isolated README mark and detached promise with a compact,
+  theme-safe Semantic Fit hero that preserves the accessible product H1.
+
 - Add a branded, accessible architecture illustration to the README that shows
   independent evidence, bounded reconstruction, independent certification,
   explicit refusal, operator approval, activation, acceptance, and rollback.

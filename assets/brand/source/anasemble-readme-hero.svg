@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" role="img" aria-labelledby="title desc">
+  <title id="title">Anasemble: Regrow function from surviving meaning</title>
+  <desc id="desc">Semantic Fit fragments beside Anasemble's promise to recover a lost service component from independently retained evidence.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="280" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1628"/>
+      <stop offset="0.58" stop-color="#12335A"/>
+      <stop offset="1" stop-color="#0B3A37"/>
+    </linearGradient>
+    <linearGradient id="rule" x1="252" y1="0" x2="1120" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E57A2F"/>
+      <stop offset="0.45" stop-color="#56D6C5"/>
+      <stop offset="1" stop-color="#56D6C5" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#FFFFFF" stroke-opacity="0.035"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000814" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="280" rx="24" fill="url(#bg)"/>
+  <rect width="1200" height="280" rx="24" fill="url(#grid)"/>
+  <circle cx="1095" cy="28" r="180" fill="#169C8C" opacity="0.08"/>
+  <circle cx="84" cy="280" r="165" fill="#2457A6" opacity="0.12"/>
+
+  <g transform="translate(55 54) scale(1.35)" filter="url(#shadow)" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round">
+    <path fill="#2457A6" d="M64 8 107 33 91 61H72V49a8 8 0 1 0-16 0v12H37L21 33Z"/>
+    <path fill="#0B1628" d="m17 41 32 19v20H37a8 8 0 1 0 0 16h12v18H17L5 93Z"/>
+    <path fill="#169C8C" d="m111 41 12 21v5h-14v22h14v4l-32 21-32-19V76h12a8 8 0 1 0 0-16H59v-1l32-19Z"/>
+    <path fill="none" stroke="#E57A2F" stroke-width="4" stroke-linecap="round" d="M109 70v16"/>
+  </g>
+
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="252" y="67" fill="#8BE1D5" font-size="13" font-weight="700" letter-spacing="2.6">EVIDENCE-BOUND SERVICE RECOVERY</text>
+    <text x="252" y="116" fill="#FFFFFF" font-size="35" font-weight="720">Regrow function from surviving meaning.</text>
+    <rect x="252" y="137" width="760" height="3" rx="1.5" fill="url(#rule)"/>
+    <text x="252" y="177" fill="#DCEAFF" font-size="20">Recover a lost service component from evidence stored beyond</text>
+    <text x="252" y="207" fill="#DCEAFF" font-size="20">the component's failure domain.</text>
+
+    <g font-size="12" font-weight="700" letter-spacing="1.1">
+      <rect x="252" y="229" width="110" height="29" rx="14.5" fill="#2457A6"/>
+      <text x="276" y="248" fill="#FFFFFF">CERTIFY</text>
+      <rect x="374" y="229" width="112" height="29" rx="14.5" fill="#11695F"/>
+      <text x="397" y="248" fill="#FFFFFF">RESTORE</text>
+      <rect x="498" y="229" width="120" height="29" rx="14.5" fill="#11695F"/>
+      <text x="520" y="248" fill="#FFFFFF">ACTIVATE</text>
+      <rect x="630" y="229" width="128" height="29" rx="14.5" fill="#5A341A" stroke="#E57A2F"/>
+      <text x="650" y="248" fill="#FFD2AC">ROLL BACK</text>
+    </g>
+  </g>
+</svg>
