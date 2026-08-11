@@ -1,0 +1,36 @@
+{
+  "version": "service-v1",
+  "component": "orders",
+  "interface_version": "1",
+  "http": {
+    "endpoints": [
+      {
+        "method": "POST",
+        "path": "/orders",
+        "request_schema_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "response_schema_sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      }
+    ]
+  },
+  "effects": [
+    {
+      "kind": "state",
+      "target": "orders-db",
+      "access": "read_write"
+    }
+  ],
+  "state_dependencies": [
+    {
+      "name": "orders-db",
+      "adapter": "postgres",
+      "consistency": "transactional",
+      "required": true
+    }
+  ],
+  "limits": {
+    "request_bytes": 1048576,
+    "response_bytes": 1048576,
+    "wall_time_ms": 5000,
+    "concurrent_requests": 64
+  }
+}

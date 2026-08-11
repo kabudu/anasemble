@@ -13,10 +13,22 @@
 | [DART](https://arxiv.org/abs/2605.23311) | Runtime reconstruction/adaptation research | adjacent reconstruction | check exact scope during systematic review |
 | [SRI survivability measure](https://www.csl.sri.com/papers/measure/) | Formal survivability assessment | resilience evaluation | executable reconstruction protocol |
 | [Pneuma](https://pneuma.computer/) | Current product adjacent to resilient systems | product collision surface | verify features before product claims |
+| [PASE](https://arxiv.org/abs/2607.01595) | Synthesizes and verifies cloud recovery plans | synthesis applied to recovery | plans remediations; does not reconstruct a stipulated-lost component from distributed semantic fragments |
+| [Microsoft PROSE](https://www.microsoft.com/en-us/research/project/prose-framework/usage/) | Synthesizes DSL programs from example specifications | DSL and example-guided synthesis | no catastrophe protocol, survivor provenance, or deployment refusal boundary |
+| [AWS Elastic Disaster Recovery](https://docs.aws.amazon.com/drs/latest/userguide/what-is-drs.html) | Continuously replicates server blocks and launches recovery instances | commercial disaster-recovery baseline | restores retained replicated artifacts rather than synthesizing after stipulated total loss |
+| [W3C WebAssembly Core](https://www.w3.org/TR/wasm-core/) | Standard memory-safe VM with embedder-controlled imports | sandbox mechanism | embedder, host, engine, and side channels remain trusted |
+| [NIST SP 800-34 Rev. 1](https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final) | Contingency planning, alternate processing, storage, and backup | established recovery practice | no semantic reconstruction mechanism |
+| [US10817552B2](https://patents.google.com/patent/US10817552B2/en) | Program synthesis from encoded input-output examples | synthesis and DSL overlap | no total-loss survivor protocol |
+| [US10423780B1](https://patents.google.com/patent/US10423780B1/en) | Correct-by-construction cryptographic software from specifications | executable generation and checking | different domain and evidence/failure model |
+| [EP3230865B1](https://patents.google.com/patent/EP3230865B1/en) | Programmatic disaster-recovery workflow generation | recovery plus generated workflow | recovers configured infrastructure from retained CMDB data |
+| [US9965358B2](https://patents.google.com/patent/US9965358B2/en) | Application backup and recovery using metadata | semantic metadata in recovery | restores backed-up application capsules and payloads |
 
-Search classes used on 2026-07-29: total source/binary loss reconstruction,
+Search classes used on 2026-07-29 and refreshed on 2026-08-11: total source/binary loss reconstruction,
 specification-guided disaster recovery, program synthesis from distributed traces,
 self-constructing software, semantic fragments, architecture recovery, service
-regeneration, and relevant patents. Sources included general web, arXiv/publisher
-pages, GitHub, package registries, product sites, and Google Patents. No legal
-clearance or exhaustive systematic review has occurred.
+regeneration, and relevant patents. Sources included general web, arXiv and
+publisher pages, GitHub, npm, the Cargo index, product and standards sites, Google
+Patents, and official trademark portal entry points. Exact Anasemble searches
+found only this private GitHub repository; npm returned not found and
+`cargo search` returned no exact package. No legal clearance, expert patent
+search, trademark similarity search, or exhaustive systematic review has occurred.

@@ -145,3 +145,41 @@ Residual M2 limitations:
 
 No M2 result authorizes productisation, a public release, or a general recovery
 claim. M3 is the first unchecked milestone.
+
+## M3 internal review and decision, 2026-08-11
+
+Scope reviewed: refreshed research and collision diligence, current standards and
+commercial baselines, adjacent patents, matched M2 outcomes, authoring and storage
+cost, local compute time, modeled and unmodeled state loss, every TCB element,
+clean-room reproducibility, release authority, adoption, brand, and claim wording.
+
+Material findings resolved:
+
+- Corrected matched baseline isolation so trace-only and centralized-contract
+  modes restrict synthesis evidence while retaining the full held-out and
+  mandatory evidence set for independent evaluation.
+- Split clean-room reproducibility from independent reproduction so another local
+  run by the same implementation process cannot satisfy the independence gate.
+- Recorded the centralized-contract result as a failed differentiation signal:
+  it matches Anasemble's recovery rate on the current corpus.
+- Quantified rather than hand-waved the fixture overhead: 4,011 semantic input
+  bytes versus a 594-byte artifact, excluding ledger duplication and human effort.
+- Added a TCB ledger that keeps the host, compiler, dependencies, Wasmi, configured
+  identities, loss oracle, and shared checker types inside the trust boundary.
+- Required certified campaign expectations to pin candidate identity and linked
+  the retained M3 comparison back to the executable M2 campaign.
+- Superseded the initial continue-as-research decision with a production-engineering roadmap while retaining separate authority for public release, tags, hosted CI, and deployment.
+
+P0 adds only the two foundations required by the production roadmap: a certificate-bound service contract and a bounded local-file state transaction. Network services, generic plugin machinery, and speculative control-plane distribution remain unjustified until later adapter and scaling requirements demand them.
+
+Residual blockers:
+
+- No person or team independent of this implementation process has reproduced the results or reviewed security and soundness; both remain optional post-release assurance.
+- Novelty, patents, freedom to operate, and trademark viability lack expert or
+  legal conclusions.
+- The corpus remains synthetic and too small to establish generality, operational
+  value, or distributed organizational independence.
+- The current comparison shows no advantage over surviving centralized contracts.
+- Warm-cache local timing and one fixture's bytes do not predict production cost.
+
+M3 remains in progress because the internal production-complete roadmap is unfinished. P0.1 and P0.2 are complete; P1 through P4 remain unchecked. External reproduction and review are optional post-release assurance, not the remaining gate. Merging this work must not be described as production completion or a release.

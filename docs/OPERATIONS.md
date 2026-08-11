@@ -28,3 +28,18 @@ databases, queues, or external side effects.
 `evaluate-campaign <root>` reads at most 256 safe single-component workspaces.
 Exit code 0 means every retained expectation matched and unsafe certifications
 were zero; exit code 2 means the campaign completed with a mismatch.
+
+For reproduction, preserve the exact commit, full local-CI output, platform,
+toolchain, dependency acquisition, exit codes, refusals, timeouts, disagreements,
+and warnings. Do not normalize timing or discard negative rows. A mismatch opens
+an incident against the experiment and blocks tags or stronger claims until it is
+classified. The procedure and attestation fields are in
+`INDEPENDENT_REPRODUCTION.md`.
+
+## P0 production foundations
+
+`validate-service <manifest>` validates a bounded `service-v1` HTTP contract and prints its canonical digest. When the same manifest is embedded in `registry.json`, recovery checks the component and interface identity and binds that digest into the certificate. Validation does not claim that the FSM kernel can yet implement arbitrary HTTP bodies or declared effects.
+
+`snapshot-state <store> <source> <component> <schema> <revision>` captures one regular file up to 64 MiB as an immutable SHA-256-addressed object and atomically advances `current.json`. `restore-state <store> <destination>` verifies that object, stages and syncs it beside the destination, preserves an existing destination as `<name>.anasemble-rollback`, records an activation digest, and atomically activates the recovered bytes. Run `rollback-state <destination>` to restore the prior bytes or `commit-state <destination>` to re-verify and accept the recovered bytes before removing rollback.
+
+Store and destination locks use exclusive create. Corruption, symbolic links at direct boundaries, stale locks, staging files, or rollback files fail closed and require operator inspection. Do not delete a lock until process ownership is established. A successful state restore covers one local regular file only; it is not a database, object-store, queue, distributed-transaction, or crash-consistent multi-file guarantee.

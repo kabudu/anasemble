@@ -13,9 +13,17 @@ const REQUIRED: &[&str] = &[
     "docs/E2E_TESTING.md",
     "docs/IMPLEMENTATION_PLAN.md",
     "docs/M0_EXECUTABLE_CONTRACT.md",
+    "docs/M3_DECISION.md",
+    "docs/M3_DILIGENCE_LOG.md",
+    "docs/P0_PRODUCTION_FOUNDATIONS.md",
+    "docs/INDEPENDENT_REPRODUCTION.md",
     "docs/RELEASE.md",
     "docs/REQUIREMENTS_TRACEABILITY.md",
     "docs/VALIDATION.md",
+    "docs/TCB_LEDGER.md",
+    "experiments/m3-comparison.json",
+    "experiments/m3-costs.json",
+    "examples/service-v1.json",
     "docs/DECISIONS/0002-rust-control-plane.md",
 ];
 
@@ -81,5 +89,39 @@ fn validate() -> Result<(), String> {
             return Err("a completed milestone contains unchecked requirements".into());
         }
     }
+    for completed in [
+        "- [x] **P0.1 Service manifest:**",
+        "- [x] **P0.2 Filesystem state adapter:**",
+        "## Optional post-release assurance",
+    ] {
+        if !plan.contains(completed) {
+            return Err(format!(
+                "production roadmap invariant is absent: {completed}"
+            ));
+        }
+    }
+    if !plan.contains("Independent clean-clone reproduction attestation.")
+        || !plan.contains("External security and soundness assessment.")
+    {
+        return Err("optional post-release assurance must remain explicit".into());
+    }
+    let comparison: serde_json::Value = serde_json::from_slice(
+        &fs::read("experiments/m3-comparison.json")
+            .map_err(|error| format!("could not read M3 comparison: {error}"))?,
+    )
+    .map_err(|error| format!("M3 comparison is invalid JSON: {error}"))?;
+    if comparison["methods"]["anasemble"]["certified"] != 1
+        || comparison["methods"]["centralized_contract"]["certified"] != 1
+    {
+        return Err("M3 comparison must retain the matched centralized result".into());
+    }
+    let service: anasemble::service::ServiceManifest = serde_json::from_slice(
+        &fs::read("examples/service-v1.json")
+            .map_err(|error| format!("could not read service example: {error}"))?,
+    )
+    .map_err(|error| format!("service example is invalid JSON: {error}"))?;
+    service
+        .validate()
+        .map_err(|error| format!("service example is invalid: {error}"))?;
     Ok(())
 }

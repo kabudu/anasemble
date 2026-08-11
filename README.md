@@ -19,12 +19,7 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M2 provides a bounded state migration and transactional deployment path, rollback,
-matched baseline execution, registered metric observations, freshness policy, and
-a retained adversarial campaign for the frozen finite-state DSL. It remains a
-synthetic research harness, not a production recovery system or a claim about
-arbitrary service reconstruction.
-Claim boundaries are in [NOVELTY](docs/NOVELTY.md).
+M0 through M2 establish a viable bounded reconstruction kernel. M3 now continues into production engineering: real service contracts, durable state adapters, production identity and evidence distribution, isolated runtime activation, and operational control must be implemented before Anasemble is called production-complete. Independent reproduction and external security review are optional post-release assurance, not implementation gates. Anasemble is not yet approved for public release, production recovery, or arbitrary service reconstruction claims. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and the production roadmap is in [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
 `cargo fetch --locked`, then run the authoritative private-repository CI with

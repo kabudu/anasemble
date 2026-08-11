@@ -103,6 +103,29 @@ fn public_deploy_and_rollback_cli_preserve_modeled_state() {
 }
 
 #[test]
+fn retained_m3_costs_match_fixture_payloads() {
+    let directory = tempdir().unwrap();
+    let workspace = build_workspace(directory.path(), false);
+    let costs: Value = serde_json::from_slice(
+        &fs::read(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("experiments/m3-costs.json"),
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    let fragment_bytes: u64 = fs::read_dir(workspace.recovery.join("fragments"))
+        .unwrap()
+        .map(|entry| entry.unwrap().metadata().unwrap().len())
+        .sum();
+    assert_eq!(
+        costs["artifact_bytes"],
+        fs::metadata(workspace.artifact).unwrap().len()
+    );
+    assert_eq!(costs["semantic_fragment_bytes"], fragment_bytes);
+    assert_eq!(costs["semantic_fragment_count"], 6);
+}
+
+#[test]
 fn campaign_retains_positive_refusal_timeout_disagreement_and_negative_results() {
     let directory = tempdir().unwrap();
     let root = directory.path().join("campaign");
@@ -162,6 +185,50 @@ fn campaign_retains_positive_refusal_timeout_disagreement_and_negative_results()
     assert_eq!(
         report.registered_primary_metrics,
         ["certified-correct-recoveries", "unsafe-certifications"]
+    );
+    let comparison: Value = serde_json::from_slice(
+        &fs::read(
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("experiments/m3-comparison.json"),
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    let baseline_count = |name: &str, observed: &str| {
+        report
+            .cases
+            .iter()
+            .flat_map(|case| &case.baselines)
+            .filter(|baseline| baseline.name == name && baseline.observed == observed)
+            .count() as u64
+    };
+    let baseline_refusals = |name: &str| {
+        report
+            .cases
+            .iter()
+            .flat_map(|case| &case.baselines)
+            .filter(|baseline| baseline.name == name && baseline.observed.starts_with("refused:"))
+            .count() as u64
+    };
+    assert_eq!(comparison["methods"]["anasemble"]["certified"], 1);
+    assert_eq!(
+        comparison["methods"]["backup_replica"]["unavailable"],
+        baseline_count("backup-replica", "unavailable_after_registered_total_loss")
+    );
+    assert_eq!(
+        comparison["methods"]["trace_only"]["certified"],
+        baseline_count("trace-only", "certified")
+    );
+    assert_eq!(
+        comparison["methods"]["centralized_contract"]["certified"],
+        baseline_count("centralized-contract", "certified")
+    );
+    assert_eq!(
+        comparison["methods"]["trace_only"]["refused"],
+        baseline_refusals("trace-only")
+    );
+    assert_eq!(
+        comparison["methods"]["centralized_contract"]["refused"],
+        baseline_refusals("centralized-contract")
     );
     let output = Command::new(env!("CARGO_BIN_EXE_anasemble"))
         .arg("evaluate-campaign")
