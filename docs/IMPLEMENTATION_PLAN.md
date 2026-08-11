@@ -126,3 +126,19 @@ These stages are optional evidence amplifiers. They are not milestone or release
 - [x] Reconcile implementation, compatibility, operator, validation and product status documents.
 
 Productisation completion means the private repository is implementation-complete and operator-usable for the profiles marked `Supported`, with the integrated profile available for experimental evaluation. It does not select a licence or version, authorize publication, make the repository public, enable hosted CI, publish an artifact, or deploy to production. Those are release-preparation and release decisions.
+
+## Open-source release preparation (complete)
+
+- [x] Apply Apache License 2.0 to project source, documentation and owned brand assets with package metadata, `NOTICE` and a separate trademark boundary.
+- [x] Enforce the resolved dependency licence set through Cargo Deny and the authoritative local CI entry point.
+- [x] Add contribution, conduct, governance, support, security-reporting, issue and pull-request policies suitable for public participation.
+- [x] Prepare the source-only `v0.1.0-rc.1` package metadata, curated title/body, installation path and public compatibility/claim boundary.
+- [x] Retain a fail-closed public-opening runbook that separates visibility, hosted CI, tag, GitHub Release, package publication and deployment authority.
+- [x] Audit reachable history for secrets, verify source-package inventory and keep crates.io publication disabled.
+
+## Public release gates
+
+- [ ] Refresh publication-date legal, similar-mark and name review.
+- [ ] Obtain explicit owner approval to make the GitHub repository public.
+- [ ] Add and prove least-privilege hosted CI after public visibility in a separate reviewed pull request.
+- [ ] Approve and create the annotated `v0.1.0-rc.1` tag and matching GitHub Release.

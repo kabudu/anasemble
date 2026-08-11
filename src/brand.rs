@@ -85,7 +85,7 @@ pub fn generate(root: &Path) -> Result<(), String> {
                 "not applicable".into()
             },
             colour_space: "sRGB tokens; monochrome-safe".into(),
-            licence: "project-owned; all rights reserved pending release licensing".into(),
+            licence: "Apache-2.0; trademark rights excluded".into(),
             provenance: "owner-selected Semantic Fit; project-authored vector or text source"
                 .into(),
             allowed_use: "private product, documentation, repository and release preparation"
@@ -160,6 +160,16 @@ fn inventory(brand: &Path) -> Result<Vec<PathBuf>, String> {
             let path = entry
                 .map_err(|error| format!("invalid directory entry: {error}"))?
                 .path();
+            if path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with('.'))
+            {
+                return Err(format!(
+                    "hidden file is forbidden in brand assets: {}",
+                    path.display()
+                ));
+            }
             if path.is_dir() {
                 visit(&path, paths)?;
             } else if path

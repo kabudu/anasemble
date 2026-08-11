@@ -36,8 +36,10 @@ experimental.
 
 ## Separation from release preparation
 
-Productisation completion does not choose a public version or licence, perform
-legal/name clearance, render public release notes, make the repository public,
-enable hosted CI, publish packages or images, create a tag or GitHub Release, or
-authorize production deployment. Those activities begin only when the user
-separately authorizes release preparation.
+Productisation completion is now followed by an Apache-2.0 open-source
+preparation increment. The source candidate version, community policies and
+curated release metadata are prepared, but the repository remains private.
+Preparation does not perform publication-date legal/name clearance, make the
+repository public, enable hosted CI, publish packages or images, create a tag or
+GitHub Release, or authorize production deployment. Those actions remain
+separate gates in `PUBLIC_OPENING.md`.

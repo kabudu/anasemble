@@ -6,6 +6,17 @@ const REQUIRED: &[&str] = &[
     "AGENTS.md",
     "Cargo.lock",
     "Cargo.toml",
+    "LICENSE",
+    "NOTICE",
+    "TRADEMARKS.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "GOVERNANCE.md",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/config.yml",
     "deny.toml",
     "README.md",
     "rust-toolchain.toml",
@@ -26,6 +37,7 @@ const REQUIRED: &[&str] = &[
     "docs/FINAL_SECURITY_SWEEP.md",
     "docs/LINUX_MATRIX.md",
     "docs/PRODUCTISATION.md",
+    "docs/PUBLIC_OPENING.md",
     "docs/BRAND_IDENTITY.md",
     "docs/BRAND_VALIDATION.md",
     "docs/QUICKSTART.md",
@@ -59,6 +71,7 @@ const REQUIRED: &[&str] = &[
     "assets/brand/templates/presentation-title.svg",
     "assets/brand/LICENSES/OWNED-ASSETS.md",
     "release/0.1.0-rc.1.md",
+    "release/0.1.0-rc.1.title",
 ];
 
 fn main() -> ExitCode {
@@ -78,6 +91,7 @@ fn validate() -> Result<(), String> {
         }
     }
     anasemble::brand::validate(Path::new("."))?;
+    validate_open_source_metadata()?;
     if Path::new(".github/workflows").exists() {
         return Err("hosted CI is prohibited while the repository is private".into());
     }
@@ -195,6 +209,58 @@ fn validate() -> Result<(), String> {
         .is_none_or(|line| line.starts_with('#'))
     {
         return Err("release presentation must open with the user-visible outcome".into());
+    }
+    Ok(())
+}
+
+fn validate_open_source_metadata() -> Result<(), String> {
+    let manifest = fs::read_to_string("Cargo.toml")
+        .map_err(|error| format!("could not read Cargo.toml: {error}"))?;
+    for required in [
+        "version = \"0.1.0-rc.1\"",
+        "license = \"Apache-2.0\"",
+        "repository = \"https://github.com/kabudu/anasemble\"",
+        "publish = false",
+    ] {
+        if !manifest.contains(required) {
+            return Err(format!(
+                "open-source package metadata is absent: {required}"
+            ));
+        }
+    }
+    let license = fs::read_to_string("LICENSE")
+        .map_err(|error| format!("could not read LICENSE: {error}"))?;
+    if !license.contains("Apache License")
+        || !license.contains("Version 2.0, January 2004")
+        || !license.contains("END OF TERMS AND CONDITIONS")
+    {
+        return Err("LICENSE is not the complete Apache License 2.0 text".into());
+    }
+    let title = fs::read_to_string("release/0.1.0-rc.1.title")
+        .map_err(|error| format!("could not read release title: {error}"))?;
+    if title.trim() != "Anasemble v0.1.0-rc.1: Evidence-bound recovery"
+        || title.lines().count() != 1
+    {
+        return Err("curated release title is missing or malformed".into());
+    }
+    let notes = fs::read_to_string("release/0.1.0-rc.1.md")
+        .map_err(|error| format!("could not read release notes: {error}"))?;
+    if notes.lines().any(|line| line.starts_with("# "))
+        || notes.contains(title.trim())
+        || notes
+            .lines()
+            .any(|line| line.starts_with("- ") && line.len() > 500)
+    {
+        return Err("curated release notes violate presentation policy".into());
+    }
+    for required in ["LICENSE", "NOTICE", "SECURITY.md", "CONTRIBUTING.md"] {
+        let output = Command::new("git")
+            .args(["check-ignore", "-q", required])
+            .status()
+            .map_err(|error| format!("could not check source distribution: {error}"))?;
+        if output.success() {
+            return Err(format!("release file is excluded from source: {required}"));
+        }
     }
     Ok(())
 }

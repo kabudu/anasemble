@@ -1,10 +1,12 @@
 # Installation and Removal
 
-Build with the pinned toolchain and locked dependencies:
+Install the pinned toolchain, fetch the exact locked dependencies once, then build:
 
 ```text
+rustup show
+cargo fetch --locked
 cargo build --release --locked --offline
-target/release/anasemble install /opt/anasemble-0.0.1
+target/release/anasemble install /opt/anasemble-0.1.0-rc.1
 ```
 
 The prefix must not already exist. Installation stages and syncs a Rust binary,
@@ -19,7 +21,7 @@ Verify `bin/anasemble operations-status <operations-root>` against a disposable 
 Remove an inactive prefix with:
 
 ```text
-/path/to/active/anasemble uninstall /opt/anasemble-0.0.1
+/path/to/active/anasemble uninstall /opt/anasemble-0.1.0-rc.1
 ```
 
 Uninstallation parses the exact install manifest, verifies every installed file digest, and removes only those four files and the now-empty owned directories. It refuses modified files, unknown manifests, links, extra files that make a directory non-empty, or a missing prefix. Operations roots, keys, evidence, state, OCI artifacts, Kubernetes resources, and backend snapshots are never removed by uninstall.

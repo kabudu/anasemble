@@ -19,7 +19,7 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M0 through M2 establish the bounded reconstruction kernel. P0 through P3 add real-service contracts, authenticated and encrypted evidence, filesystem plus PostgreSQL/S3/Redis state recovery, and isolated operator-approved OCI activation. P4 adds restart-safe recovery jobs, queue backpressure, audit chains, metrics, diagnostics, redacted support bundles, configuration migration, exact-prefix installation and removal, compatibility contracts, destructive local drills, sustained scheduler evidence, dependency checks, and release-candidate presentation. Anasemble is implementation-complete for the explicitly supported profiles in [COMPATIBILITY](docs/COMPATIBILITY.md), not for arbitrary service reconstruction. Independent reproduction and external security review are optional post-release assurance, not implementation gates. No public release, production deployment, package publication, or repository visibility change is authorized. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and operational limits are in [P4 operations](docs/P4_OPERATIONS_AND_READINESS.md).
+M0 through M2 establish the bounded reconstruction kernel. P0 through P3 add real-service contracts, authenticated and encrypted evidence, filesystem plus PostgreSQL/S3/Redis state recovery, and isolated operator-approved OCI activation. P4 adds restart-safe recovery jobs, queue backpressure, audit chains, metrics, diagnostics, redacted support bundles, configuration migration, exact-prefix installation and removal, compatibility contracts, destructive local drills, sustained scheduler evidence, dependency checks, and release-candidate presentation. Anasemble is implementation-complete for the explicitly supported profiles in [COMPATIBILITY](docs/COMPATIBILITY.md), not for arbitrary service reconstruction. Independent reproduction and external security review are optional post-release assurance, not implementation gates. The repository is prepared for an Apache-2.0 public source candidate but remains private; no public release, production deployment, package publication or visibility change is authorized by preparation alone. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and operational limits are in [P4 operations](docs/P4_OPERATIONS_AND_READINESS.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
 `cargo fetch --locked`, then run the authoritative private-repository CI with
@@ -39,5 +39,14 @@ under `assets/brand`; release maturity remains a separate overlay.
 
 ## Repository policy
 
-This is a private local repository. Its required remote is a private repository in
-the GitHub account `kabudu`. The default branch is `master`.
+The default branch is `master`. While the remote is private, local CI is the only
+authoritative gate and hosted CI is prohibited. The exact public transition is in
+[PUBLIC_OPENING](docs/PUBLIC_OPENING.md).
+
+## Contributing, security and licence
+
+Anasemble is licensed under [Apache License 2.0](LICENSE). The licence does not
+grant trademark rights in the Anasemble name or Semantic Fit identity. See
+[CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md), [SUPPORT](SUPPORT.md),
+[GOVERNANCE](GOVERNANCE.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) and
+[TRADEMARKS](TRADEMARKS.md) before participating or redistributing the project.
