@@ -13,7 +13,9 @@ Confirm the incident matches the registered component, interface, effects, state
 5. Inspect the certified result and activation plan. A refusal is terminal for that evidence set; do not override it.
 6. Restore PostgreSQL, object, Redis, and filesystem state according to their receipts while writers remain frozen. On any failure, roll back successful restores in reverse order.
 7. Publish the exactly labelled OCI image and obtain operator approval over the plan and artifact binding.
-8. Stage through Docker or the supported Kubernetes cluster, pass the bounded health gate, and switch traffic. Never delete or bypass an activation lease.
+8. Stage through the supported Docker profile or an explicitly accepted
+   experimental Kubernetes profile, pass the bounded health gate, and switch
+   traffic. Never delete or bypass an activation lease.
 9. Exercise representative reads and writes through the customer-facing endpoint. If acceptance fails, roll back activation first, then state receipts in reverse order.
 10. Commit activation and state only after acceptance. Delete temporary plaintext evidence and retain audit, result, approval, receipt, metrics, and support-bundle digests under the incident retention policy.
 11. Only after retained evidence is verified, prune terminal operations records in bounded batches and preserve each prune receipt.

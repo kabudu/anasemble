@@ -38,4 +38,11 @@ and resource-exhaustion evidence for the unchanged sandbox boundary.
 
 M3 binds the retained comparison to the public M2 campaign assertions and publishes `INDEPENDENT_REPRODUCTION.md` for an optional external clean-clone run. P0 then adds the public `validate-service`, `snapshot-state`, `restore-state`, `rollback-state`, and `commit-state` workflows. Tests bind a service manifest digest into a recovery certificate and exercise state integrity, locking, staging, activation failure, rollback, and commit through both module and CLI boundaries.
 
-P4 adds the public operations lifecycle: configuration migration, store creation, deleted-artifact job admission, durable claim, restart recovery, bounded execution, status and metrics, redacted support generation, installation, and exact uninstallation. A sustained test processes 128 durable jobs in two fixed batches. The authoritative CI combines this with the destructive P2 PostgreSQL/S3/Redis drill and P3 Docker/OCI/Kubernetes drill, which together define the supported staging matrix rather than an unbounded Cartesian adapter claim.
+P4 adds the public operations lifecycle: configuration migration, store creation,
+deleted-artifact job admission, durable claim, restart recovery, bounded
+execution, status and metrics, redacted support generation, installation, and
+exact uninstallation. A sustained test processes 128 durable jobs in two fixed
+batches. The authoritative CI combines this with the destructive P2
+PostgreSQL/S3/Redis drill and P3 Docker/OCI/Kubernetes drill. The compatibility
+matrix classifies each resulting profile independently; their union is not a
+supported Cartesian product.

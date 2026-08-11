@@ -210,7 +210,7 @@ fn registry_activation_reconciles_interruption_refuses_split_brain_and_rolls_bac
         &registry_name,
         "--network",
         "host",
-        "registry:2",
+        "registry@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373",
     ]);
     assert!(!registry_port.is_empty());
     let endpoint = "127.0.0.1:5000".to_string();

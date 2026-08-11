@@ -81,14 +81,20 @@ existing lease. A different plan must not bypass or delete that lease. Inspect t
 staged, active, rollback, and lease resources, preserve evidence, then either retry
 the exact approved plan or invoke rollback. Commit only after service-level
 acceptance; commit removes the retained rollback target and lease. Docker is a
-single-host recovery profile. Kubernetes is the production orchestrator profile,
+single-host recovery profile. Kubernetes is the production-shaped orchestrator
+adapter, but remains experimental until a named CNI enforcement drill is retained,
 subject to the cluster trust boundary in [P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).
 
 ## P4 durable job operations
 
 Create an operations root from a reviewed `operations-config-v1` file with `init-operations <root> <config>`. Submit only canonical deleted-artifact workspaces with `enqueue-recovery <root> <workspace> <submitted-unix>`. Queue capacity covers pending and running work; saturation rejects new jobs. `run-jobs <root> <now-unix>` claims at most the configured batch size and executes one worker at a time.
 
-Do not run two control-plane processes against one store. A create-new store lock rejects overlap. If a runner stops after claim, preserve the running record until its lease expires; the next run then records restart recovery and retries within the attempt budget. Do not edit job or result files. Digest, audit-chain, unknown-entry, symlink, staging, and size failures require incident review.
+Do not run two control-plane processes against one store. A create-new store lock
+uses a 495 ms retry-delay budget for transient contention and then rejects
+overlap or a stale lock. If a runner stops after claim, preserve the running record until its
+lease expires; the next run then records restart recovery and retries within the
+attempt budget. Do not edit job or result files. Digest, audit-chain,
+unknown-entry, symlink, staging, and size failures require incident review.
 
 Use `operations-status` for queue counts, terminal outcomes, attempts, restart count, and diagnostic codes. Read a terminal recovery decision through `job-result <root> <job-id>`, which verifies the immutable result against the job digest before returning it. Use `create-support-bundle` only after status collection, review the owner-only JSON before transfer, and retain its digest. It deliberately omits paths, result bodies, refusal messages, fragments, candidates, keys, credentials, approvals, and secrets.
 

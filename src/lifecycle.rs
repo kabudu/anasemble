@@ -17,36 +17,115 @@ pub struct CompatibilityManifest {
     pub version: String,
     pub product_version: String,
     pub rust_version: String,
-    pub platforms: Vec<String>,
+    pub status_definitions: CompatibilityStatusDefinitions,
     pub configuration_versions: Vec<String>,
     pub recovery_protocols: Vec<String>,
-    pub state_backends: Vec<String>,
-    pub activation_backends: Vec<String>,
+    pub profiles: Vec<CompatibilityProfile>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CompatibilityStatusDefinitions {
+    pub implementation: String,
+    pub validation: String,
+    pub support: String,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ImplementationStatus {
+    Implemented,
+    Partial,
+    NotImplemented,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ValidationStatus {
+    Tested,
+    PartiallyTested,
+    Untested,
+}
+
+#[derive(Clone, Copy, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum SupportStatus {
+    Supported,
+    Experimental,
+    Unsupported,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
+#[serde(deny_unknown_fields)]
+pub struct CompatibilityProfile {
+    pub id: String,
+    pub platform: String,
+    pub architecture: String,
+    pub components: Vec<String>,
+    pub transport: String,
+    pub implementation: ImplementationStatus,
+    pub validation: ValidationStatus,
+    pub support: SupportStatus,
+    pub evidence: Vec<String>,
+    pub limitations: Vec<String>,
 }
 
 impl Default for CompatibilityManifest {
     fn default() -> Self {
         Self {
-            version: "compatibility-v1".into(),
+            version: "compatibility-v2".into(),
             product_version: env!("CARGO_PKG_VERSION").into(),
             rust_version: "1.97.0".into(),
-            platforms: vec!["aarch64-apple-darwin".into(), "aarch64-linux-gnu".into()],
+            status_definitions: CompatibilityStatusDefinitions {
+                implementation: "implemented means the bounded code path exists; partial means only part of the named profile exists; not_implemented means it does not exist".into(),
+                validation: "tested means retained evidence exercises the exact profile; partially_tested means only named boundaries were exercised; untested means no retained execution evidence exists".into(),
+                support: "supported means defects are accepted for the exact profile; experimental permits evaluation without that commitment; unsupported must be refused".into(),
+            },
             configuration_versions: vec![
                 "operations-config-v0-migratable".into(),
                 "operations-config-v1".into(),
             ],
             recovery_protocols: vec!["fsm-v1".into(), "service-v1".into()],
-            state_backends: vec![
-                "filesystem-v1".into(),
-                "postgresql-18-local".into(),
-                "s3-compatible-https".into(),
-                "redis-stream-8-local".into(),
-            ],
-            activation_backends: vec![
-                "docker-single-host".into(),
-                "kubernetes-networkpolicy".into(),
+            profiles: vec![
+                profile("macos-arm64-control-plane", "macos", "aarch64", &["control-plane", "filesystem-v1", "operations-v1"], "local-filesystem", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Supported, &["scripts/ci-local.sh", "tests/p4_product_readiness.rs"], &["requires the Rust 1.97.0 locked dependency graph"]),
+                profile("macos-arm64-p2-local-state", "macos", "aarch64", &["postgresql-18", "minio-s3-api", "redis-stream-8.8"], "trusted-loopback", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Supported, &["tests/p2_stateful.rs", "docs/P2_STATEFUL_RECOVERY.md"], &["writers must be quiesced", "no cross-backend transaction"]),
+                profile("macos-arm64-docker-activation", "macos", "aarch64", &["oci-distribution-v2", "docker-engine-29"], "local-docker-daemon", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Supported, &["tests/p3_activation.rs", "docs/P3_ISOLATED_ACTIVATION.md"], &["single host", "Docker daemon and host kernel are trusted"]),
+                profile("macos-arm64-kind-kubernetes-activation", "macos", "aarch64", &["kubernetes-1.36", "kubectl-1.36", "kind-0.32"], "local-kind-cluster", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p3_activation.rs", "docs/P3_ISOLATED_ACTIVATION.md"], &["control objects and switching are tested", "NetworkPolicy enforcement is not tested"]),
+                profile("linux-arm64-control-plane", "linux-gnu", "aarch64", &["control-plane"], "local", ImplementationStatus::Implemented, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["requires a native clean-clone validation run"]),
+                profile("linux-x86_64-control-plane", "linux-gnu", "x86_64", &["control-plane"], "local", ImplementationStatus::Partial, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["portable Rust code exists but the target has not been built or run"]),
+                profile("generic-s3-compatible-https", "provider-managed", "provider-dependent", &["s3-compatible-object-store"], "https", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p2_stateful.rs"], &["only the MinIO S3 API fixture is tested", "provider-specific behavior is unverified"]),
+                profile("production-kubernetes-enforcing-cni", "linux-gnu", "provider-dependent", &["kubernetes-1.36", "networkpolicy-enforcing-cni"], "authenticated-kubernetes-api", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p3_activation.rs"], &["no named production CNI has been validated"]),
+                profile("integrated-recovery-to-activation", "macos", "aarch64", &["p2-state-restoration", "p3-runtime-activation", "public-operations-cli"], "mixed-local", ImplementationStatus::Partial, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["P2 and P3 are separate drills", "the public operations CLI does not orchestrate the complete lifecycle"]),
+                profile("remote-postgresql-or-redis", "provider-managed", "provider-dependent", &["postgresql", "redis-stream"], "remote-network", ImplementationStatus::NotImplemented, ValidationStatus::Untested, SupportStatus::Unsupported, &[], &["authenticated TLS transports and credential references are required"]),
             ],
         }
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn profile(
+    id: &str,
+    platform: &str,
+    architecture: &str,
+    components: &[&str],
+    transport: &str,
+    implementation: ImplementationStatus,
+    validation: ValidationStatus,
+    support: SupportStatus,
+    evidence: &[&str],
+    limitations: &[&str],
+) -> CompatibilityProfile {
+    CompatibilityProfile {
+        id: id.into(),
+        platform: platform.into(),
+        architecture: architecture.into(),
+        components: components.iter().map(|value| (*value).into()).collect(),
+        transport: transport.into(),
+        implementation,
+        validation,
+        support,
+        evidence: evidence.iter().map(|value| (*value).into()).collect(),
+        limitations: limitations.iter().map(|value| (*value).into()).collect(),
     }
 }
 
@@ -114,7 +193,7 @@ pub fn install(prefix: &Path) -> Result<InstallReceipt, Error> {
     let payloads = [
         ("bin/anasemble", executable_bytes.as_slice(), 0o755),
         (
-            "share/compatibility-v1.json",
+            "share/compatibility-v2.json",
             compatibility.as_slice(),
             0o644,
         ),
@@ -188,7 +267,7 @@ pub fn uninstall(prefix: &Path) -> Result<UninstallReceipt, Error> {
     validate_exact_entries(&prefix.join("bin"), &["anasemble"])?;
     validate_exact_entries(
         &prefix.join("share"),
-        &["compatibility-v1.json", "operations-config-v1.json"],
+        &["compatibility-v2.json", "operations-config-v1.json"],
     )?;
     let manifest_path = prefix.join("install-manifest-v1.json");
     let manifest_bytes = read_regular(&manifest_path, 65_536)?;
