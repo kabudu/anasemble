@@ -84,10 +84,10 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 
 ### P3 - isolated runtime and deployment control plane
 
-- [ ] Execute candidates in an OS-level isolation boundary with capability policy, network egress allowlists, filesystem isolation, CPU, memory, process, and wall-time quotas.
-- [ ] Add adapters for at least one production orchestrator and artifact registry, using staged immutable artifacts, health gates, operator approval, idempotency, leases, and transactional rollback.
-- [ ] Add secrets references that never expose secret values to synthesis, logs, fragments, or certificates.
-- [ ] Exit: adversarial candidates cannot exceed declared capabilities, and interrupted or concurrent recovery jobs converge safely without split-brain activation.
+- [x] Execute candidates in an OS-level isolation boundary with capability policy, network egress allowlists, filesystem isolation, CPU, memory, process, and wall-time quotas.
+- [x] Add adapters for at least one production orchestrator and artifact registry, using staged immutable artifacts, health gates, operator approval, idempotency, leases, and transactional rollback.
+- [x] Add secrets references that never expose secret values to synthesis, logs, fragments, or certificates.
+- [x] Exit: adversarial candidates cannot exceed declared capabilities, and interrupted or concurrent recovery jobs converge safely without split-brain activation.
 
 ### P4 - operations, compatibility, and product readiness
 

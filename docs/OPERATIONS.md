@@ -61,3 +61,25 @@ P2 adapters are Rust library interfaces and are not yet exposed as unattended pr
 Preserve staging and rollback resources until activation is accepted. PostgreSQL uses `<target>_anasemble_stage` and `<target>_anasemble_rollback` schemas. Redis uses corresponding staging and rollback keys. S3 rollback objects live under a digest-addressed top-level `anasemble-rollback/` prefix that is deliberately outside the target prefix. A stale resource requires operator investigation; do not delete it automatically.
 
 No transaction spans all backends. If activation fails, invoke rollback for every successful receipt in reverse activation order and retain errors and backend state for incident handling. Local PostgreSQL and Redis transports are trusted-loopback profiles only. Remote production profiles require authenticated TLS and credential references in P4.
+
+## P3 isolated activation operations
+
+Package a candidate as an OCI image with exact `anasemble.plan` and
+`anasemble.candidate` labels. Publication refuses missing or mismatched labels and
+returns an immutable registry receipt. Obtain an Ed25519 operator approval over
+the activation-plan digest and receipt binding before activation. Never substitute
+a mutable tag for the returned digest.
+
+The supported network policy is zero egress. A non-empty allowlist is refused.
+For Kubernetes, verify independently that the target cluster CNI enforces
+NetworkPolicy before treating the adapter as supported. Secret values belong in
+owner-only source files or Kubernetes Secrets created through the operator's
+secret system; specifications contain references only.
+
+An interrupted same-plan activation may be retried and reconciles under its
+existing lease. A different plan must not bypass or delete that lease. Inspect the
+staged, active, rollback, and lease resources, preserve evidence, then either retry
+the exact approved plan or invoke rollback. Commit only after service-level
+acceptance; commit removes the retained rollback target and lease. Docker is a
+single-host recovery profile. Kubernetes is the production orchestrator profile,
+subject to the cluster trust boundary in [P3_ISOLATED_ACTIVATION](P3_ISOLATED_ACTIVATION.md).

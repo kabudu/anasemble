@@ -13,13 +13,16 @@
 | Wasmi embedder | no imports, bounded module, memory, instances, tables, and fuel | capability access, host compromise, or denial of service | import, memory, infinite-loop, and equivalence tests | engine defects, host compromise, and side channels |
 | Evidence ledger | immutable inputs and outcomes are replay-verifiable | lost or rewritten research evidence | content addressing, create-new lock, fsync, atomic rename tests | local filesystem and stale-lock governance |
 | Deployment transaction | certified candidate and mapped state activate as one validated bundle; prior bundle remains recoverable | partial activation or state corruption | digest binding, lock, atomic rename, injected failure, rollback tests | one local file, no distributed effects |
+| Docker isolation and activation adapter | candidate receives only declared process, filesystem, network, capability, and resource authority; one plan owns activation | host escape, excess authority, split brain, or secret disclosure | direct adversarial sandbox, interruption, conflict, secret, idempotency, and rollback tests | Docker daemon, host kernel, root-equivalent daemon authority, and single host |
+| OCI registry adapter | published manifest is immutable and bound to the certified plan and candidate | unrelated or mutable artifact activated | required OCI labels, digest receipt, approval binding, and disposable registry drill | registry availability, storage integrity, authentication, and TLS configuration |
+| Kubernetes activation adapter | one approved immutable deployment receives traffic and the prior deployment remains recoverable | split brain, unapproved activation, secret disclosure, or failed rollback | disposable kind Lease, Deployment, Secret-ref, NetworkPolicy, Service switch, interruption, and rollback drill | API server, scheduler, runtime, admission, CNI policy enforcement, and cluster administrators |
 | Cargo and Rust supply chain | pinned dependency graph and compiler produce the reviewed behavior | compiler or dependency compromise | `Cargo.lock`, Rust 1.97 pin, offline CI, `cargo audit` | no reproducible-build attestation or third-party provenance review |
 | Host and operator | filesystem, clock inputs, keys, and commands reflect the experiment | arbitrary false result | documented procedure and clean-worktree checks | fully trusted local host and operator |
 
 ## Internal review conclusion
 
-No known M0 through P1 path converts malformed input, timeout, unsupported work,
+No known M0 through P3 path converts malformed input, timeout, unsupported work,
 checker disagreement, sandbox rejection, ledger failure, or partial deployment
 into certification. That conclusion is internal and test-backed, not an external
 security assurance. Compromise of the host, compiler, checker dependencies,
-configured issuer policy, or Wasmi engine remains inside the TCB.
+configured issuer policy, Wasmi engine, Docker, OCI registry, or Kubernetes remains inside the TCB.

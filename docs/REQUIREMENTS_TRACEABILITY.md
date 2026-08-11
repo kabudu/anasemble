@@ -26,6 +26,10 @@
 | STATE-3 | Recover bounded object state without accepting a torn snapshot | two-pass S3 key, ETag, and byte capture; disjoint rollback prefix; exact key-set verification; fail-closed bounds | P2 MinIO replacement and rollback drill |
 | STATE-4 | Recover acknowledged durable queue state within its declared model | stable Redis Stream entry and consumer-group capture, preserved IDs and group cursor, pending-entry refusal, atomic key swap, and rollback key | P2 Redis entries, cursor, rollback, and pending-work refusal drill |
 | PROD-2 | Bind behaviour, service contract, schemas, snapshots, and migrations before activation | canonical `activation-plan-v1` with certificate-bound service digest and unique backend resources | P2 three-backend activation binding and mismatched-manifest refusal |
+| SEC-5 | Execute a certified candidate within declared OS and resource capabilities | digest-pinned Docker sandbox with zero egress, read-only root, tmpfs, capability allowlist, CPU, memory, PID, output, and wall bounds | `docker_sandbox_enforces_supported_os_capability_boundary` |
+| PROD-3 | Publish and activate only plan-bound immutable artifacts with explicit operator authority | OCI labels and receipt binding, Ed25519 approval, health-gated Docker and Kubernetes staging | P3 registry and orchestrator drills |
+| REL-5 | Converge safely after interrupted or concurrent activation | per-service lease, same-plan reconciliation, atomic name or Service-selector switch, retained rollback target | Docker and Kubernetes interruption, competing-plan, idempotency, and rollback tests |
+| SEC-6 | Keep runtime secret values outside reconstruction and activation evidence | owner-only Docker file references, Kubernetes Secret name/key references, disabled Docker workload logging | P3 receipt, deployment-object, mount, and log-driver assertions |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational
