@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Correct architecture-diagram labels that touched or crossed component borders
+  under GitHub's rendered font metrics.
+
 - Replace the isolated README mark and detached promise with a compact,
   theme-safe Semantic Fit hero that preserves the accessible product H1.
 

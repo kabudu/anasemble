@@ -30,6 +30,9 @@ Brand version 1.2.0 replaces the isolated README symbol and detached promise
 with one compact hero. Desktop and narrow-width renders retain the hierarchy,
 fixed-theme contrast and Semantic Fit construction without duplicating the H1.
 
+Brand version 1.2.1 adds explicit text-fit safety margins to every architecture
+card after GitHub rendering exposed wider font metrics than the local preview.
+
 The bootstrap validator was also run with `--implementation-authorized`. Its
 repository-wide Markdown pass reports the deliberate missing H1 in
 `release/0.1.0-rc.1.md`: Anasemble's release renderer contract requires the body
