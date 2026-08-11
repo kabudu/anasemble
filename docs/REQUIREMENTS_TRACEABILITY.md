@@ -22,6 +22,10 @@
 | ID-1 | Authenticate production issuers without shared verifier secrets | Ed25519 key IDs, bounded rotation policy, validity, revocation, replay floor, and audit events | P1 rotation, revoked-key, replay, equivocation, and audit tests |
 | EVID-1 | Retrieve evidence from independent stores under bounded failure | signed generation bundles, unique administrative domains, local/HTTPS transports, batched workers, timeouts, retries, quorum, and provenance | P1 loss, compromised-store, quorum, and insecure-transport tests |
 | SEC-4 | Protect semantic evidence and make retention explicit | XChaCha20-Poly1305 seals, restrictive recovery-key files, authenticated retention deadline, temporary materialization, and exact deletion commands | P1 tamper, expiry, materialization, and deletion tests |
+| STATE-2 | Recover bounded relational state without the source database | PostgreSQL schema evidence, binary table snapshots, repeatable-read capture, constraint recreation, verified transactional schema swap, and retained rollback schema | P2 destroys the source schema before restore and verifies rows, foreign keys, and rollback |
+| STATE-3 | Recover bounded object state without accepting a torn snapshot | two-pass S3 key, ETag, and byte capture; disjoint rollback prefix; exact key-set verification; fail-closed bounds | P2 MinIO replacement and rollback drill |
+| STATE-4 | Recover acknowledged durable queue state within its declared model | stable Redis Stream entry and consumer-group capture, preserved IDs and group cursor, pending-entry refusal, atomic key swap, and rollback key | P2 Redis entries, cursor, rollback, and pending-work refusal drill |
+| PROD-2 | Bind behaviour, service contract, schemas, snapshots, and migrations before activation | canonical `activation-plan-v1` with certificate-bound service digest and unique backend resources | P2 three-backend activation binding and mismatched-manifest refusal |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

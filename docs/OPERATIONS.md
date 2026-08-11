@@ -53,3 +53,11 @@ Use `sign-fragment <input> <signing-key> <output>` before `seal-evidence <signed
 Use `retrieve-evidence <config> <output-directory>` to enforce store and fragment quorum and create a verified temporary fragment set. Preserve `receipt.json` with the recovery audit evidence, but treat the other files as sensitive plaintext. Run `delete-evidence <output-directory>` immediately after use. To delete one local encrypted store generation, run `delete-store-bundle <bundle.json>` and retain the returned digest in the operator audit record. These commands do not securely erase lower filesystem or provider layers.
 
 A remote store URL must use HTTPS. Bearer credentials are named by environment-variable reference, never embedded in the store configuration. A failed or invalid store is recorded by ID; recovery proceeds only if authenticated quorum remains. Stale generations, invalid signatures, expired seals, unavailable recovery keys, and revoked or replayed issuer keys fail closed.
+
+## P2 stateful recovery operations
+
+P2 adapters are Rust library interfaces and are not yet exposed as unattended production commands. Snapshot writers must be quiesced for the full snapshot and activation window. PostgreSQL refuses schema changes across capture, S3 refuses unequal two-pass reads, and Redis refuses unequal reads or any pending consumer delivery. Never bypass these refusals.
+
+Preserve staging and rollback resources until activation is accepted. PostgreSQL uses `<target>_anasemble_stage` and `<target>_anasemble_rollback` schemas. Redis uses corresponding staging and rollback keys. S3 rollback objects live under a digest-addressed top-level `anasemble-rollback/` prefix that is deliberately outside the target prefix. A stale resource requires operator investigation; do not delete it automatically.
+
+No transaction spans all backends. If activation fails, invoke rollback for every successful receipt in reverse activation order and retain errors and backend state for incident handling. Local PostgreSQL and Redis transports are trusted-loopback profiles only. Remote production profiles require authenticated TLS and credential references in P4.

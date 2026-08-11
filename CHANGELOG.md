@@ -15,3 +15,4 @@
 - Define the production-complete roadmap and reclassify independent reproduction and external review as optional post-release assurance.
 - Add a certificate-bound `service-v1` HTTP contract and a content-addressed filesystem state snapshot, restore, rollback, and commit workflow with fail-closed public CLI tests.
 - Add the P1 Ed25519 identity lifecycle, signed local and HTTPS fragment stores, bounded quorum retrieval, encrypted evidence retention, explicit deletion workflows, provenance receipts, and adversarial multi-domain drills.
+- Complete P2 stateful recovery with Rust PostgreSQL, S3-compatible object-store, and Redis Stream adapters, evidence-bound migration plans, verified rollback, and a destructive three-backend local drill.

@@ -182,7 +182,7 @@ Residual blockers:
 - The current comparison shows no advantage over surviving centralized contracts.
 - Warm-cache local timing and one fixture's bytes do not predict production cost.
 
-M3 remains in progress because the internal production-complete roadmap is unfinished. P0 and P1 are complete; P2 through P4 remain unchecked. External reproduction and review are optional post-release assurance, not the remaining gate. Merging this work must not be described as production completion or a release.
+M3 remains in progress because the internal production-complete roadmap is unfinished. P0 through P2 are complete; P3 and P4 remain unchecked. External reproduction and review are optional post-release assurance, not the remaining gate. Merging this work must not be described as production completion or a release.
 
 ## P1 review
 
@@ -190,4 +190,4 @@ P1 uses Ed25519 rather than extending shared HMAC into production, and XChaCha20
 
 The review corrected three material issues before delivery: key expiry is evaluated at the registered production verification time, every fragment must meet independent copy quorum rather than inheriting store quorum, and materialized receipts are separated from the recovery-compatible fragment directory. Invalid encrypted records demote their entire store before quorum is evaluated. Plaintext cleanup is exact and fail-closed, but it is not secure erasure.
 
-Remaining boundaries are explicit: no live repository-owned HTTPS success fixture, remote provider deletion API, hardware-backed keys, process isolation, database/object/queue recovery, or proof that configured domains have independent administrators. These do not invalidate the completed local P1 store mode and protocol implementation, but they constrain deployment claims.
+Remaining boundaries are explicit: no live repository-owned HTTPS evidence-store fixture, remote provider deletion API, hardware-backed keys, process isolation, production transport profiles, cross-backend activation transaction, or proof that configured domains have independent administrators. P2 implements bounded PostgreSQL, S3-compatible, and Redis Stream recovery, but these remaining boundaries still constrain deployment claims.
