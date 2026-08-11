@@ -36,6 +36,7 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env RUSTUP_HOME=/workspace/rustup \
     --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$project_dir:/source:ro" \
     --volume "$volume:/workspace" \
@@ -44,6 +45,7 @@ run_profile() {
       git clone --no-local /source /workspace/repo
       cd /workspace/repo
       test "$(uname -m)" = "$EXPECTED_ARCH"
+      rustup toolchain install 1.97.0 --profile minimal --component rustfmt,clippy
       rustc --version --verbose
       cargo fetch --locked
     '
@@ -54,6 +56,7 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env RUSTUP_HOME=/workspace/rustup \
     --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$volume:/workspace" \
     "$image" \
