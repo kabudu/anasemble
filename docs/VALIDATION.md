@@ -1,5 +1,17 @@
 # Validation
 
+## Open-source preparation
+
+The Apache-2.0 preparation gate adds `cargo deny --locked check licenses` to
+local CI. The configured allowlist covers only the permissive SPDX expressions
+resolved by the locked graph; Cargo Deny rejects a new licence until reviewed.
+`repo_check` verifies project licence metadata, the complete root licence,
+community files, source-only publication policy, exact release title and curated
+body structure. `cargo package --locked --allow-dirty --list` inventories the
+candidate crate. A 2026-08-11 `gitleaks git --redact --no-banner .` scan covered
+all 32 then-reachable commits and found no leaks; synthetic test credentials are
+deliberately non-secret fixtures.
+
 ## Registered hypothesis
 
 For components inside the finite DSL, separately distributed executable contracts

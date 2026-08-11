@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a reproducible Anasemble defect without sensitive data
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not report vulnerabilities or include credentials, customer data, fragments, keys, private paths or unredacted receipts. Use SECURITY.md for security reports.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+    validations:
+      required: true
+  - type: input
+    id: profile
+    attributes:
+      label: Compatibility profile and platform
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use disposable systems and sanitised values.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed secrets, private evidence, personal data and production identifiers.
+          required: true

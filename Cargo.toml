@@ -1,9 +1,16 @@
 [package]
 name = "anasemble"
-version = "0.0.1"
+version = "0.1.0-rc.1"
 edition = "2024"
 rust-version = "1.97"
-description = "Bounded service-reconstruction research harness"
+description = "Evidence-bound service reconstruction and disaster recovery"
+license = "Apache-2.0"
+repository = "https://github.com/kabudu/anasemble"
+homepage = "https://github.com/kabudu/anasemble"
+documentation = "https://github.com/kabudu/anasemble/tree/master/docs"
+readme = "README.md"
+keywords = ["disaster-recovery", "reconstruction", "resilience"]
+categories = ["command-line-utilities", "development-tools"]
 publish = false
 
 [dependencies]

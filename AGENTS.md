@@ -31,3 +31,12 @@ For every milestone:
 
 Do not publish a package, release, deployment, or public repository without the
 separate gates and explicit authority documented in `docs/RELEASE.md`.
+
+## Public transition
+
+Repository preparation does not authorize publication. Follow
+`docs/PUBLIC_OPENING.md` for the visibility transition. Add hosted CI only after
+public visibility is explicitly approved and verified, in a separate reviewed
+pull request with pinned actions, least permissions, bounded execution and safe
+fork behavior. Do not enable package publishing, deployments or release secrets
+as part of source opening.

@@ -5,16 +5,16 @@ authoritative local CI gate. Hosted CI, including GitHub Actions, is disabled by
 and requires explicit user approval at a documented public-opening or release
 gate. Absent hosted checks must never be described as passing checks.
 
-No product release is authorized. A research tag requires a frozen DSL and loss
+No product release is authorized by repository preparation alone. An evaluation tag requires a frozen DSL and loss
 oracle, reproducible artifact-absence proof, complete baselines, adversarial
 results, sandbox and soundness review, refreshed novelty/name diligence, and
 published limitations.
 
 The M3 decision authorizes production engineering, not release. P4 completes the implementation roadmap for the profiles in `COMPATIBILITY.md`, but no tag, GitHub Release, package, hosted CI, visibility change, or deployment is authorized without a new explicit user decision. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
 
-`0.1.0-research` may identify the first reproducible artifact. Public packages,
-hosted recovery, real service traces, production deployment, and commercial
-claims each require a separate gate.
+`v0.1.0-rc.1` is the prepared first public source candidate. Public packages, hosted recovery, real service traces, production deployment and commercial claims each require a separate gate. `Cargo.toml` remains `publish = false`, so this candidate is not a crates.io publication.
+
+The source and project-authored assets are licensed under Apache License 2.0, subject to `NOTICE` and the trademark boundary in `TRADEMARKS.md`. Dependency licences must pass `cargo deny --locked check licenses`. Community, support, governance and security policies are repository-owned release surfaces.
 
 ## Release presentation contract
 
@@ -35,8 +35,10 @@ heading hierarchy, wrapping, lists, code fences, links, and placeholder text.
 After publication, inspect the canonical release URL and immediately correct any
 metadata that differs from the approved preview.
 
-## P4 release-candidate evidence
+## Prepared release-candidate evidence
 
-`release/0.1.0-rc.1.md` is the repository-owned curated preview. It is intentionally not a published release and does not select the final public version. Before release authority can be exercised, choose and record a product licence, refresh legal/name clearance, approve the version and title, render the exact notes at desktop and narrow widths, run `./scripts/ci-local.sh`, test install/upgrade/rollback/uninstall from the candidate binary, and verify that `Cargo.toml` publication policy matches the intended release mode.
+`release/0.1.0-rc.1.title` and `release/0.1.0-rc.1.md` are the repository-owned curated preview. Apache License 2.0 and the source candidate version are recorded, but the files are intentionally unpublished. Before release authority can be exercised, refresh legal/name clearance, approve the exact version and title, complete every private gate in `PUBLIC_OPENING.md`, render the exact notes at desktop and narrow widths, run both local validation entry points, test install/upgrade/rollback/uninstall from the clean candidate source and verify that `Cargo.toml` publication policy still matches source-only release intent.
+
+Hosted CI remains prohibited while the repository is private. The public-opening request must separately authorize visibility and hosted-CI activation. The first workflow is added only after public visibility, reviewed in its own pull request and tested without privileged secrets before becoming required.
 
 Release rollback preserves the prior exact-prefix installation, configuration, job store, backend rollback receipts, OCI digest, and Kubernetes prior deployment until acceptance. Roll back the executable reference first, runtime activation second, and backend state in reverse receipt order. A release must not delete an operations root or rewrite job records during downgrade.

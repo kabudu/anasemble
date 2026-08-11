@@ -40,6 +40,6 @@ cargo test --all-targets --all-features --locked --offline
 cargo doc --no-deps --all-features --locked --offline
 cargo metadata --locked --offline --no-deps --format-version 1 >/dev/null
 cargo audit --no-fetch --stale --file Cargo.lock
-cargo deny --offline --locked check advisories bans sources
+cargo deny --offline --locked check advisories bans licenses sources
 cargo run --quiet --locked --offline --bin repo_check
 git diff --check

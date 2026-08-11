@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Prepare the Apache-2.0 public source candidate with licence and notice files,
+  dependency licence policy, release metadata, community governance, security
+  reporting, support boundaries, contribution templates and a fail-closed public
+  opening runbook while retaining private local-CI policy.
+
 - Replaced the preliminary fragment ring with the owner-selected Semantic Fit
   identity and added its complete vector family, accessible tokens, templates,
   provenance, deterministic exports, digest manifest and Rust validation.

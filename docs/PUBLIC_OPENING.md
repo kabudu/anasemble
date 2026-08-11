@@ -1,0 +1,44 @@
+# Public opening runbook
+
+## Prepared state
+
+The repository is prepared for an Apache-2.0 source release but remains private.
+Preparation does not authorize a visibility change, tag, GitHub Release, package
+publication, container publication, hosted CI activation or deployment.
+
+The intended first public source candidate is `v0.1.0-rc.1`, titled “Anasemble
+v0.1.0-rc.1: Evidence-bound recovery.” `Cargo.toml` remains `publish = false`:
+opening the source does not reserve or publish a crates.io package.
+
+## Final private gates
+
+- [ ] Refresh exact and similar name and trademark review at the publication date.
+- [ ] Confirm no confidential agreement, third-party code, customer data or private evidence is present.
+- [ ] Run `gitleaks git --redact` against all reachable history and review every finding.
+- [ ] Run `./scripts/ci-local.sh` on the exact release commit.
+- [ ] Run `./scripts/ci-linux-matrix.sh` on the exact release commit.
+- [ ] Build the release binary from a clean source archive and exercise install, upgrade, rollback and uninstall.
+- [ ] Render the exact release notes at desktop and narrow widths and verify every link.
+- [ ] Obtain explicit owner approval for visibility change, hosted CI activation, tag and GitHub Release as separate actions.
+
+## Visibility transition
+
+Perform these steps in order and stop on any mismatch:
+
+1. Record the approved release commit and verify local `master` equals `origin/master`.
+2. Change repository visibility to public and independently verify owner, name, default branch and `PUBLIC` visibility.
+3. Enable private vulnerability reporting, discussions if desired, and branch protection without weakening the reviewed merge policy.
+4. Add the repository-reviewed public GitHub Actions workflow in a new pull request. It must use pinned action commit SHAs, least permissions, dependency caching without secret exposure, bounded timeouts and the non-destructive public subset. Local CI remains the release authority until the public workflow is proven.
+5. Run the public workflow from an unprivileged fork scenario before making it required. Never expose repository or environment secrets to pull-request code.
+6. Create and verify the annotated tag only after the final commit and release title/body match.
+7. Create the GitHub Release from the exact committed title and body, attach only approved artifacts and inspect the live page immediately.
+
+## Rollback
+
+If confidential content, licensing uncertainty, unsafe workflow behavior or
+misleading release metadata is found before tagging, stop and keep the repository
+private. If found after opening, disable affected automation, preserve evidence,
+rotate any exposed credential, remove public release artifacts when necessary and
+follow GitHub's sensitive-data remediation guidance. Visibility changes do not
+erase cloned history, so history-rewrite decisions require a separate incident
+plan and explicit owner approval.
