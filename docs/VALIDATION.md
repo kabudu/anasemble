@@ -69,3 +69,22 @@ negative result, and zero unsafe certifications. The executable campaign test
 also covers freshness, replay, omission, contradiction, shared domains, forged
 provenance, overfitting, atomic activation failure, and rollback. M1 sandbox tests
 continue to cover imports, memory, and fuel because that boundary is unchanged.
+
+## M3 evidence and decision
+
+`experiments/m3-comparison.json` retains matched aggregate outcomes for Anasemble,
+backup/replica, trace-only, and centralized-contract methods. The executable M2
+campaign test verifies the retained certification and availability counts.
+Centralized contracts match Anasemble's one certification and four refusals, so
+the current corpus does not establish differentiated recovery value.
+
+`experiments/m3-costs.json` records the 2026-08-11 single-fixture measurement:
+594 artifact bytes versus 4,011 semantic input bytes, six signed fragments, and a
+3.22-second warm-cache local CI run on arm64 macOS with Rust 1.97.0. These are
+bounded engineering observations, not production estimates.
+
+The clean-room protocol is in `INDEPENDENT_REPRODUCTION.md`. It has been checked
+for completeness and rerun locally, but no independent party has supplied the
+required attestation. The project therefore records continue-as-research and
+keeps independent reproduction, external security review, and productisation
+open or prohibited as specified in `M3_DECISION.md`.

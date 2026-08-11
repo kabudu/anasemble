@@ -28,3 +28,12 @@ unbounded storage.
 Success requires restoring declared behavior after total artifact deletion,
 rejecting poisoned or ambiguous evidence, and outperforming trace-only synthesis
 and backup/replica baselines on the stated failure model.
+
+## M3 status
+
+The implementation satisfies the bounded technical behaviors and outperforms the
+unavailable backup and trace-only baselines under the stipulated total-loss scope.
+It does not outperform a surviving centralized contract on the synthetic corpus.
+That result, the narrow state model, and absent independent reproduction block
+productisation. The supported user remains a resilience researcher running an
+offline disposable experiment.

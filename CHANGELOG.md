@@ -11,3 +11,6 @@
 - Add M2 modeled-state transformation, atomic deployment and rollback, matched
   baseline and metric campaigns, freshness enforcement, retained adversarial
   results, and public campaign evaluation.
+- Record M3 diligence, matched comparison and cost evidence, the internal TCB and
+  security review, the independent reproduction packet, and the decision to
+  continue only as research.

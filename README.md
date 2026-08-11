@@ -19,11 +19,12 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M2 provides a bounded state migration and transactional deployment path, rollback,
-matched baseline execution, registered metric observations, freshness policy, and
-a retained adversarial campaign for the frozen finite-state DSL. It remains a
-synthetic research harness, not a production recovery system or a claim about
-arbitrary service reconstruction.
+M3 diligence records a **continue-as-research** decision. M0 through M2 establish
+bounded technical feasibility, but the current synthetic corpus does not show an
+advantage over a surviving centralized contract and semantic evidence is larger
+and more expensive to author than the disposable fixture artifact. Independent
+reproduction remains open. Anasemble is not approved for productisation, public
+release, production recovery, or arbitrary service reconstruction claims.
 Claim boundaries are in [NOVELTY](docs/NOVELTY.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with

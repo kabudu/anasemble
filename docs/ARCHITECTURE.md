@@ -65,3 +65,11 @@ The campaign runner executes each registered workspace through the normal
 recovery path and the backup/replica, trace-only, and centralized-contract
 baselines. It retains typed decisions and registered metric observations. This is
 local file transactionality, not a distributed deployment protocol.
+
+## M3 architecture conclusion
+
+No new runtime component is justified. The present limiting factors are external
+evidence, centralized-contract differentiation, and cost, not missing control
+plane machinery. [TCB_LEDGER](TCB_LEDGER.md) records each trusted element and its
+failure consequence. Further architecture work is gated on a larger corpus and
+independent review rather than speculative product surface.

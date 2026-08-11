@@ -42,13 +42,19 @@ Evidence, failure bounds, units, and claim limits are recorded in
 CI executes the public deployment and campaign boundaries. M3 remains the first
 unchecked milestone.
 
-## M3 - productisation decision
+## M3 - productisation decision (in progress: continue as research)
 
-- [ ] Refresh systematic novelty, product, name, standards, and patent diligence.
-- [ ] Complete independent reproduction, security, sandbox, and soundness review.
-- [ ] Compare semantic distribution with replication/backups, trace-only
+- [x] Refresh systematic novelty, product, name, standards, and patent diligence.
+- [x] Publish a clean-room reproduction packet and complete the internal security,
+  sandbox, trusted-computing-base, and soundness review.
+- [ ] Obtain reproduction and security/soundness review by an independent party.
+- [x] Compare semantic distribution with replication/backups, trace-only
   synthesis, and centralized contracts at matched failure scope.
-- [ ] Quantify authoring, storage, compute, operational, and state-loss costs.
-- [ ] Make and record the stop, continue-as-research, or productise decision.
-- [ ] If productisation is approved, complete the separately gated brand,
-  adoption, packaging, release-presentation, and public-release work.
+- [x] Quantify authoring, storage, compute, operational, and state-loss costs.
+- [x] Make and record the stop, continue-as-research, or productise decision.
+- [x] Because productisation is not approved, retain brand, adoption, packaging,
+  release-presentation, and public-release work behind their separate gates.
+
+The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). The sole
+unchecked M3 exit is genuinely independent reproduction and review. No release,
+tag, public opening, product claim, or hosted CI is authorized.

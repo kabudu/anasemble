@@ -11,3 +11,9 @@ shadow mode may generate candidates without deployment.
 Brownfield cost is the central adoption risk: contracts, effects, state, and
 failure-domain provenance must be explicit. Anasemble must quantify this authoring
 cost rather than treating it as free.
+
+M3 quantifies that cost for the synthetic turnstile but does not establish user
+demand, onboarding effort, or ecosystem priority. Product adoption work is not
+authorized by the continue-as-research decision. Any future evaluation must remain
+offline, disposable, credential-free, removable, and advisory-only until a new
+productisation decision is approved.

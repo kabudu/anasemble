@@ -179,7 +179,7 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         .iter()
         .map(|item| item.content.clone())
         .collect();
-    let contents: Vec<_> = all_contents
+    let synthesis_contents: Vec<_> = all_contents
         .iter()
         .filter(|content| match mode {
             RecoveryMode::Full => true,
@@ -207,7 +207,7 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         &registry.component,
         &registry.interface_version,
         &registry.grammar,
-        &contents,
+        &synthesis_contents,
     )?;
     let checker_candidate = encode_checker_candidate(&candidate)?;
     let candidate_digest = digest(&candidate)?;
@@ -224,7 +224,7 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         &checker_candidate,
         &registry.component,
         &registry.interface_version,
-        &contents,
+        &all_contents,
     )?;
     let candidate_wasm = compile_wasm(&candidate)?;
     let sandbox = verify_wasm(&candidate, &candidate_wasm)?;
@@ -238,7 +238,7 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         component: registry.component.clone(),
         interface_version: registry.interface_version,
         survivor_envelope_digests,
-        normalized_constraints_digest: digest(&contents)?,
+        normalized_constraints_digest: digest(&all_contents)?,
         failure_domains: evidence.domains,
         grammar_version: registry.grammar.version.clone(),
         search_bounds: SearchBounds {

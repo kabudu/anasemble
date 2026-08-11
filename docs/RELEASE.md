@@ -10,6 +10,11 @@ oracle, reproducible artifact-absence proof, complete baselines, adversarial
 results, sandbox and soundness review, refreshed novelty/name diligence, and
 published limitations.
 
+The M3 decision is continue-as-research and independent reproduction remains
+unchecked. Therefore `0.1.0-research` is not authorized, and no tag, release
+notes, package, hosted CI, visibility change, or deployment may be created from
+this milestone.
+
 `0.1.0-research` may identify the first reproducible artifact. Public packages,
 hosted recovery, real service traces, production deployment, and commercial
 claims each require a separate gate.

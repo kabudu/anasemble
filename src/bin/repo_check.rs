@@ -13,9 +13,15 @@ const REQUIRED: &[&str] = &[
     "docs/E2E_TESTING.md",
     "docs/IMPLEMENTATION_PLAN.md",
     "docs/M0_EXECUTABLE_CONTRACT.md",
+    "docs/M3_DECISION.md",
+    "docs/M3_DILIGENCE_LOG.md",
+    "docs/INDEPENDENT_REPRODUCTION.md",
     "docs/RELEASE.md",
     "docs/REQUIREMENTS_TRACEABILITY.md",
     "docs/VALIDATION.md",
+    "docs/TCB_LEDGER.md",
+    "experiments/m3-comparison.json",
+    "experiments/m3-costs.json",
     "docs/DECISIONS/0002-rust-control-plane.md",
 ];
 
@@ -80,6 +86,22 @@ fn validate() -> Result<(), String> {
         {
             return Err("a completed milestone contains unchecked requirements".into());
         }
+    }
+    if !plan.contains(
+        "- [ ] Obtain reproduction and security/soundness review by an independent party.",
+    ) || !plan.contains("continue as research")
+    {
+        return Err("M3 must retain its independent-review gate and research-only decision".into());
+    }
+    let comparison: serde_json::Value = serde_json::from_slice(
+        &fs::read("experiments/m3-comparison.json")
+            .map_err(|error| format!("could not read M3 comparison: {error}"))?,
+    )
+    .map_err(|error| format!("M3 comparison is invalid JSON: {error}"))?;
+    if comparison["methods"]["anasemble"]["certified"] != 1
+        || comparison["methods"]["centralized_contract"]["certified"] != 1
+    {
+        return Err("M3 comparison must retain the matched centralized result".into());
     }
     Ok(())
 }

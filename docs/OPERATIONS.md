@@ -28,3 +28,10 @@ databases, queues, or external side effects.
 `evaluate-campaign <root>` reads at most 256 safe single-component workspaces.
 Exit code 0 means every retained expectation matched and unsafe certifications
 were zero; exit code 2 means the campaign completed with a mismatch.
+
+For reproduction, preserve the exact commit, full local-CI output, platform,
+toolchain, dependency acquisition, exit codes, refusals, timeouts, disagreements,
+and warnings. Do not normalize timing or discard negative rows. A mismatch opens
+an incident against the experiment and blocks tags or stronger claims until it is
+classified. The procedure and attestation fields are in
+`INDEPENDENT_REPRODUCTION.md`.

@@ -1,0 +1,12 @@
+{
+  "version": "m3-comparison-v1",
+  "scope": "five synthetic turnstile cases under the registered total-artifact-loss oracle",
+  "methods": {
+    "anasemble": {"certified": 1, "refused": 4, "unsafe_certifications": 0},
+    "backup_replica": {"available": 0, "unavailable": 5},
+    "trace_only": {"certified": 0, "refused": 5},
+    "centralized_contract": {"certified": 1, "refused": 4}
+  },
+  "conclusion": "no recovery-rate advantage over a surviving centralized contract in this corpus",
+  "source": "tests/m2_campaign.rs and experiments/m2-results.json"
+}

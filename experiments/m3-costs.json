@@ -1,0 +1,25 @@
+{
+  "version": "m3-costs-v1",
+  "measured_at": "2026-08-11",
+  "platform": "arm64-apple-darwin",
+  "rust": "1.97.0",
+  "fixture": "synthetic turnstile",
+  "artifact_bytes": 594,
+  "semantic_fragment_count": 6,
+  "semantic_fragment_bytes": 2816,
+  "registry_bytes": 1195,
+  "semantic_input_bytes_total": 4011,
+  "semantic_to_artifact_byte_ratio": 6.75,
+  "authoring_units": {
+    "transition_contracts": 4,
+    "state_policies": 1,
+    "held_out_traces": 1,
+    "issuer_identities": 2,
+    "failure_domains": 2
+  },
+  "minimum_operational_activities": 8,
+  "warm_local_ci_seconds": 3.22,
+  "modeled_state": {"symbols": 1, "schema_versions": 1, "revision_fields": 1},
+  "unmodeled_state_loss": "not quantified and unsupported",
+  "claim": "single local synthetic measurement; not a production cost or recovery-time estimate"
+}

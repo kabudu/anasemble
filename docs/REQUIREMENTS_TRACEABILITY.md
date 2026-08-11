@@ -13,6 +13,10 @@
 | EXP-1 | Execute matched baselines and metrics | bounded campaign runner | `campaign_retains_positive_refusal_timeout_disagreement_and_negative_results` |
 | SEC-3 | Refuse stale or adversarial evidence | freshness window and fail-closed collector | M2 evidence and trust campaign tests |
 | REL-3 | Revert failed deployment | synchronized active and rollback bundles | partial failure and rollback test |
+| NOV-1 | Maintain a falsifiable contribution boundary | dated diligence and prior-art matrix | M3 search log and external challenge gate |
+| REL-4 | Enable independent reproduction without overstating it | clean-room packet and authoritative local CI | local packet verification; independent attestation remains open |
+| PERF-1 | Quantify bounded research cost | retained M3 cost record | fixture byte counts and timed local CI |
+| BRD-1 | Gate product and brand work on evidence and approval | explicit continue-as-research decision | M3 decision and unchanged private-release policy |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

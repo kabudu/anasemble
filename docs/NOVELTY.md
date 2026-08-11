@@ -26,3 +26,29 @@ programs from behavioral constraints.
 
 Do not market this as arbitrary program resurrection or recovery from no
 information. Publication requires a systematic review and empirical evidence.
+
+## M3 refresh, 2026-08-11
+
+The refreshed search added current cloud-recovery plan synthesis, commercial
+block-replication disaster recovery, the current WebAssembly core standard, NIST
+contingency guidance, and adjacent patent families. No searched source describes
+the exact combination of stipulated total deployable-artifact loss, independently
+placed semantic fragments, bounded component synthesis, mandatory independent
+checking, and fail-closed deployment. This remains only differentiation
+hypothesis `NOV-1`, not an established novelty claim.
+
+`NOV-1`: No known searched system reconstructs a lost executable service
+component from independently placed semantic evidence under a verified
+total-artifact-loss oracle and requires separately implemented certification
+before deployment.
+
+Falsification: claim-level systematic review, patent and product challenge,
+independent reproduction, and a matched corpus showing an advantage over a
+surviving centralized contract. The current corpus fails the last condition:
+centralized contracts match Anasemble's recovery rate. Productisation is therefore
+not approved.
+
+The point-in-time search protocol, sources, name results, patent limitations, and
+reconsideration gates are recorded in [M3_DECISION](M3_DECISION.md). No patentability,
+freedom-to-operate, trademark, market-demand, or worldwide novelty conclusion is
+made.
