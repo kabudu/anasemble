@@ -114,8 +114,8 @@
     },
     {
       "path": "assets/brand/exports/anasemble-symbol.svg",
-      "sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
-      "source_sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "sha256": "7be1e0da0d2f5dcd4bbb662210d7310a803971c91258d78296c66768b2f63c16",
+      "source_sha256": "7be1e0da0d2f5dcd4bbb662210d7310a803971c91258d78296c66768b2f63c16",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -235,8 +235,8 @@
     },
     {
       "path": "assets/brand/source/anasemble-symbol.svg",
-      "sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
-      "source_sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "sha256": "7be1e0da0d2f5dcd4bbb662210d7310a803971c91258d78296c66768b2f63c16",
+      "source_sha256": "7be1e0da0d2f5dcd4bbb662210d7310a803971c91258d78296c66768b2f63c16",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
