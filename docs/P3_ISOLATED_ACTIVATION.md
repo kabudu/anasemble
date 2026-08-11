@@ -47,6 +47,9 @@ and wall-time bounds.
 
 The Docker adapter is a single-host recovery profile, not a highly available
 orchestrator. The Kubernetes Service selector update is the atomic traffic switch;
+the Service annotation retains the full active plan digest because label values
+carry only 63 bytes. Same-plan rollback or commit may take over a surviving
+activation lease only after that switch; a competing plan remains refused.
 individual endpoint propagation remains Kubernetes behavior. A host or cluster
 administrator can bypass every control. Side channels, kernel or runtime escapes,
 registry compromise, admission mutation, and faults after explicit commit remain

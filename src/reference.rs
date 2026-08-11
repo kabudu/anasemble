@@ -19,7 +19,7 @@ use crate::protocol::{RecoveryResult, run};
 use crate::service::ServiceManifest;
 use crate::stateful::{
     ActivationPlan, PostgresAdapter, RedisStreamAdapter, RestoreReceipt, S3Adapter, StateSnapshot,
-    TransactionalStateAdapter, bind_activation_plan,
+    TransactionalStateAdapter, bind_activation_plan, validate_activation_plan,
 };
 
 const MAX_CONFIG_BYTES: u64 = 65_536;
@@ -133,6 +133,7 @@ pub struct ReferenceRecoveryReceipt {
     pub redis: RestoreReceipt,
     pub artifact: RegistryReceipt,
     pub activation: ActivationReceipt,
+    pub receipt_sha256: String,
 }
 
 pub fn read_config(path: &Path) -> Result<ReferenceRecoveryConfig, Error> {
@@ -164,9 +165,7 @@ pub fn read_receipt(path: &Path) -> Result<ReferenceRecoveryReceipt, Error> {
         true,
         "reference recovery receipt",
     )?)?;
-    if receipt.version != "reference-recovery-receipt-v1" {
-        return Err(invalid("reference recovery receipt version is unsupported"));
-    }
+    validate_receipt_integrity(&receipt)?;
     Ok(receipt)
 }
 
@@ -334,6 +333,9 @@ pub fn recover_and_activate(
     };
     let activation = match orchestrator.activate(&spec, &approval) {
         Ok(receipt) => receipt,
+        Err(Error::ExternalStateUncertain(message)) => {
+            return Err(Error::ExternalStateUncertain(message));
+        }
         Err(error) => {
             return Err(rollback_failure(
                 error,
@@ -345,7 +347,7 @@ pub fn recover_and_activate(
             ));
         }
     };
-    Ok(ReferenceRecoveryReceipt {
+    let mut receipt = ReferenceRecoveryReceipt {
         version: "reference-recovery-receipt-v1".into(),
         config_sha256: digest(config)?,
         activation_plan,
@@ -354,7 +356,10 @@ pub fn recover_and_activate(
         redis: redis_receipt,
         artifact,
         activation,
-    })
+        receipt_sha256: String::new(),
+    };
+    receipt.receipt_sha256 = digest(&receipt)?;
+    Ok(receipt)
 }
 
 pub fn rollback_recovery(
@@ -362,9 +367,8 @@ pub fn rollback_recovery(
     receipt: &ReferenceRecoveryReceipt,
 ) -> Result<(), Error> {
     validate_config(config)?;
-    if receipt.version != "reference-recovery-receipt-v1"
-        || receipt.config_sha256 != digest(config)?
-    {
+    validate_receipt(config, receipt)?;
+    if receipt.config_sha256 != digest(config)? {
         return Err(invalid("recovery receipt does not bind this configuration"));
     }
     let orchestrator = KubernetesOrchestrator::new(
@@ -397,6 +401,128 @@ pub fn rollback_recovery(
             errors.join("; ")
         )))
     }
+}
+
+pub fn commit_recovery(
+    config: &ReferenceRecoveryConfig,
+    receipt: &ReferenceRecoveryReceipt,
+) -> Result<(), Error> {
+    validate_config(config)?;
+    validate_receipt(config, receipt)?;
+    if receipt.config_sha256 != digest(config)? {
+        return Err(invalid("recovery receipt does not bind this configuration"));
+    }
+    let mut postgres = postgres_adapter(config)?;
+    let mut s3 = s3_adapter(config)?;
+    let mut redis = redis_adapter(config)?;
+
+    // Complete every read-only check before irreversibly retiring any rollback
+    // resource. Commit is then idempotent and preserves the active state.
+    postgres.verify_receipt(&receipt.postgres)?;
+    s3.verify_receipt(&receipt.s3)?;
+    redis.verify_receipt(&receipt.redis)?;
+    postgres.commit(&receipt.postgres)?;
+    s3.commit(&receipt.s3)?;
+    redis.commit(&receipt.redis)?;
+
+    let orchestrator = KubernetesOrchestrator::new(
+        &config.kubernetes.context,
+        ApprovalPolicy {
+            operator_keys: BTreeMap::new(),
+            not_before: config.operator.not_before.clone(),
+            not_after: config.operator.not_after.clone(),
+        },
+    )?;
+    orchestrator.commit(&config.kubernetes.namespace, &config.kubernetes.service)
+}
+
+fn validate_receipt_integrity(receipt: &ReferenceRecoveryReceipt) -> Result<(), Error> {
+    if receipt.version != "reference-recovery-receipt-v1" || receipt.receipt_sha256.is_empty() {
+        return Err(invalid(
+            "reference recovery receipt version or digest is invalid",
+        ));
+    }
+    let mut unsigned = receipt.clone();
+    let expected = std::mem::take(&mut unsigned.receipt_sha256);
+    if digest(&unsigned)? != expected {
+        return Err(invalid("reference recovery receipt digest is invalid"));
+    }
+    validate_activation_plan(&receipt.activation_plan)?;
+    let mut artifact = receipt.artifact.clone();
+    let artifact_binding = std::mem::take(&mut artifact.binding_sha256);
+    if digest(&artifact)? != artifact_binding
+        || receipt.artifact.activation_plan_sha256 != receipt.activation_plan.plan_sha256
+        || receipt.activation.plan_sha256 != receipt.activation_plan.plan_sha256
+        || receipt.activation.immutable_image != receipt.artifact.immutable_image
+    {
+        return Err(invalid(
+            "reference recovery artifact or activation binding is invalid",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_receipt(
+    config: &ReferenceRecoveryConfig,
+    receipt: &ReferenceRecoveryReceipt,
+) -> Result<(), Error> {
+    validate_receipt_integrity(receipt)?;
+    let expected = [
+        (
+            crate::stateful::BackendKind::PostgreSql,
+            &config.postgres.target_schema,
+            &receipt.postgres,
+        ),
+        (
+            crate::stateful::BackendKind::S3Compatible,
+            &config.s3.target_prefix,
+            &receipt.s3,
+        ),
+        (
+            crate::stateful::BackendKind::RedisStream,
+            &config.redis.target_stream,
+            &receipt.redis,
+        ),
+    ];
+    for (backend, target, state_receipt) in expected {
+        let binding = receipt
+            .activation_plan
+            .states
+            .iter()
+            .find(|binding| binding.backend == backend)
+            .ok_or_else(|| invalid("reference recovery receipt is missing a state binding"))?;
+        if state_receipt.backend != backend
+            || state_receipt.target_resource != *target
+            || binding.resource != *target
+            || state_receipt.snapshot_sha256 != binding.snapshot_sha256
+            || state_receipt.migration_sha256 != binding.migration_sha256
+        {
+            return Err(invalid(
+                "reference recovery state receipt binding is invalid",
+            ));
+        }
+        let expected_rollback = match backend {
+            crate::stateful::BackendKind::PostgreSql => {
+                format!("{target}_anasemble_rollback")
+            }
+            crate::stateful::BackendKind::S3Compatible => format!(
+                "anasemble-rollback/{}/",
+                crate::canonical::bytes_digest(target.as_bytes())
+            ),
+            crate::stateful::BackendKind::RedisStream => {
+                format!("{target}:anasemble:rollback")
+            }
+        };
+        if !state_receipt.rollback_token.is_empty()
+            && state_receipt.rollback_token != expected_rollback
+        {
+            return Err(invalid("reference recovery rollback token is invalid"));
+        }
+    }
+    if receipt.activation.service != config.kubernetes.service {
+        return Err(invalid("reference recovery activation service is invalid"));
+    }
+    Ok(())
 }
 
 fn kubernetes_spec(

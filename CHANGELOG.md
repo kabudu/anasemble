@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Seal and cross-validate integrated recovery receipts, preserve restored state
+  across uncertain Kubernetes switch outcomes, enforce loopback-only PostgreSQL
+  and Redis transports, constrain S3 schemes, and add adversarial receipt tests.
+- Complete the operator lifecycle with preflight-verified recovery acceptance
+  that retires PostgreSQL, S3, Redis and Kubernetes rollback resources.
+
 - Add a public reference workflow that prepares PostgreSQL, S3 and Redis state,
   reconstructs after declared loss, publishes a plan-bound OCI image, performs
   operator-approved Kubernetes activation, and rolls the deployment and all

@@ -56,3 +56,7 @@ rollback of Kubernetes and every state backend. The image contains and checks
 the certified finite-state candidate; it is not evidence of generated HTTP server
 code. The separate Linux matrix validates clean-clone control-plane builds and
 non-Docker tests for arm64 and emulated x86_64.
+The same drill repeats recovery after rollback, accepts the sealed receipt through
+the public commit command, verifies the active state remains intact, and proves
+that the retired rollback path is no longer available. A tampered receipt is
+refused before any Kubernetes or backend mutation.

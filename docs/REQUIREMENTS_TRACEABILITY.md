@@ -38,6 +38,8 @@
 | PROD-4 | Map every supported production claim and failure path to retained evidence and operator action | compatibility manifest, staging matrix, disaster runbook, curated preview, roadmap and traceability audit | repository checker plus complete local CI |
 | EVAL-1 | Provide one public workflow from preparation through reconstruction, three-backend restoration, immutable publication, Kubernetes activation, health gating, and rollback | `reference-recovery-config-v1`, sealed state bundle, plan-bound OCI package, operator approval, and retained composite receipt | `reference_workflow_prepares_recovers_activates_and_rolls_back` through three public CLI commands |
 | EVAL-2 | Make Linux portability evidence reproducible without hosted CI | digest-pinned clean clones with one dependency-fetch phase and a network-disabled build/test phase | `scripts/ci-linux-matrix.sh` on arm64 host ISA and emulated x86_64, with exact limits in `docs/LINUX_MATRIX.md` |
+| SEC-8 | Prevent corrupted recovery receipts or uncertain Kubernetes outcomes from directing inconsistent destructive state changes | sealed composite receipt with plan/artifact/backend cross-validation and explicit external-state uncertainty | tampered-receipt refusal plus integrated activation, rollback and acceptance drill |
+| PROD-5 | Let an operator accept a verified integrated recovery and retire rollback resources safely | read-only preflight across PostgreSQL, S3 and Redis followed by idempotent backend and Kubernetes commit | public `commit-reference-recovery` path in `tests/reference_workflow.rs` |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

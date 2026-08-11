@@ -111,6 +111,8 @@ pub trait TransactionalStateAdapter {
     ) -> Result<RestoreReceipt, Error>;
     fn verify(&mut self, snapshot: &StateSnapshot, target: &str) -> Result<(), Error>;
     fn rollback(&mut self, receipt: &RestoreReceipt) -> Result<(), Error>;
+    fn verify_receipt(&mut self, receipt: &RestoreReceipt) -> Result<(), Error>;
+    fn commit(&mut self, receipt: &RestoreReceipt) -> Result<(), Error>;
 }
 
 pub fn bind_activation_plan(
@@ -238,6 +240,7 @@ struct PgConstraint {
 impl PostgresAdapter {
     pub fn connect(connection: &str, source_schema: &str) -> Result<Self, Error> {
         validate_identifier(source_schema)?;
+        validate_loopback_postgres(connection)?;
         Ok(Self {
             client: Client::connect(connection, NoTls).map_err(backend)?,
             source_schema: source_schema.into(),
@@ -578,6 +581,27 @@ impl TransactionalStateAdapter for PostgresAdapter {
         validate_identifier(&failed)?;
         self.client.batch_execute(&format!("BEGIN; DROP SCHEMA IF EXISTS {} CASCADE; ALTER SCHEMA {} RENAME TO {}; ALTER SCHEMA {} RENAME TO {}; COMMIT;",quote(&failed),quote(&receipt.target_resource),quote(&failed),quote(&receipt.rollback_token),quote(&receipt.target_resource))).map_err(backend)
     }
+
+    fn verify_receipt(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        validate_restore_receipt(receipt, BackendKind::PostgreSql)?;
+        if data_digest(&self.capture(&receipt.target_resource)?)? != receipt.verified_data_sha256 {
+            return Err(invalid("PostgreSQL active state changed after recovery"));
+        }
+        Ok(())
+    }
+
+    fn commit(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        self.verify_receipt(receipt)?;
+        if receipt.rollback_token.is_empty() {
+            return Ok(());
+        }
+        self.client
+            .batch_execute(&format!(
+                "DROP SCHEMA IF EXISTS {} CASCADE;",
+                quote(&receipt.rollback_token)
+            ))
+            .map_err(backend)
+    }
 }
 
 pub struct S3Adapter {
@@ -598,8 +622,10 @@ impl S3Adapter {
         validate_prefix(prefix)?;
         let loopback_http =
             endpoint.starts_with("http://127.0.0.1:") || endpoint.starts_with("http://localhost:");
-        if endpoint.starts_with("http://") && !loopback_http {
-            return Err(invalid("remote S3-compatible endpoints require HTTPS"));
+        if !loopback_http && !endpoint.starts_with("https://") {
+            return Err(invalid(
+                "S3-compatible endpoints require HTTPS except for loopback evaluation",
+            ));
         }
         let store = AmazonS3Builder::new()
             .with_endpoint(endpoint)
@@ -639,6 +665,7 @@ impl S3Adapter {
             .block_on(self.store.list(Some(&path)).try_collect())
             .map_err(backend)
     }
+
     fn capture(&self, prefix: &str) -> Result<Vec<StateItem>, Error> {
         let mut items = Vec::new();
         for object in self.metadata(prefix)? {
@@ -798,6 +825,30 @@ impl TransactionalStateAdapter for S3Adapter {
         self.replace_prefix(&receipt.target_resource, &source_items)?;
         self.replace_prefix(&receipt.rollback_token, &[])
     }
+
+    fn verify_receipt(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        validate_restore_receipt(receipt, BackendKind::S3Compatible)?;
+        let mut items = self.capture(&receipt.target_resource)?;
+        for item in &mut items {
+            let suffix = item
+                .key
+                .strip_prefix(&receipt.target_resource)
+                .ok_or_else(|| invalid("S3 active key escaped its target prefix"))?;
+            item.key = format!("{}{}", self.prefix, suffix);
+        }
+        if data_digest(&items)? != receipt.verified_data_sha256 {
+            return Err(invalid("S3 active state changed after recovery"));
+        }
+        Ok(())
+    }
+
+    fn commit(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        self.verify_receipt(receipt)?;
+        if receipt.rollback_token.is_empty() {
+            return Ok(());
+        }
+        self.delete_prefix(&receipt.rollback_token)
+    }
 }
 
 #[derive(Deserialize, Serialize)]
@@ -819,6 +870,7 @@ pub struct RedisStreamAdapter {
 impl RedisStreamAdapter {
     pub fn connect(url: &str, stream: &str) -> Result<Self, Error> {
         validate_redis_key(stream)?;
+        validate_loopback_redis(url)?;
         let client = redis::Client::open(url).map_err(backend)?;
         Ok(Self {
             connection: client.get_connection().map_err(backend)?,
@@ -1035,6 +1087,24 @@ impl TransactionalStateAdapter for RedisStreamAdapter {
             .query::<()>(&mut self.connection)
             .map_err(backend)
     }
+    fn verify_receipt(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        validate_restore_receipt(receipt, BackendKind::RedisStream)?;
+        if data_digest(&self.capture(&receipt.target_resource)?)? != receipt.verified_data_sha256 {
+            return Err(invalid("Redis active state changed after recovery"));
+        }
+        Ok(())
+    }
+    fn commit(&mut self, receipt: &RestoreReceipt) -> Result<(), Error> {
+        self.verify_receipt(receipt)?;
+        if receipt.rollback_token.is_empty() {
+            return Ok(());
+        }
+        redis::cmd("DEL")
+            .arg(&receipt.rollback_token)
+            .query::<i64>(&mut self.connection)
+            .map(|_| ())
+            .map_err(backend)
+    }
 }
 
 fn seal_snapshot(snapshot: &mut StateSnapshot) -> Result<(), Error> {
@@ -1055,6 +1125,49 @@ fn validate_snapshot(s: &StateSnapshot) -> Result<(), Error> {
     }
     Ok(())
 }
+
+fn validate_loopback_postgres(connection: &str) -> Result<(), Error> {
+    if connection.is_empty() || connection.chars().any(char::is_control) {
+        return Err(invalid("PostgreSQL connection is invalid"));
+    }
+    let hosts: Vec<&str> = connection
+        .split_ascii_whitespace()
+        .filter_map(|part| part.strip_prefix("host="))
+        .collect();
+    if hosts.len() != 1 || !matches!(hosts[0], "127.0.0.1" | "localhost") {
+        return Err(invalid(
+            "the PostgreSQL adapter supports one loopback host only",
+        ));
+    }
+    if connection
+        .split_ascii_whitespace()
+        .any(|part| part.starts_with("hostaddr=") || part.starts_with("sslmode="))
+    {
+        return Err(invalid(
+            "PostgreSQL host overrides and TLS modes are unsupported",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_loopback_redis(url: &str) -> Result<(), Error> {
+    let authority = url
+        .strip_prefix("redis://")
+        .and_then(|value| value.split('/').next())
+        .and_then(|value| value.rsplit('@').next())
+        .ok_or_else(|| invalid("Redis URL is invalid"))?;
+    let (host, port) = authority
+        .rsplit_once(':')
+        .ok_or_else(|| invalid("Redis URL must include a loopback host and port"))?;
+    if !matches!(host, "127.0.0.1" | "localhost")
+        || port.is_empty()
+        || !port.bytes().all(|byte| byte.is_ascii_digit())
+    {
+        return Err(invalid("the Redis adapter supports loopback URLs only"));
+    }
+    Ok(())
+}
+
 fn validate_plan(s: &StateSnapshot, p: &MigrationPlan) -> Result<(), Error> {
     validate_snapshot(s)?;
     if p.version != "state-migration-v1"
@@ -1065,6 +1178,19 @@ fn validate_plan(s: &StateSnapshot, p: &MigrationPlan) -> Result<(), Error> {
         || p.rollback_strategy.is_empty()
     {
         return Err(invalid("state migration plan does not match its snapshot"));
+    }
+    Ok(())
+}
+fn validate_restore_receipt(receipt: &RestoreReceipt, backend: BackendKind) -> Result<(), Error> {
+    if receipt.backend != backend {
+        return Err(invalid("state restore receipt has the wrong backend"));
+    }
+    for value in [
+        &receipt.snapshot_sha256,
+        &receipt.migration_sha256,
+        &receipt.verified_data_sha256,
+    ] {
+        require_digest(value)?;
     }
     Ok(())
 }
@@ -1158,4 +1284,21 @@ fn value_bytes(value: redis::Value) -> Result<Vec<u8>, Error> {
 }
 fn object_path(value: &str) -> Result<ObjectPath, Error> {
     ObjectPath::parse(value).map_err(backend)
+}
+
+#[cfg(test)]
+mod transport_tests {
+    use super::{validate_loopback_postgres, validate_loopback_redis};
+
+    #[test]
+    fn remote_and_override_state_transports_are_refused() {
+        assert!(validate_loopback_postgres("host=127.0.0.1 port=5432").is_ok());
+        assert!(validate_loopback_postgres("host=database.example port=5432").is_err());
+        assert!(
+            validate_loopback_postgres("host=localhost hostaddr=203.0.113.10 port=5432").is_err()
+        );
+        assert!(validate_loopback_redis("redis://127.0.0.1:6379/").is_ok());
+        assert!(validate_loopback_redis("redis://cache.example:6379/").is_err());
+        assert!(validate_loopback_redis("rediss://127.0.0.1:6379/").is_err());
+    }
 }

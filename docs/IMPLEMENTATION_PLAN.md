@@ -42,7 +42,7 @@ Evidence, failure bounds, units, and claim limits are recorded in
 CI executes the public deployment and campaign boundaries. M3 remains the first
 unchecked milestone.
 
-## M3 - production engineering decision (in progress)
+## M3 - production engineering decision (complete)
 
 - [x] Refresh systematic novelty, product, name, standards, and patent diligence.
 - [x] Publish a clean-room reproduction packet and complete the internal security,
@@ -52,7 +52,7 @@ unchecked milestone.
   synthesis, and centralized contracts at matched failure scope.
 - [x] Quantify authoring, storage, compute, operational, and state-loss costs.
 - [x] Decide to continue from the proven bounded kernel into production engineering.
-- [ ] Complete the production roadmap below before claiming implementation completeness or product readiness.
+- [x] Complete the production roadmap below before claiming implementation completeness or product readiness.
 
 The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). External reproduction and review may strengthen later claims but do not block completion or productisation. No release, tag, public opening, hosted CI, package publication, or deployment is authorized by this decision.
 
@@ -104,3 +104,14 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 - [ ] Broader third-party deployments and academic replication.
 
 These stages are optional evidence amplifiers. They are not milestone or release blockers unless a later regulated deployment contract explicitly makes them mandatory.
+
+## Productisation boundary (complete)
+
+- [x] Provide a public, bounded prepare, recover, activate, rollback and acceptance lifecycle for the exact integrated evaluation profile.
+- [x] Seal and cross-validate composite receipts before they can direct destructive rollback or acceptance operations.
+- [x] Fail closed on unsupported remote PostgreSQL and Redis transports and on unsupported S3 endpoint schemes.
+- [x] Preserve restored state when the Kubernetes commit point cannot be observed conclusively; never roll state back across an uncertain Service switch.
+- [x] Retain a final whole-repository Lazarus security sweep with no unresolved critical or high internal finding.
+- [x] Reconcile implementation, compatibility, operator, validation and product status documents.
+
+Productisation completion means the private repository is implementation-complete and operator-usable for the profiles marked `Supported`, with the integrated profile available for experimental evaluation. It does not select a licence or version, authorize publication, make the repository public, enable hosted CI, publish an artifact, or deploy to production. Those are release-preparation and release decisions.

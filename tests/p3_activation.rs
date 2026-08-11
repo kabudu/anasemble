@@ -542,7 +542,6 @@ fn kubernetes_orchestrator_switches_atomically_and_reconciles_the_lease() {
         ],
     );
     assert_eq!(selected, new_plan.plan_sha256[..63]);
-    assert!(orchestrator.rollback(&namespace, "turnstile").is_err());
     let (other_plan, other_spec) = make_spec("kube-other");
     assert!(
         orchestrator
@@ -556,8 +555,6 @@ fn kubernetes_orchestrator_switches_atomically_and_reconciles_the_lease() {
             )
             .is_err()
     );
-    let resumed = orchestrator.activate(&new_spec, &new_approval).unwrap();
-    assert!(resumed.idempotent);
     orchestrator.rollback(&namespace, "turnstile").unwrap();
     let selected = docker_kubectl(
         &context,

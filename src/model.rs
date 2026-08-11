@@ -12,6 +12,7 @@ pub enum Error {
     ArtifactPresent(String),
     SearchExhausted(String),
     CheckerRejected(String),
+    ExternalStateUncertain(String),
     Io(std::io::Error),
     Json(serde_json::Error),
 }
@@ -25,7 +26,8 @@ impl fmt::Display for Error {
             | Self::ContradictoryEvidence(message)
             | Self::ArtifactPresent(message)
             | Self::SearchExhausted(message)
-            | Self::CheckerRejected(message) => formatter.write_str(message),
+            | Self::CheckerRejected(message)
+            | Self::ExternalStateUncertain(message) => formatter.write_str(message),
             Self::Io(error) => write!(formatter, "I/O error: {error}"),
             Self::Json(error) => write!(formatter, "JSON error: {error}"),
         }
@@ -63,7 +65,10 @@ impl Error {
     #[must_use]
     pub fn refusal_code(&self) -> RefusalCode {
         match self {
-            Self::InvalidRegistry(_) | Self::Io(_) | Self::Json(_) => RefusalCode::InvalidRegistry,
+            Self::InvalidRegistry(_)
+            | Self::Io(_)
+            | Self::Json(_)
+            | Self::ExternalStateUncertain(_) => RefusalCode::InvalidRegistry,
             Self::InvalidEvidence(_) => RefusalCode::InvalidEvidence,
             Self::InsufficientEvidence(_) => RefusalCode::InsufficientEvidence,
             Self::ContradictoryEvidence(_) => RefusalCode::ContradictoryEvidence,

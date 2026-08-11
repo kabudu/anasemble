@@ -28,6 +28,9 @@ Install the pinned Rust toolchain with `rustup show`, fetch dependencies once wi
 The supported Rust-native installation and disaster procedures are in [INSTALLATION](docs/INSTALLATION.md) and [DISASTER_RUNBOOK](docs/DISASTER_RUNBOOK.md).
 Evaluators can follow the bounded integrated flow in [QUICKSTART](docs/QUICKSTART.md)
 and inspect the clean-clone Linux evidence in [LINUX_MATRIX](docs/LINUX_MATRIX.md).
+The private implementation productisation boundary is recorded in
+[PRODUCTISATION](docs/PRODUCTISATION.md), and the final internal Lazarus security
+sweep is retained in [FINAL_SECURITY_SWEEP](docs/FINAL_SECURITY_SWEEP.md).
 
 ## Repository policy
 

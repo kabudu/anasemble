@@ -47,10 +47,11 @@ The receipt is created exclusively with owner-only permissions and binds the
 activation plan, three backend rollback receipts, immutable OCI artifact and
 Kubernetes activation.
 
-## Roll back
+## Accept or roll back
 
-Retain the receipt until operator acceptance. Rollback first restores the prior
-Kubernetes selector, then Redis, S3 and PostgreSQL in reverse activation order:
+Retain the receipt until operator acceptance. To reject the recovery, rollback
+first restores the prior Kubernetes selector, then Redis, S3 and PostgreSQL in
+reverse activation order:
 
 ```text
 target/release/anasemble rollback-reference-recovery \
@@ -60,8 +61,20 @@ target/release/anasemble rollback-reference-recovery \
 
 If Kubernetes rollback fails, state rollback does not begin, preserving the
 currently active service-to-state relationship. Backend rollback errors are
-reported together after every remaining rollback has been attempted. There is no
-automatic acceptance or deletion of retained rollback resources.
+reported together after every remaining rollback has been attempted.
+
+To accept the recovery, first quiesce writers and commit the sealed receipt:
+
+```text
+target/release/anasemble commit-reference-recovery \
+  /secure/anasemble/reference-config.json \
+  /secure/anasemble/reference-recovery-receipt.json
+```
+
+Acceptance verifies every active backend against the receipt before it deletes
+any rollback resource, then retires PostgreSQL, S3, Redis and Kubernetes rollback
+state. After acceptance, rollback through that receipt is intentionally
+unavailable.
 
 ## What this proves
 
