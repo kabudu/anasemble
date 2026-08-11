@@ -42,4 +42,6 @@ cargo metadata --locked --offline --no-deps --format-version 1 >/dev/null
 cargo audit --no-fetch --stale --file Cargo.lock
 cargo deny --offline --locked check advisories bans licenses sources
 cargo run --quiet --locked --offline --bin repo_check
+(cd website && npm ci --ignore-scripts --offline && npm run build)
+git diff --exit-code -- website/styles.css
 git diff --check

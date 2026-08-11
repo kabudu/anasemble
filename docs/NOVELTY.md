@@ -52,3 +52,13 @@ The point-in-time search protocol, sources, name results, patent limitations, an
 reconsideration gates are recorded in [M3_DECISION](M3_DECISION.md). No patentability,
 freedom-to-operate, trademark, market-demand, or worldwide novelty conclusion is
 made.
+
+## Public-opening refresh, 2026-08-11
+
+The publication-date name screen found no exact Anasemble disaster-recovery
+product or package in the searched surfaces, but it found the active and
+phonetically similar `AINSEMBLE` artistic-production software product and US
+application. This does not alter `NOV-1`, because the products and mechanisms are
+unrelated, but it materially raises the name risk. The bounded result and
+commercialisation stop condition are retained in
+[NAME_DILIGENCE](NAME_DILIGENCE.md).

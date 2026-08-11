@@ -95,8 +95,8 @@ and [claim boundaries](docs/NOVELTY.md) before production evaluation.
 
 ## Project status
 
-`v0.1.0-rc.1` is prepared as an Apache-2.0 public source candidate. The
-repository remains private until the separate checks and approvals in the
+`v0.1.0-rc.1` is prepared as an Apache-2.0 public release candidate. The
+repository remains private until the ordered checks and approvals in the
 [public opening runbook](docs/PUBLIC_OPENING.md) are complete. No package,
 deployment, visibility change, tag, or GitHub Release is implied by this state.
 

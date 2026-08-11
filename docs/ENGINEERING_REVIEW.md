@@ -1,5 +1,20 @@
 # Engineering Review
 
+## Public release-candidate delta review, 2026-08-11
+
+The final private review added the static TailwindCSS website boundary, crates.io
+package contract, exact AWS support claims, and a refreshed security pass over
+the remote PostgreSQL, Redis, S3, and EKS paths. One high-impact resource-bound
+finding was resolved: remote PostgreSQL and S3 payloads could be fully buffered
+before the documented state ceiling was enforced. Reads and listings are now
+bounded before or during collection, with focused refusal coverage. No separate
+crate split, web framework, browser JavaScript, container release, or hosted
+service was added because none is required for the first public candidate.
+
+The active `AINSEMBLE` application is a material name risk, not a software
+correctness defect. Open-source publication carries an explicit non-clearance
+statement; commercialisation remains blocked pending professional advice.
+
 The project is ready only for an executable research contract. The strongest
 design choice is bounding synthesis and making refusal first-class. The weakest
 point is oracle completeness: the system may faithfully satisfy an incomplete

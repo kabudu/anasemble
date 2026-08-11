@@ -1,2 +1,3 @@
 target/
 *.profraw
+website/node_modules/
