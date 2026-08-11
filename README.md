@@ -1,52 +1,124 @@
 # Anasemble
 
-**Regrow function from surviving meaning.**
+<img src="assets/anasemble-mark.svg" alt="Anasemble Semantic Fit mark" width="112">
 
-Anasemble is a research project for reconstructing a lost service component when
-no source, binary, container, or identical replica survives. It combines
-separately distributed executable contracts, protocol traces, and a bounded typed
-grammar to synthesize a non-identical replacement, then subjects it to an
-independent checker before deployment.
+**Recover a lost service component from evidence stored beyond the component's
+failure domain.**
 
-The first experiment uses a finite service-component DSL. It does not claim
-arbitrary program recovery or general autonomous software creation.
+Anasemble is a Rust disaster-recovery control plane for the case ordinary
+deployment artifacts do not survive. It reconstructs bounded service behaviour
+from independently retained contracts and traces, verifies the candidate before
+use, restores associated state, and activates an immutable replacement with an
+operator-approved rollback path.
 
-## Candidate contribution
+Anasemble refuses recovery when the available evidence cannot justify a safe
+result. It complements backups and replication; it does not replace them.
 
-A disaster-recovery protocol in which independently placed semantic fragments are
-sufficient to construct and certify a behaviorally compatible replacement after
-total artifact loss, with explicit refusal when evidence is insufficient.
+## What Anasemble does
 
-## Status
+1. **Prepare:** sign, encrypt, and distribute executable contracts, protocol
+   evidence, and state snapshots away from deployable artifacts.
+2. **Reconstruct:** synthesize a replacement within a finite, typed service
+   grammar after declared artifact loss.
+3. **Certify:** check the candidate against independently retained positive,
+   negative, and metamorphic obligations.
+4. **Restore:** recover filesystem, PostgreSQL, S3-compatible, and Redis Streams
+   state through receipt-bound rollback workflows.
+5. **Activate:** publish an immutable OCI artifact and switch an isolated Docker
+   or Kubernetes workload only after signed operator approval and health checks.
+6. **Accept or roll back:** retain a sealed recovery receipt until the operator
+   commits the recovery or reverses activation and restored state.
 
-M0 through M2 establish the bounded reconstruction kernel. P0 through P3 add real-service contracts, authenticated and encrypted evidence, filesystem plus PostgreSQL/S3/Redis state recovery, and isolated operator-approved OCI activation. P4 adds restart-safe recovery jobs, queue backpressure, audit chains, metrics, diagnostics, redacted support bundles, configuration migration, exact-prefix installation and removal, compatibility contracts, destructive local drills, sustained scheduler evidence, dependency checks, and release-candidate presentation. Anasemble is implementation-complete for the explicitly supported profiles in [COMPATIBILITY](docs/COMPATIBILITY.md), not for arbitrary service reconstruction. Independent reproduction and external security review are optional post-release assurance, not implementation gates. The repository is prepared for an Apache-2.0 public source candidate but remains private; no public release, production deployment, package publication or visibility change is authorized by preparation alone. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and operational limits are in [P4 operations](docs/P4_OPERATIONS_AND_READINESS.md).
+Every stage is fail-closed. Evidence, reconstructed behaviour, state, activation,
+and rollback are bound by hashes and explicit receipts rather than inferred from
+ambient infrastructure.
 
-Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
-`cargo fetch --locked`, then run the authoritative private-repository CI with
-`./scripts/ci-local.sh`.
+## Supported today
 
-The supported Rust-native installation and disaster procedures are in [INSTALLATION](docs/INSTALLATION.md) and [DISASTER_RUNBOOK](docs/DISASTER_RUNBOOK.md).
-Evaluators can follow the bounded integrated flow in [QUICKSTART](docs/QUICKSTART.md)
-and inspect the clean-clone Linux evidence in [LINUX_MATRIX](docs/LINUX_MATRIX.md).
-The private implementation productisation boundary is recorded in
-[PRODUCTISATION](docs/PRODUCTISATION.md), and the final internal Lazarus security
-sweep is retained in [FINAL_SECURITY_SWEEP](docs/FINAL_SECURITY_SWEEP.md).
+The current supported release-candidate profiles are deliberately narrow:
 
-The enduring Semantic Fit visual and verbal system is defined in
-[BRAND_IDENTITY](docs/BRAND_IDENTITY.md). Canonical sources, deterministic SVG
-exports, accessible tokens, templates, provenance and the digest manifest live
-under `assets/brand`; release maturity remains a separate overlay.
+| Profile | Status | Boundary |
+| --- | --- | --- |
+| macOS arm64 control plane | Supported | Rust 1.97.0 and local filesystem |
+| macOS arm64 state recovery | Supported | PostgreSQL 18, MinIO S3 API, and Redis Streams 8.8 on trusted loopback |
+| macOS arm64 Docker activation | Supported | Docker Engine 29 on one trusted host |
+| Kubernetes and integrated end-to-end recovery | Experimental | Kubernetes 1.36; production CNI enforcement is not yet validated |
+| Linux arm64 and x86_64 control plane | Experimental | Clean-container evidence; x86_64 is emulated and production hosts are unverified |
+| Remote PostgreSQL or Redis | Unsupported | Authenticated TLS transports are not implemented |
 
-## Repository policy
+The authoritative [compatibility contract](docs/COMPATIBILITY.md) distinguishes
+implemented, tested, supported, experimental, and unsupported combinations. A
+component appearing in the matrix does not imply that every combination is
+supported.
 
-The default branch is `master`. While the remote is private, local CI is the only
-authoritative gate and hosted CI is prohibited. The exact public transition is in
-[PUBLIC_OPENING](docs/PUBLIC_OPENING.md).
+## Quick start
 
-## Contributing, security and licence
+Build and verify the exact locked Rust dependency graph:
 
-Anasemble is licensed under [Apache License 2.0](LICENSE). The licence does not
-grant trademark rights in the Anasemble name or Semantic Fit identity. See
-[CONTRIBUTING](CONTRIBUTING.md), [SECURITY](SECURITY.md), [SUPPORT](SUPPORT.md),
-[GOVERNANCE](GOVERNANCE.md), [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) and
-[TRADEMARKS](TRADEMARKS.md) before participating or redistributing the project.
+```console
+rustup show
+cargo fetch --locked
+cargo build --release --locked --offline
+./scripts/ci-local.sh
+```
+
+Then follow the [integrated evaluation quickstart](docs/QUICKSTART.md) to prepare
+independent evidence, deliberately remove the original component and state, run
+reconstruction through Kubernetes activation, and exercise rollback and
+acceptance. The drill is destructive and requires disposable PostgreSQL, MinIO,
+Redis, OCI registry, Docker, and kind fixtures.
+
+For installation into an exact immutable prefix, see
+[Installation and removal](docs/INSTALLATION.md). Operators should begin with the
+[Disaster runbook](docs/DISASTER_RUNBOOK.md).
+
+## Safety and scope
+
+Anasemble is implementation-complete for the profiles marked **Supported** in
+the compatibility contract. It is not arbitrary program recovery, autonomous
+software creation, or a substitute for source control, backups, replication,
+point-in-time recovery, object versioning, or queue durability.
+
+The reconstructed candidate currently implements an inspectable finite-state
+service contract; it does not generate a general-purpose HTTP server. Docker,
+the Kubernetes control plane, credential files, operator signing keys, and the
+host kernel remain inside the trusted computing base. Unsupported transports,
+versions, architectures, or evidence combinations are refused rather than
+silently treated as compatible.
+
+Read the [architecture](docs/ARCHITECTURE.md), [trust and security
+ledger](docs/TCB_LEDGER.md), [operations boundaries](docs/P4_OPERATIONS_AND_READINESS.md),
+and [claim boundaries](docs/NOVELTY.md) before production evaluation.
+
+## Project status
+
+`v0.1.0-rc.1` is prepared as an Apache-2.0 public source candidate. The
+repository remains private until the separate checks and approvals in the
+[public opening runbook](docs/PUBLIC_OPENING.md) are complete. No package,
+deployment, visibility change, tag, or GitHub Release is implied by this state.
+
+While the repository is private, `./scripts/ci-local.sh` is the authoritative CI
+gate and hosted CI is intentionally absent. Clean-clone Linux evidence is
+recorded separately in the [Linux matrix](docs/LINUX_MATRIX.md).
+
+## Documentation
+
+- [Integrated evaluation](docs/QUICKSTART.md)
+- [Compatibility matrix](docs/COMPATIBILITY.md)
+- [Installation and removal](docs/INSTALLATION.md)
+- [Disaster runbook](docs/DISASTER_RUNBOOK.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Security policy](SECURITY.md)
+- [Support policy](SUPPORT.md)
+- [Research evidence and novelty boundaries](docs/NOVELTY.md)
+
+## Contributing and licence
+
+Contributions are welcome under the [contribution guide](CONTRIBUTING.md),
+[governance model](GOVERNANCE.md), and [code of conduct](CODE_OF_CONDUCT.md).
+Please report vulnerabilities through the private process in
+[SECURITY.md](SECURITY.md), not a public issue.
+
+Anasemble is licensed under the [Apache License 2.0](LICENSE). The licence does
+not grant trademark rights in the Anasemble name or Semantic Fit identity; see
+[TRADEMARKS.md](TRADEMARKS.md).

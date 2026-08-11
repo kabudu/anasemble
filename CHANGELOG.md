@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replace the research-led README with a product-first entry point covering the
+  recovery outcome, workflow, supported profiles, evaluation path, and safety
+  boundaries, with repository validation to preserve that presentation.
+
 - Prepare the Apache-2.0 public source candidate with licence and notice files,
   dependency licence policy, release metadata, community governance, security
   reporting, support boundaries, contribution templates and a fail-closed public
