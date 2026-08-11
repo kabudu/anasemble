@@ -1,10 +1,18 @@
+use std::collections::BTreeMap;
 use std::env;
+use std::process::Command;
 use std::sync::Arc;
 use std::time::Duration;
 
-use anasemble::stateful::{
-    PostgresAdapter, RedisStreamAdapter, S3Adapter, TransactionalStateAdapter,
+use anasemble::activation::{
+    ApprovalPolicy, HealthProbe, IsolationPolicy, KubernetesDeploymentSpec, KubernetesOrchestrator,
+    KubernetesSecretReference, OperatorApproval, RegistryReceipt, approval_payload,
 };
+use anasemble::stateful::{
+    ActivationPlan, ActivationStateBinding, BackendKind, PostgresAdapter, RedisStreamAdapter,
+    S3Adapter, TransactionalStateAdapter,
+};
+use ed25519_dalek::{Signer, SigningKey};
 use postgres::Client;
 use redis::Commands;
 use rustls::pki_types::{CertificateDer, pem::PemObject};
@@ -124,6 +132,213 @@ fn aws_remote_state_profiles_restore_and_rollback_over_tls() {
             .unwrap(),
         b"rollback"
     );
+}
+
+#[test]
+#[ignore = "requires a tagged ephemeral EKS cluster with VPC CNI policy enforcement"]
+fn aws_eks_activation_switches_rolls_back_and_denies_egress() {
+    let context = required("ANASEMBLE_AWS_KUBE_CONTEXT");
+    let image = required("ANASEMBLE_AWS_KUBE_IMAGE");
+    let suffix = required("ANASEMBLE_AWS_RUN_SUFFIX");
+    let namespace = format!("anasemble-{suffix}");
+    let cleanup = NamespaceCleanup {
+        context: context.clone(),
+        namespace: namespace.clone(),
+    };
+    kubectl(&context, &["create", "namespace", &namespace]);
+    kubectl(
+        &context,
+        &[
+            "create",
+            "secret",
+            "generic",
+            "service-token",
+            "--namespace",
+            &namespace,
+            "--from-literal=token=ephemeral-evaluation-secret",
+        ],
+    );
+
+    let key = SigningKey::from_bytes(&[0x53; 32]);
+    let policy = ApprovalPolicy {
+        operator_keys: BTreeMap::from([("operator-a".into(), key.verifying_key().to_bytes())]),
+        not_before: "2026-08-11T00:00:00Z".into(),
+        not_after: "2026-08-12T00:00:00Z".into(),
+    };
+    let orchestrator = KubernetesOrchestrator::new(&context, policy).unwrap();
+    let make_spec = |seed: &str| {
+        let plan = activation_plan(seed);
+        let artifact = registry_receipt(&plan, &image);
+        let spec = KubernetesDeploymentSpec {
+            version: "kubernetes-deployment-v1".into(),
+            namespace: namespace.clone(),
+            service: "turnstile".into(),
+            artifact,
+            command: vec!["/bin/sleep".into(), "300".into()],
+            isolation: IsolationPolicy {
+                cpu_millis: 250,
+                memory_bytes: 64 * 1024 * 1024,
+                pids: 16,
+                wall_time_ms: 5_000,
+                output_bytes: 65_536,
+                writable_tmpfs_bytes: 4 * 1024 * 1024,
+                linux_capabilities: Vec::new(),
+                network_egress_allowlist: Vec::new(),
+            },
+            secrets: vec![KubernetesSecretReference {
+                id: "token".into(),
+                secret_name: "service-token".into(),
+                secret_key: "token".into(),
+                mount_path: "/run/secrets/token".into(),
+            }],
+            health: HealthProbe {
+                command: vec![
+                    "/usr/bin/test".into(),
+                    "-s".into(),
+                    "/run/secrets/token".into(),
+                ],
+                attempts: 60,
+                interval_ms: 1_000,
+            },
+            service_port: 8080,
+            container_port: 8080,
+        };
+        (plan, spec)
+    };
+
+    let (old_plan, old_spec) = make_spec("eks-old");
+    orchestrator
+        .activate(&old_spec, &approval(&key, &old_plan, &old_spec.artifact))
+        .unwrap();
+    orchestrator.commit(&namespace, "turnstile").unwrap();
+    let (new_plan, new_spec) = make_spec("eks-new");
+    orchestrator
+        .activate(&new_spec, &approval(&key, &new_plan, &new_spec.artifact))
+        .unwrap();
+
+    let deployment = format!("turnstile-stage-{}", &new_plan.plan_sha256[..12]);
+    let denied = Command::new("kubectl")
+        .args([
+            "--context",
+            &context,
+            "exec",
+            &format!("deployment/{deployment}"),
+            "--namespace",
+            &namespace,
+            "--",
+            "/usr/bin/timeout",
+            "3",
+            "/bin/bash",
+            "-c",
+            "</dev/tcp/1.1.1.1/443",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        !denied.status.success(),
+        "zero-egress policy was not enforced"
+    );
+    orchestrator.rollback(&namespace, "turnstile").unwrap();
+    let selected = kubectl(
+        &context,
+        &[
+            "get",
+            "service",
+            "turnstile",
+            "--namespace",
+            &namespace,
+            "-o",
+            "jsonpath={.spec.selector.anasemble\\.plan}",
+        ],
+    );
+    assert_eq!(selected, old_plan.plan_sha256[..63]);
+    drop(cleanup);
+}
+
+struct NamespaceCleanup {
+    context: String,
+    namespace: String,
+}
+
+impl Drop for NamespaceCleanup {
+    fn drop(&mut self) {
+        let _ = Command::new("kubectl")
+            .args([
+                "--context",
+                &self.context,
+                "delete",
+                "namespace",
+                &self.namespace,
+                "--wait=true",
+                "--timeout=60s",
+            ])
+            .output();
+    }
+}
+
+fn activation_plan(seed: &str) -> ActivationPlan {
+    let digest = anasemble::canonical::bytes_digest(seed.as_bytes());
+    let mut plan = ActivationPlan {
+        version: "activation-plan-v1".into(),
+        candidate_sha256: digest.clone(),
+        certificate_sha256: digest.clone(),
+        service_manifest_sha256: digest.clone(),
+        states: vec![ActivationStateBinding {
+            backend: BackendKind::PostgreSql,
+            resource: "database".into(),
+            schema_sha256: digest.clone(),
+            snapshot_sha256: digest.clone(),
+            migration_sha256: digest,
+        }],
+        plan_sha256: String::new(),
+    };
+    plan.plan_sha256 = anasemble::canonical::digest(&plan).unwrap();
+    plan
+}
+
+fn registry_receipt(plan: &ActivationPlan, image: &str) -> RegistryReceipt {
+    let (repository, manifest_sha256) = image.rsplit_once("@sha256:").unwrap();
+    let mut receipt = RegistryReceipt {
+        repository: repository.into(),
+        immutable_image: image.into(),
+        manifest_sha256: manifest_sha256.into(),
+        activation_plan_sha256: plan.plan_sha256.clone(),
+        candidate_sha256: plan.candidate_sha256.clone(),
+        binding_sha256: String::new(),
+    };
+    receipt.binding_sha256 = anasemble::canonical::digest(&receipt).unwrap();
+    receipt
+}
+
+fn approval(
+    key: &SigningKey,
+    plan: &ActivationPlan,
+    artifact: &RegistryReceipt,
+) -> OperatorApproval {
+    let mut approval = OperatorApproval {
+        version: "operator-approval-v1".into(),
+        plan_sha256: plan.plan_sha256.clone(),
+        artifact_sha256: artifact.binding_sha256.clone(),
+        operator_key_id: "operator-a".into(),
+        approved_at: "2026-08-11T12:00:00Z".into(),
+        signature: String::new(),
+    };
+    approval.signature = hex::encode(key.sign(&approval_payload(&approval).unwrap()).to_bytes());
+    approval
+}
+
+fn kubectl(context: &str, args: &[&str]) -> String {
+    let output = Command::new("kubectl")
+        .args(["--context", context])
+        .args(args)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "kubectl failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    String::from_utf8(output.stdout).unwrap()
 }
 
 fn postgres_client(uri: &str, ca_pem: &[u8]) -> Client {
