@@ -1,6 +1,6 @@
 {
   "schema": "anasemble-brand-asset-manifest-v1",
-  "brand_version": "1.2.0",
+  "brand_version": "1.2.1",
   "entries": [
     {
       "path": "assets/brand/LICENSES/OWNED-ASSETS.md",
@@ -15,8 +15,8 @@
     },
     {
       "path": "assets/brand/exports/anasemble-architecture.svg",
-      "sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
-      "source_sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
+      "sha256": "fc02d1ceb9904044c7a10a40550ebed92f03cd3011ff6771d95a43c14109980f",
+      "source_sha256": "fc02d1ceb9904044c7a10a40550ebed92f03cd3011ff6771d95a43c14109980f",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -136,8 +136,8 @@
     },
     {
       "path": "assets/brand/source/anasemble-architecture.svg",
-      "sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
-      "source_sha256": "6fcf857a423c0b29f094d0954d99d1f52284ccc35aacecc3eca464a7b6db4485",
+      "sha256": "fc02d1ceb9904044c7a10a40550ebed92f03cd3011ff6771d95a43c14109980f",
+      "source_sha256": "fc02d1ceb9904044c7a10a40550ebed92f03cd3011ff6771d95a43c14109980f",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -323,8 +323,8 @@
     },
     {
       "path": "assets/brand/tokens/brand-tokens.json",
-      "sha256": "6c96bdaf672c531a782ad4322430bb1386d3fabad8d5ac2b0bc9676eeff63ad2",
-      "source_sha256": "6c96bdaf672c531a782ad4322430bb1386d3fabad8d5ac2b0bc9676eeff63ad2",
+      "sha256": "2d9bbea2e2b1ada47f5764b4c7132ecd0f6ce54c8da09f1dcd2f405b2c223dcd",
+      "source_sha256": "2d9bbea2e2b1ada47f5764b4c7132ecd0f6ce54c8da09f1dcd2f405b2c223dcd",
       "dimensions": "not applicable",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",

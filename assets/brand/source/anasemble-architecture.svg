@@ -74,7 +74,7 @@
       <rect x="100" y="410" width="272" height="94" rx="15" fill="#0B1628" fill-opacity="0.58" stroke="#63B9D2"/>
       <path d="M119 455h10l8-22 10 35 9-24 8 11h10" fill="none" stroke="#63C8DC" stroke-width="2.5" stroke-linejoin="round"/>
       <text x="190" y="443" fill="#FFFFFF" font-size="17" font-weight="650">Protocol traces</text>
-      <text x="190" y="468" fill="#A9BED8" font-size="13">positive · negative · held-out</text>
+      <text x="190" y="468" fill="#A9BED8" font-size="12">positive · negative · held-out</text>
       <text x="190" y="488" fill="#63C8DC" font-size="11" letter-spacing="1">FAILURE DOMAIN B</text>
     </g>
     <g>
@@ -82,7 +82,7 @@
       <ellipse cx="139" cy="546" rx="21" ry="8" fill="none" stroke="#56D6C5" stroke-width="2"/>
       <path d="M118 546v25c0 5 9 8 21 8s21-3 21-8v-25M118 558c0 5 9 8 21 8s21-3 21-8" fill="none" stroke="#56D6C5" stroke-width="2"/>
       <text x="180" y="555" fill="#FFFFFF" font-size="17" font-weight="650">State snapshots</text>
-      <text x="180" y="580" fill="#A9BED8" font-size="13">filesystem · SQL · S3 · streams</text>
+      <text x="180" y="580" fill="#A9BED8" font-size="12">filesystem · SQL · S3 · streams</text>
       <text x="180" y="600" fill="#56D6C5" font-size="11" letter-spacing="1">FAILURE DOMAIN C</text>
     </g>
 
@@ -103,17 +103,17 @@
       <rect x="484" y="282" width="230" height="118" rx="17" fill="#0B1628" stroke="#5E8ED2"/>
       <circle cx="515" cy="316" r="16" fill="#2457A6"/>
       <text x="509" y="322" fill="#FFFFFF" font-size="16" font-weight="700">1</text>
-      <text x="544" y="315" fill="#FFFFFF" font-size="13" font-weight="650">Collect &amp; authenticate</text>
+      <text x="544" y="315" fill="#FFFFFF" font-size="14" font-weight="650">Authenticate evidence</text>
       <text x="510" y="349" fill="#A9BED8" font-size="13">Quorum · identity · freshness</text>
-      <text x="510" y="373" fill="#79A4E4" font-size="12">Encrypted evidence → typed constraints</text>
+      <text x="510" y="373" fill="#79A4E4" font-size="12">Fragments → typed constraints</text>
     </g>
     <g>
       <rect x="758" y="282" width="230" height="118" rx="17" fill="#0B1628" stroke="#E57A2F"/>
       <circle cx="789" cy="316" r="16" fill="#E57A2F"/>
       <text x="783" y="322" fill="#0B1628" font-size="16" font-weight="800">2</text>
       <text x="818" y="315" fill="#FFFFFF" font-size="17" font-weight="650">Bounded synthesis</text>
-      <text x="784" y="349" fill="#A9BED8" font-size="13">Finite typed grammar · fixed budgets</text>
-      <text x="784" y="373" fill="#FFD2AC" font-size="12">One candidate or explicit refusal</text>
+      <text x="784" y="349" fill="#A9BED8" font-size="12">Typed grammar · fixed budgets</text>
+      <text x="784" y="373" fill="#FFD2AC" font-size="12">One candidate or refusal</text>
     </g>
     <path d="M714 341H758" fill="none" stroke="#8FB8F4" stroke-width="2.5" marker-end="url(#arrow)"/>
 
@@ -121,17 +121,17 @@
       <rect x="484" y="446" width="230" height="118" rx="17" fill="#0B1628" stroke="#56D6C5"/>
       <circle cx="515" cy="480" r="16" fill="#169C8C"/>
       <text x="509" y="486" fill="#FFFFFF" font-size="16" font-weight="700">3</text>
-      <text x="544" y="479" fill="#FFFFFF" font-size="17" font-weight="650">Independent checker</text>
-      <text x="510" y="513" fill="#A9BED8" font-size="13">Separate interpreter · held-out duties</text>
-      <text x="510" y="537" fill="#8BE1D5" font-size="12">Candidate + evidence → certificate</text>
+      <text x="544" y="479" fill="#FFFFFF" font-size="16" font-weight="650">Certify candidate</text>
+      <text x="510" y="513" fill="#A9BED8" font-size="12">Separate interpreter · held-out checks</text>
+      <text x="510" y="537" fill="#8BE1D5" font-size="12">Evidence → certificate</text>
     </g>
     <g>
       <rect x="758" y="446" width="230" height="118" rx="17" fill="#0B1628" stroke="#56D6C5"/>
       <circle cx="789" cy="480" r="16" fill="#169C8C"/>
       <text x="783" y="486" fill="#FFFFFF" font-size="16" font-weight="700">4</text>
       <text x="818" y="479" fill="#FFFFFF" font-size="17" font-weight="650">Restore &amp; stage</text>
-      <text x="784" y="513" fill="#A9BED8" font-size="13">Receipt-bound state · immutable OCI</text>
-      <text x="784" y="537" fill="#8BE1D5" font-size="12">Prior state retained for rollback</text>
+      <text x="784" y="513" fill="#A9BED8" font-size="12">State receipt · immutable OCI</text>
+      <text x="784" y="537" fill="#8BE1D5" font-size="12">Prior state retained</text>
     </g>
     <path d="M873 400V421H599V446" fill="none" stroke="#E57A2F" stroke-width="2.5" stroke-dasharray="8 7" marker-end="url(#arrow)"/>
     <text x="668" y="416" fill="#FFD2AC" font-size="11" font-weight="650" letter-spacing="1">UNTRUSTED CANDIDATE</text>
@@ -159,7 +159,7 @@
       <rect x="1130" y="414" width="210" height="126" rx="16" fill="#071B1A" stroke="#56D6C5" stroke-width="1.5"/>
       <rect x="1151" y="439" width="36" height="43" rx="5" fill="#169C8C"/>
       <path d="M1159 460l7 7 14-17" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1202" y="453" fill="#FFFFFF" font-size="16" font-weight="650">Signed approval</text>
+      <text x="1202" y="453" fill="#FFFFFF" font-size="15" font-weight="650">Operator approval</text>
       <text x="1202" y="477" fill="#9ADFD6" font-size="12">Switch traffic once</text>
       <text x="1151" y="505" fill="#FFFFFF" font-size="13" font-weight="650">Immutable replacement</text>
       <text x="1151" y="523" fill="#FFFFFF" font-size="13" font-weight="650">active</text>
@@ -168,7 +168,7 @@
     <g>
       <rect x="1130" y="582" width="210" height="92" rx="16" fill="#071B1A" stroke="#E57A2F"/>
       <path d="M1154 618a18 18 0 1 1 3 21M1154 618v14h14" fill="none" stroke="#FFB36B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1202" y="615" fill="#FFFFFF" font-size="16" font-weight="650">Accept or roll back</text>
+      <text x="1202" y="615" fill="#FFFFFF" font-size="16" font-weight="650">Accept / roll back</text>
       <text x="1202" y="640" fill="#FFD2AC" font-size="12">Sealed recovery receipt</text>
     </g>
 
@@ -185,6 +185,6 @@
     <path d="M680 826v36" stroke="#B42318" stroke-width="7" stroke-linecap="round"/>
     <text x="700" y="849" fill="#B8CCE5" font-size="12">refusal boundary</text>
     <rect x="1018" y="824" width="322" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.14"/>
-    <text x="1042" y="850" fill="#DCEAFF" font-size="12" font-weight="650">No source · binary · image · identical replica required</text>
+    <text x="1042" y="850" fill="#DCEAFF" font-size="12" font-weight="650">No original source · binary · image · replica required</text>
   </g>
 </svg>
