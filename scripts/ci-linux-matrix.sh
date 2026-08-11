@@ -27,6 +27,7 @@ run_profile() {
   platform=$1
   expected_arch=$2
   suffix=$3
+  toolchain_name=$4
   volume="anasemble-linux-matrix-$run_id-$suffix"
   docker volume create "$volume" >/dev/null
   volumes="$volumes $volume"
@@ -36,6 +37,7 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env TOOLCHAIN_NAME="$toolchain_name" \
     --env RUSTUP_HOME=/workspace/rustup \
     --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$project_dir:/source:ro" \
@@ -45,7 +47,8 @@ run_profile() {
       git clone --no-local /source /workspace/repo
       cd /workspace/repo
       test "$(uname -m)" = "$EXPECTED_ARCH"
-      rustup toolchain install 1.97.0 --profile minimal --component rustfmt,clippy
+      /usr/local/cargo/bin/rustup toolchain install 1.97.0 --profile minimal --component rustfmt,clippy
+      export PATH="/workspace/rustup/toolchains/$TOOLCHAIN_NAME/bin:$PATH"
       rustc --version --verbose
       cargo fetch --locked
     '
@@ -56,12 +59,14 @@ run_profile() {
     --env CARGO_HOME=/workspace/cargo \
     --env CARGO_TARGET_DIR=/workspace/target \
     --env EXPECTED_ARCH="$expected_arch" \
+    --env TOOLCHAIN_NAME="$toolchain_name" \
     --env RUSTUP_HOME=/workspace/rustup \
     --env RUSTUP_TOOLCHAIN=1.97.0 \
     --volume "$volume:/workspace" \
     "$image" \
     sh -euc '
       cd /workspace/repo
+      export PATH="/workspace/rustup/toolchains/$TOOLCHAIN_NAME/bin:$PATH"
       test -z "$(git status --short)"
       test "$(uname -m)" = "$EXPECTED_ARCH"
       cargo fmt --all --check
@@ -81,5 +86,5 @@ run_profile() {
     '
 }
 
-run_profile linux/arm64 aarch64 arm64
-run_profile linux/amd64 x86_64 x86_64
+run_profile linux/arm64 aarch64 arm64 1.97.0-aarch64-unknown-linux-gnu
+run_profile linux/amd64 x86_64 x86_64 1.97.0-x86_64-unknown-linux-gnu
