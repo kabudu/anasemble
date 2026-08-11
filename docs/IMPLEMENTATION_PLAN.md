@@ -77,10 +77,10 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 
 ### P2 - stateful service recovery
 
-- [ ] Define the transactional state-adapter contract and implement PostgreSQL, S3-compatible object, and durable queue adapters with consistent snapshots or explicit refusal.
-- [ ] Add schema discovery, migration planning, referential and consistency invariants, restore verification, and backend-native rollback.
-- [ ] Bind reconstructed behavior, state schema, data snapshot, and migration evidence into one activation plan.
-- [ ] Exit: end-to-end drills recover representative HTTP services with database, object, and queue state while proving rollback and no acknowledged-data loss within each declared consistency model.
+- [x] Define the transactional state-adapter contract and implement PostgreSQL, S3-compatible object, and durable queue adapters with consistent snapshots or explicit refusal.
+- [x] Add schema discovery, migration planning, referential and consistency invariants, restore verification, and backend-native rollback.
+- [x] Bind reconstructed behavior, state schema, data snapshot, and migration evidence into one activation plan.
+- [x] Exit: end-to-end drills recover representative HTTP services with database, object, and queue state while proving rollback and no acknowledged-data loss within each declared consistency model.
 
 ### P3 - isolated runtime and deployment control plane
 

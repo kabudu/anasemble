@@ -11,7 +11,7 @@ distributed semantic shards forming a new, visibly non-identical component.
 Complete logo, palette, typography, domain, and launch assets are deferred until
 validation.
 
-The 2026-08-11 M3 decision approves production engineering but not public release. The restrained text identity remains appropriate while P2 through P4 are unfinished. Full visual directions, assets, tokens, trademark work, and launch materials remain part of the P4 product-readiness gate and must not be inferred from P0 or P1 progress.
+The 2026-08-11 M3 decision approves production engineering but not public release. The restrained text identity remains appropriate while P3 and P4 are unfinished. Full visual directions, assets, tokens, trademark work, and launch materials remain part of the P4 product-readiness gate and must not be inferred from P0 through P2 progress.
 
 The 2026-07-29 preliminary collision sweep found no exact Anasemble project,
 GitHub account/repository, npm package, or prominent English-language software

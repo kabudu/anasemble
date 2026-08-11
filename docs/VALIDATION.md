@@ -92,3 +92,9 @@ P0 verification adds module and public-CLI tests for a certificate-bound service
 The P1 suite executes the real key-generation, retrieval, materialization, and deletion CLI boundary plus focused cryptographic and policy functions. It proves that two signed administrative stores recover six independently signed and encrypted fragments when a third store is lost; every fragment must meet copy quorum. A store with invalid ciphertext is excluded without blocking recovery when two complete stores survive.
 
 Negative paths cover a compromised store signature, insufficient store quorum, insufficient per-fragment copies, issuer revocation, replay floors, equivocation, verification-time key expiry, ciphertext tampering, retention expiry, permissive secret-file exposure, and cleartext remote URLs. HTTPS success is implemented through Rustls/WebPKI but does not yet have a repository-owned live TLS fixture; the local signed-store drill is the retained P1 end-to-end evidence.
+
+## P2 stateful recovery validation
+
+The P2 drill starts dedicated disposable PostgreSQL 18, MinIO, and Redis 8 containers. It snapshots a relational schema with referential constraints, destroys the source schema, restores into a staged schema, verifies rows and foreign-key enforcement, and rolls back to the prior target. It also restores and rolls back exact object bytes and Redis Stream entries while preserving a consumer-group cursor. A pending Redis delivery is refused.
+
+The same drill reconstructs a certified `service-v1` HTTP service and binds its certificate, service manifest, three schemas, snapshots, and migration plans into one canonical activation plan. A mismatched service digest is rejected. This is backend recovery evidence, not OS-isolated runtime activation or cross-backend atomicity; those remain P3 work.

@@ -15,6 +15,7 @@ pub mod protocol;
 pub mod sandbox;
 pub mod service;
 pub mod state_store;
+pub mod stateful;
 pub mod synthesizer;
 
 pub use model::{Error, RefusalCode};
