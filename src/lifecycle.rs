@@ -11,6 +11,8 @@ use crate::canonical::{bytes_digest, encode};
 use crate::model::Error;
 use crate::operations::OperationsConfig;
 
+const MAX_INSTALL_FILE_BYTES: u64 = 256 * 1024 * 1024;
+
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct CompatibilityManifest {
@@ -187,7 +189,7 @@ pub fn install(prefix: &Path) -> Result<InstallReceipt, Error> {
     fs::create_dir(&bin)?;
     fs::create_dir(&share)?;
     let executable = std::env::current_exe()?;
-    let executable_bytes = read_regular(&executable, 128 * 1024 * 1024)?;
+    let executable_bytes = read_regular(&executable, MAX_INSTALL_FILE_BYTES)?;
     let compatibility = encode(&CompatibilityManifest::default())?;
     let config = encode(&OperationsConfig::default())?;
     let payloads = [
@@ -281,7 +283,7 @@ pub fn uninstall(prefix: &Path) -> Result<UninstallReceipt, Error> {
     for file in &manifest.files {
         validate_relative(&file.relative_path)?;
         let path = prefix.join(&file.relative_path);
-        let bytes = read_regular(&path, 128 * 1024 * 1024)?;
+        let bytes = read_regular(&path, MAX_INSTALL_FILE_BYTES)?;
         if bytes_digest(&bytes) != file.sha256 {
             return Err(invalid("installed file changed; uninstallation refused"));
         }
