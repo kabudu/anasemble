@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  public-safe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the reviewed revision
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install the pinned Rust toolchain
+        run: rustup toolchain install 1.97.0 --profile minimal --component rustfmt,clippy
+      - name: Configure Node.js dependency cache
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24.4.1
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - name: Fetch locked Rust dependencies
+        run: cargo fetch --locked
+      - name: Validate the non-destructive public subset
+        run: |
+          cargo fmt --all --check
+          cargo clippy --lib --bins --tests --locked --offline -- -D warnings
+          cargo test --locked --offline --lib --bins \
+            --test cli_e2e \
+            --test m0_contract \
+            --test m1_loop \
+            --test m2_campaign \
+            --test p1_evidence_plane \
+            --test p4_product_readiness \
+            --test production_foundations
+          cargo doc --no-deps --all-features --locked --offline
+          cargo package --locked --offline
+          cargo run --quiet --locked --offline --bin repo_check
+      - name: Verify the static website build
+        run: |
+          npm --prefix website ci --ignore-scripts
+          npm --prefix website run build
+          git diff --exit-code -- website/styles.css

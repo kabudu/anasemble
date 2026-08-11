@@ -111,9 +111,7 @@ fn validate() -> Result<(), String> {
     validate_open_source_metadata()?;
     validate_product_readme()?;
     validate_website()?;
-    if Path::new(".github/workflows").exists() {
-        return Err("hosted CI is prohibited while the repository is private".into());
-    }
+    validate_public_ci()?;
     let output = Command::new("git")
         .args(["ls-files", "--cached", "--others", "--exclude-standard"])
         .output()
@@ -228,6 +226,47 @@ fn validate() -> Result<(), String> {
         .is_none_or(|line| line.starts_with('#'))
     {
         return Err("release presentation must open with the user-visible outcome".into());
+    }
+    Ok(())
+}
+
+fn validate_public_ci() -> Result<(), String> {
+    let path = Path::new(".github/workflows/ci.yml");
+    if !path.is_file() {
+        return Err("the public CI workflow is absent".into());
+    }
+    let workflow = fs::read_to_string(path)
+        .map_err(|error| format!("could not read public CI workflow: {error}"))?;
+    let required = [
+        "permissions:\n  contents: read",
+        "timeout-minutes: 25",
+        "persist-credentials: false",
+        "cargo test --locked --offline",
+        "cargo package --locked --offline",
+        "npm --prefix website ci --ignore-scripts",
+    ];
+    for boundary in required {
+        if !workflow.contains(boundary) {
+            return Err(format!("public CI boundary is absent: {boundary:?}"));
+        }
+    }
+    for forbidden in ["pull_request_target", "secrets.", "permissions: write-all"] {
+        if workflow.contains(forbidden) {
+            return Err(format!(
+                "unsafe public CI construct is present: {forbidden}"
+            ));
+        }
+    }
+    for line in workflow.lines().map(str::trim) {
+        if let Some(action) = line.strip_prefix("uses: ") {
+            let Some((_, revision)) = action.split_once('@') else {
+                return Err(format!("action is not revision-pinned: {action}"));
+            };
+            let revision = revision.split_whitespace().next().unwrap_or_default();
+            if revision.len() != 40 || !revision.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+                return Err(format!("action is not pinned to a commit SHA: {action}"));
+            }
+        }
     }
     Ok(())
 }

@@ -147,7 +147,7 @@ Productisation completion means the private repository is implementation-complet
 
 ## Public release gates
 
-- [ ] Refresh publication-date legal, similar-mark and name review.
-- [ ] Obtain explicit owner approval to make the GitHub repository public.
+- [x] Refresh publication-date legal, similar-mark and name review.
+- [x] Obtain explicit owner approval to make the GitHub repository public.
 - [ ] Add and prove least-privilege hosted CI after public visibility in a separate reviewed pull request.
 - [ ] Approve and create the annotated `v0.1.0-rc.1` tag and matching GitHub Release.

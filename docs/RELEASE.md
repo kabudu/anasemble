@@ -1,9 +1,9 @@
 # Release Strategy
 
-While the repository is private, `./scripts/ci-local.sh` is the only
-authoritative local CI gate. Hosted CI, including GitHub Actions, is disabled by policy
-and requires explicit user approval at a documented public-opening or release
-gate. Absent hosted checks must never be described as passing checks.
+`./scripts/ci-local.sh` remains the authoritative release gate. After the
+repository became public, the owner-authorized GitHub Actions workflow added a
+least-privilege, non-destructive contributor gate; it does not replace the
+Docker, Kubernetes, security-tooling, or cross-architecture local evidence.
 
 No product release is authorized by repository preparation alone. An evaluation tag requires a frozen DSL and loss
 oracle, reproducible artifact-absence proof, complete baselines, adversarial
@@ -46,6 +46,9 @@ metadata that differs from the approved preview.
 
 `release/0.1.0-rc.1.title` and `release/0.1.0-rc.1.md` are the repository-owned curated preview. Apache License 2.0 and the source candidate version are recorded, but the files are intentionally unpublished. Before release authority can be exercised, refresh legal/name diligence, approve the exact version and title, complete every private gate in `PUBLIC_OPENING.md`, render the exact notes at desktop and narrow widths, run both local validation entry points, test install/upgrade/rollback/uninstall from the clean candidate source and verify the exact crates.io package inventory.
 
-Hosted CI remains prohibited while the repository is private. The public-opening request must separately authorize visibility and hosted-CI activation. The first workflow is added only after public visibility, reviewed in its own pull request and tested without privileged secrets before becoming required.
+Hosted CI is prohibited while the repository is private. The public workflow is
+therefore added only after public visibility, in its own reviewed pull request.
+It uses no secrets on pull requests and remains non-required until its fork-safe
+behaviour is proven.
 
 Release rollback preserves the prior exact-prefix installation, configuration, job store, backend rollback receipts, OCI digest, and Kubernetes prior deployment until acceptance. Roll back the executable reference first, runtime activation second, and backend state in reverse receipt order. A release must not delete an operations root or rewrite job records during downgrade.
