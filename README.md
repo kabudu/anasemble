@@ -5,6 +5,13 @@
   <img src="assets/brand/exports/anasemble-readme-hero.svg" alt="Anasemble: Regrow function from surviving meaning. Recover a lost service component from evidence stored beyond its failure domain." width="100%">
 </picture>
 
+[![CI](https://github.com/kabudu/anasemble/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kabudu/anasemble/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/kabudu/anasemble?include_prereleases&sort=semver&label=release)](https://github.com/kabudu/anasemble/releases/tag/v0.1.0-rc.1)
+[![crates.io](https://img.shields.io/crates/v/anasemble.svg)](https://crates.io/crates/anasemble)
+[![docs.rs](https://img.shields.io/docsrs/anasemble)](https://docs.rs/anasemble)
+[![Rust 1.97+](https://img.shields.io/badge/rust-1.97%2B-CE422B?logo=rust)](rust-toolchain.toml)
+[![Apache-2.0](https://img.shields.io/github/license/kabudu/anasemble)](LICENSE)
+
 Anasemble is a Rust disaster-recovery control plane for the case ordinary
 deployment artifacts do not survive. It reconstructs bounded service behaviour
 from independently retained contracts and traces, verifies the candidate before
