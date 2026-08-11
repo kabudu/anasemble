@@ -47,6 +47,8 @@
 | EVAL-2 | Make Linux portability evidence reproducible without hosted CI | digest-pinned clean clones with one dependency-fetch phase and a network-disabled build/test phase | `scripts/ci-linux-matrix.sh` on arm64 host ISA and emulated x86_64, with exact limits in `docs/LINUX_MATRIX.md` |
 | SEC-8 | Prevent corrupted recovery receipts or uncertain Kubernetes outcomes from directing inconsistent destructive state changes | sealed composite receipt with plan/artifact/backend cross-validation and explicit external-state uncertainty | tampered-receipt refusal plus integrated activation, rollback and acceptance drill |
 | PROD-5 | Let an operator accept a verified integrated recovery and retire rollback resources safely | read-only preflight across PostgreSQL, S3 and Redis followed by idempotent backend and Kubernetes commit | public `commit-reference-recovery` path in `tests/reference_workflow.rs` |
+| SEC-9 | Refuse unauthenticated or identity-ambiguous remote state transport | rustls PostgreSQL CA and DNS verification, authenticated TLS URIs, and bounded database/cache timeouts | transport policy unit tests plus `aws_remote_state_profiles_restore_and_rollback_over_tls` |
+| COMP-3 | Promote mainstream cloud profiles only from native and provider-specific evidence | tagged ephemeral AWS matrix with exact AMI, service, CNI, cost and deletion records | `tests/aws_compatibility.rs` and `docs/AWS_COMPATIBILITY.md` |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

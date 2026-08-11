@@ -105,6 +105,15 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 
 These stages are optional evidence amplifiers. They are not milestone or release blockers unless a later regulated deployment contract explicitly makes them mandatory.
 
+## P5 - supported cloud profiles (in progress)
+
+- [x] Add fail-closed rustls transports for remote PostgreSQL and Redis with DNS identity, authenticated credentials, bounded CA input, and connection and operation timeouts.
+- [ ] Retain clean-source native Amazon Linux 2023 evidence for arm64 and x86_64 on exact EC2 instance and AMI profiles.
+- [ ] Execute destructive restore and rollback against Amazon RDS for PostgreSQL, ElastiCache for Redis with in-transit encryption, and Amazon S3 over HTTPS.
+- [ ] Prove deny-egress NetworkPolicy enforcement and the integrated activation lifecycle on one exact Amazon EKS and VPC CNI profile.
+- [ ] Delete every tagged AWS fixture and retain a zero-resource residual scan plus bounded cost evidence.
+- [ ] Exit: the compatibility contract promotes only the exact AWS profiles exercised by retained evidence, and local CI remains green.
+
 ## Brand productisation (complete)
 
 - [x] Obtain owner approval for productisation and select the enduring `Semantic Fit` direction from multiple distinct concepts.
