@@ -10,6 +10,13 @@ The intended first public source candidate is `v0.1.0-rc.1`, titled “Anasemble
 v0.1.0-rc.1: Evidence-bound recovery.” `Cargo.toml` remains `publish = false`:
 opening the source does not reserve or publish a crates.io package.
 
+The repository landing page must lead with the recovery outcome, supported
+profiles, runnable evaluation path, and safety boundaries. Before opening,
+verify that the GitHub About description remains product-oriented and that the
+topic set covers disaster recovery, service recovery, business continuity,
+Rust, resilience, Kubernetes, PostgreSQL, Redis, S3, and OCI without implying
+support beyond `docs/COMPATIBILITY.md`.
+
 ## Final private gates
 
 - [ ] Refresh exact and similar name and trademark review at the publication date.
@@ -19,6 +26,7 @@ opening the source does not reserve or publish a crates.io package.
 - [ ] Run `./scripts/ci-linux-matrix.sh` on the exact release commit.
 - [ ] Build the release binary from a clean source archive and exercise install, upgrade, rollback and uninstall.
 - [ ] Render the exact release notes at desktop and narrow widths and verify every link.
+- [ ] Inspect the rendered README, About description and repository topics on GitHub.
 - [ ] Obtain explicit owner approval for visibility change, hosted CI activation, tag and GitHub Release as separate actions.
 
 ## Visibility transition

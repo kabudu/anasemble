@@ -92,6 +92,7 @@ fn validate() -> Result<(), String> {
     }
     anasemble::brand::validate(Path::new("."))?;
     validate_open_source_metadata()?;
+    validate_product_readme()?;
     if Path::new(".github/workflows").exists() {
         return Err("hosted CI is prohibited while the repository is private".into());
     }
@@ -209,6 +210,33 @@ fn validate() -> Result<(), String> {
         .is_none_or(|line| line.starts_with('#'))
     {
         return Err("release presentation must open with the user-visible outcome".into());
+    }
+    Ok(())
+}
+
+fn validate_product_readme() -> Result<(), String> {
+    let readme = fs::read_to_string("README.md")
+        .map_err(|error| format!("could not read README: {error}"))?;
+    let opening = readme.lines().take(24).collect::<Vec<_>>().join("\n");
+    for required in [
+        "assets/anasemble-mark.svg",
+        "Recover a lost service component",
+        "## What Anasemble does",
+        "## Supported today",
+        "## Quick start",
+        "## Safety and scope",
+        "docs/COMPATIBILITY.md",
+        "docs/QUICKSTART.md",
+    ] {
+        if !readme.contains(required) {
+            return Err(format!("product README section is absent: {required}"));
+        }
+    }
+    if opening.contains("research project")
+        || opening.contains("Candidate contribution")
+        || opening.contains("M0 through")
+    {
+        return Err("README opening must lead with the product outcome".into());
     }
     Ok(())
 }
