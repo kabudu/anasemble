@@ -89,6 +89,10 @@ const REQUIRED: &[&str] = &[
     "assets/brand/LICENSES/OWNED-ASSETS.md",
     "release/0.1.0-rc.1.md",
     "release/0.1.0-rc.1.title",
+    "release/BINARY_INSTALLATION.md",
+    ".github/workflows/ci.yml",
+    ".github/workflows/pages.yml",
+    ".github/workflows/release.yml",
 ];
 
 fn main() -> ExitCode {
@@ -257,15 +261,44 @@ fn validate_public_ci() -> Result<(), String> {
             ));
         }
     }
-    for line in workflow.lines().map(str::trim) {
-        if let Some(action) = line.strip_prefix("uses: ") {
-            let Some((_, revision)) = action.split_once('@') else {
-                return Err(format!("action is not revision-pinned: {action}"));
-            };
-            let revision = revision.split_whitespace().next().unwrap_or_default();
-            if revision.len() != 40 || !revision.bytes().all(|byte| byte.is_ascii_hexdigit()) {
-                return Err(format!("action is not pinned to a commit SHA: {action}"));
+    for path in [
+        ".github/workflows/ci.yml",
+        ".github/workflows/pages.yml",
+        ".github/workflows/release.yml",
+    ] {
+        let contents = fs::read_to_string(path)
+            .map_err(|error| format!("could not read workflow {path}: {error}"))?;
+        for line in contents.lines().map(str::trim) {
+            if let Some(action) = line.strip_prefix("uses: ") {
+                let Some((_, revision)) = action.split_once('@') else {
+                    return Err(format!("action is not revision-pinned: {action}"));
+                };
+                let revision = revision.split_whitespace().next().unwrap_or_default();
+                if revision.len() != 40 || !revision.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+                    return Err(format!("action is not pinned to a commit SHA: {action}"));
+                }
             }
+        }
+    }
+    let pages = fs::read_to_string(".github/workflows/pages.yml")
+        .map_err(|error| format!("could not read Pages workflow: {error}"))?;
+    for boundary in ["pages: write", "id-token: write", "needs: build"] {
+        if !pages.contains(boundary) {
+            return Err(format!("Pages workflow boundary is absent: {boundary}"));
+        }
+    }
+    let release = fs::read_to_string(".github/workflows/release.yml")
+        .map_err(|error| format!("could not read release workflow: {error}"))?;
+    for boundary in [
+        "if: github.repository == 'kabudu/anasemble'",
+        "needs: binaries",
+        "cargo package --locked",
+        "cargo publish --locked",
+        "--draft",
+        "--verify-tag",
+    ] {
+        if !release.contains(boundary) {
+            return Err(format!("release workflow boundary is absent: {boundary}"));
         }
     }
     Ok(())
