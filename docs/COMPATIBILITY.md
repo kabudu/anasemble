@@ -22,11 +22,11 @@ authoritative repository drills and documentation for each tested claim.
 | macOS arm64 local state | macOS, aarch64, trusted loopback | PostgreSQL 18, MinIO S3 API, Redis Streams 8.8 | Implemented | Tested | Supported | `tests/p2_stateful.rs`; writers must be quiesced; no cross-backend transaction |
 | macOS arm64 Docker activation | macOS, aarch64, local Docker daemon | OCI Distribution v2, Docker Engine 29 | Implemented | Tested | Supported | `tests/p3_activation.rs`; single host; Docker daemon and kernel are trusted |
 | macOS arm64 kind activation | macOS, aarch64, local kind cluster | Kubernetes 1.36, kubectl 1.36, kind 0.32 | Implemented | Partially tested | Experimental | Control objects, leases, switching, and rollback are tested; NetworkPolicy enforcement is not |
-| Linux arm64 control plane | Linux GNU, aarch64, local | Rust control plane | Implemented | Untested | Experimental | Native clean-clone validation is required before support |
-| Linux x86_64 control plane | Linux GNU, x86_64, local | Rust control plane | Partial | Untested | Experimental | Portable Rust code exists, but the target has not been built or run |
+| Linux arm64 control plane | Linux GNU, aarch64, clean local container | Rust 1.97.0 control plane | Implemented | Tested | Experimental | `scripts/ci-linux-matrix.sh`; native host ISA, clean clone, offline build/test/doc/repository gate; production distributions and kernels remain unverified |
+| Linux x86_64 control plane | Linux GNU, x86_64, emulated local container | Rust 1.97.0 control plane | Implemented | Partially tested | Experimental | `scripts/ci-linux-matrix.sh`; clean clone and offline build/test/doc/repository gate under amd64 emulation; native x86_64 hardware remains unverified |
 | Generic S3-compatible HTTPS | Provider-managed HTTPS | S3-compatible object adapter | Implemented | Partially tested | Experimental | MinIO exercises the S3 API; named provider behavior remains unverified |
 | Production Kubernetes with enforcing CNI | Linux, provider-dependent Kubernetes API | Kubernetes 1.36 and NetworkPolicy-enforcing CNI | Implemented | Partially tested | Experimental | No named production CNI has been validated |
-| Integrated recovery through activation | macOS, aarch64, mixed local transports | P2 state restoration, P3 activation, public operations CLI | Partial | Untested | Experimental | P2 and P3 remain separate drills; the CLI does not orchestrate the complete lifecycle |
+| Integrated recovery through activation | macOS, aarch64, mixed local transports | Reconstruction, PostgreSQL 18, MinIO S3 API, Redis Streams 8.8, OCI Distribution v2, Kubernetes 1.36, public reference CLI | Implemented | Tested | Experimental | `tests/reference_workflow.rs`; restores after deliberate source deletion, activates, and rolls all back; candidate artifact is not a generated HTTP server and kind does not prove NetworkPolicy enforcement |
 | Remote PostgreSQL or Redis | Provider-managed remote network | PostgreSQL or Redis Streams | Not implemented | Untested | Unsupported | Authenticated TLS transports and credential references are required |
 
 The installed `share/compatibility-v2.json` manifest carries the same status
@@ -34,6 +34,9 @@ definitions, exact profiles, evidence paths, and limitations. Version 2 replaces
 the earlier list-shaped manifest because independent status and combination
 semantics are a schema change. Support also requires the exact dependency graph
 in `Cargo.lock` and the digest-pinned test images in `scripts/ci-local.sh`.
+The Linux execution record and its native-versus-emulated boundary are retained
+in `docs/LINUX_MATRIX.md`; an emulated execution is never treated as native
+hardware evidence.
 
 ## Verified local fixture identities
 

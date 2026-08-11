@@ -19,8 +19,8 @@ distribution and crates.io dependency sources identified by `Cargo.lock`.
    URL, commit SHA, operating system, architecture, Rust version, and UTC time.
 2. Clone into a new directory and verify `git status --short` is empty.
 3. Inspect `AGENTS.md`, `rust-toolchain.toml`, `Cargo.lock`,
-   `docs/M0_EXECUTABLE_CONTRACT.md`, `docs/M1_RECONSTRUCTION_LOOP.md`, and
-   `docs/M2_STATE_AND_ADVERSARIAL.md` before executing code.
+   `docs/QUICKSTART.md`, `docs/COMPATIBILITY.md`, and the M0 through P4 evidence
+   documents before executing code.
 4. Bootstrap dependencies once with `cargo fetch --locked` on an unprivileged
    machine or disposable VM with no project secrets.
 5. Disconnect network access if practical, then run exactly
@@ -31,12 +31,20 @@ distribution and crates.io dependency sources identified by `Cargo.lock`.
 8. Confirm the test inventory includes the public fresh-process loss workflow,
    two-component corpus workflow, campaign workflow, state deployment and
    rollback, hostile evidence, checker disagreement, import denial, memory bound,
-   and fuel exhaustion.
+   fuel exhaustion, operations lifecycle, and integrated reference workflow.
 9. Compare `experiments/m2-results.json`, `experiments/m3-comparison.json`, and
    `experiments/m3-costs.json` with the observed result categories. Timing may
    differ and must be reported rather than normalized away.
 10. Preserve the full stdout, stderr, exit codes, environment description, and
     any crash, refusal, timeout, warning, or disagreement.
+11. On Linux with Docker available, run `./scripts/ci-linux-matrix.sh` and state
+    whether each architecture ran on native hardware or through emulation. Do not
+    convert emulated evidence into a native-platform attestation.
+
+The integrated reference drill requires destructive disposable PostgreSQL, S3,
+Redis, registry and Kubernetes fixtures. A reviewer unable to provide them must
+report that portion as not executed, not passed. The packet is an optional
+post-release assurance activity and does not authorize publication or deployment.
 
 ## Required attestation
 

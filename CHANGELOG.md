@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add a public reference workflow that prepares PostgreSQL, S3 and Redis state,
+  reconstructs after declared loss, publishes a plan-bound OCI image, performs
+  operator-approved Kubernetes activation, and rolls the deployment and all
+  state back through one retained receipt.
+- Add digest-pinned clean-clone Linux arm64 and emulated x86_64 local validation,
+  plus an evidence-linked evaluation quickstart and compatibility update.
+
 - Replace the list-shaped compatibility contract with an evidence-linked matrix
   that independently records implementation, validation, and support status;
   pin destructive-test container images by digest, and bound transient

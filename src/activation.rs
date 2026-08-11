@@ -2,9 +2,10 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
-use std::os::unix::fs::PermissionsExt;
-use std::path::PathBuf;
-use std::process::{Command, Output};
+use std::io::Write;
+use std::os::unix::fs::{OpenOptionsExt, PermissionsExt};
+use std::path::{Path, PathBuf};
+use std::process::{Command, Output, Stdio};
 use std::str::FromStr;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -300,6 +301,17 @@ pub struct RegistryReceipt {
     pub binding_sha256: String,
 }
 
+#[derive(Clone, Debug)]
+pub struct ArtifactPackageRequest {
+    pub base_image: String,
+    pub local_image: String,
+    pub repository: String,
+    pub tag: String,
+    pub activation_plan: ActivationPlan,
+    pub candidate: Vec<u8>,
+    pub service_manifest: Vec<u8>,
+}
+
 pub struct DockerRegistry {
     endpoint: String,
 }
@@ -352,19 +364,24 @@ impl DockerRegistry {
         let target = format!("{}/{repository}:{tag}", self.endpoint);
         docker(&["tag".into(), local_image.into(), target.clone()])?;
         let mut pushed = false;
+        let mut last_error = None;
         for attempt in 0..20 {
-            if docker(&["push".into(), target.clone()]).is_ok() {
-                pushed = true;
-                break;
+            match docker(&["push".into(), target.clone()]) {
+                Ok(()) => {
+                    pushed = true;
+                    break;
+                }
+                Err(error) => last_error = Some(error.to_string()),
             }
             if attempt < 19 {
                 thread::sleep(Duration::from_millis(100));
             }
         }
         if !pushed {
-            return Err(invalid(
-                "OCI registry push exhausted its bounded retry budget",
-            ));
+            return Err(invalid(&format!(
+                "OCI registry push exhausted its bounded retry budget: {}",
+                last_error.as_deref().unwrap_or("unknown Docker failure")
+            )));
         }
         let output = docker_text(&[
             "image".into(),
@@ -394,6 +411,224 @@ impl DockerRegistry {
         };
         receipt.binding_sha256 = crate::canonical::digest(&receipt)?;
         Ok(receipt)
+    }
+
+    pub fn package_and_publish(
+        &self,
+        request: &ArtifactPackageRequest,
+    ) -> Result<RegistryReceipt, Error> {
+        validate_immutable_image(&request.base_image)?;
+        validate_local_image(&request.local_image)?;
+        if request.candidate.is_empty()
+            || request.candidate.len() > 16 * 1024 * 1024
+            || request.service_manifest.is_empty()
+            || request.service_manifest.len() > 65_536
+        {
+            return Err(invalid(
+                "artifact payload is empty or exceeds its byte bound",
+            ));
+        }
+        if image_exists(&request.local_image)? {
+            return Err(invalid("local artifact image already exists"));
+        }
+        let root = std::env::temp_dir().join(unique_name("anasemble-package"));
+        fs::create_dir(&root).map_err(Error::Io)?;
+        fs::set_permissions(&root, fs::Permissions::from_mode(0o700)).map_err(Error::Io)?;
+        let mut guard = PackageGuard::new(root.clone());
+        write_public_payload(&root.join("candidate.json"), &request.candidate)?;
+        write_public_payload(&root.join("service.json"), &request.service_manifest)?;
+        let container = unique_name("anasemble-package");
+        docker(&[
+            "create".into(),
+            "--name".into(),
+            container.clone(),
+            request.base_image.clone(),
+            "/bin/true".into(),
+        ])?;
+        guard.container = Some(container.clone());
+        docker(&[
+            "cp".into(),
+            root.join("candidate.json").display().to_string(),
+            format!("{container}:/candidate.json"),
+        ])?;
+        docker(&[
+            "cp".into(),
+            root.join("service.json").display().to_string(),
+            format!("{container}:/service.json"),
+        ])?;
+        docker(&[
+            "commit".into(),
+            "--change".into(),
+            format!(
+                "LABEL anasemble.plan={}",
+                request.activation_plan.plan_sha256
+            ),
+            "--change".into(),
+            format!(
+                "LABEL anasemble.candidate={}",
+                request.activation_plan.candidate_sha256
+            ),
+            container,
+            request.local_image.clone(),
+        ])?;
+        self.publish(
+            &request.local_image,
+            &request.repository,
+            &request.tag,
+            &request.activation_plan,
+        )
+    }
+}
+
+pub fn import_image_into_kind_node(image: &str, node: &str, platform: &str) -> Result<(), Error> {
+    validate_immutable_image(image)?;
+    validate_label(node)?;
+    if !matches!(platform, "linux/arm64" | "linux/amd64") {
+        return Err(invalid("kind import platform is unsupported"));
+    }
+    let mut save = Command::new("docker")
+        .args(["save", image])
+        .stdout(Stdio::piped())
+        .spawn()
+        .map_err(Error::Io)?;
+    let input = save
+        .stdout
+        .take()
+        .ok_or_else(|| invalid("docker save stdout is unavailable"))?;
+    let import = Command::new("docker")
+        .args([
+            "exec",
+            "-i",
+            node,
+            "ctr",
+            "--namespace=k8s.io",
+            "images",
+            "import",
+            "--platform",
+            platform,
+            "--digests",
+            "-",
+        ])
+        .stdin(Stdio::from(input))
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
+        .map_err(Error::Io)?;
+    let saved = save.wait().map_err(Error::Io)?;
+    if !saved.success() || !import.status.success() {
+        return Err(invalid(&format!(
+            "kind image import failed: {}",
+            String::from_utf8_lossy(&import.stderr).trim()
+        )));
+    }
+    let digest = image
+        .rsplit_once('@')
+        .map(|(_, digest)| digest)
+        .ok_or_else(|| invalid("kind import image digest is malformed"))?;
+    let listed = Command::new("docker")
+        .args([
+            "exec",
+            node,
+            "ctr",
+            "--namespace=k8s.io",
+            "images",
+            "list",
+            "--quiet",
+        ])
+        .output()
+        .map_err(Error::Io)?;
+    if !listed.status.success()
+        || listed.stdout.len().saturating_add(listed.stderr.len()) > MAX_DOCKER_OUTPUT
+    {
+        return Err(invalid("kind image inventory failed"));
+    }
+    let inventory = String::from_utf8(listed.stdout)
+        .map_err(|_| invalid("kind image inventory is not UTF-8"))?;
+    let imported = inventory
+        .lines()
+        .find(|reference| reference.starts_with("import-") && reference.ends_with(digest))
+        .ok_or_else(|| invalid("kind import did not retain the OCI manifest digest"))?;
+    let tagged = Command::new("docker")
+        .args([
+            "exec",
+            node,
+            "ctr",
+            "--namespace=k8s.io",
+            "images",
+            "tag",
+            imported,
+            image,
+        ])
+        .output()
+        .map_err(Error::Io)?;
+    if !tagged.status.success()
+        || tagged.stdout.len().saturating_add(tagged.stderr.len()) > MAX_DOCKER_OUTPUT
+    {
+        return Err(invalid(&format!(
+            "kind image reference binding failed: {}",
+            String::from_utf8_lossy(&tagged.stderr).trim()
+        )));
+    }
+    Ok(())
+}
+
+fn validate_local_image(image: &str) -> Result<(), Error> {
+    if image.is_empty()
+        || image.len() > 255
+        || image.contains('@')
+        || image.chars().any(char::is_control)
+    {
+        return Err(invalid("local artifact image name is invalid"));
+    }
+    Ok(())
+}
+
+fn image_exists(image: &str) -> Result<bool, Error> {
+    let output = Command::new("docker")
+        .args(["image", "inspect", image])
+        .output()
+        .map_err(Error::Io)?;
+    if output.stdout.len().saturating_add(output.stderr.len()) > MAX_DOCKER_OUTPUT {
+        return Err(invalid("Docker image inspection exceeded 1 MiB"));
+    }
+    Ok(output.status.success())
+}
+
+fn write_public_payload(path: &Path, bytes: &[u8]) -> Result<(), Error> {
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o644)
+        .open(path)
+        .map_err(Error::Io)?;
+    file.write_all(bytes).map_err(Error::Io)?;
+    file.sync_all().map_err(Error::Io)
+}
+
+struct PackageGuard {
+    root: PathBuf,
+    container: Option<String>,
+}
+
+impl PackageGuard {
+    fn new(root: PathBuf) -> Self {
+        Self {
+            root,
+            container: None,
+        }
+    }
+}
+
+impl Drop for PackageGuard {
+    fn drop(&mut self) {
+        if let Some(container) = &self.container {
+            let _ = Command::new("docker")
+                .args(["rm", "--force", container])
+                .output();
+        }
+        let _ = fs::remove_file(self.root.join("candidate.json"));
+        let _ = fs::remove_file(self.root.join("service.json"));
+        let _ = fs::remove_dir(&self.root);
     }
 }
 
@@ -642,8 +877,14 @@ impl KubernetesOrchestrator {
             .args(command)
             .output()
             .map_err(Error::Io)?;
+        if output.stdout.len().saturating_add(output.stderr.len()) > MAX_DOCKER_OUTPUT {
+            return Err(invalid("Kubernetes output exceeded 1 MiB"));
+        }
         if !output.status.success() {
-            return Err(invalid("Kubernetes operation failed"));
+            return Err(invalid(&format!(
+                "Kubernetes operation failed: {}",
+                String::from_utf8_lossy(&output.stderr).trim()
+            )));
         }
         Ok(())
     }

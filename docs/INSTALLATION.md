@@ -11,7 +11,8 @@ The prefix must not already exist. Installation stages and syncs a Rust binary,
 the `compatibility-v2.json` matrix, and the default operations configuration,
 then atomically renames the complete prefix into place. It never edits `PATH`,
 shell profiles, launch agents, system services, Kubernetes resources, or
-operator data.
+operator data. Every installed file is bounded to 256 MiB; larger or irregular
+files are refused before the prefix is committed.
 
 Verify `bin/anasemble operations-status <operations-root>` against a disposable operations root before changing any executable reference. Keep the prior prefix intact through the disaster drill and acceptance window.
 

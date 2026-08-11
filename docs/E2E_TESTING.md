@@ -46,3 +46,13 @@ batches. The authoritative CI combines this with the destructive P2
 PostgreSQL/S3/Redis drill and P3 Docker/OCI/Kubernetes drill. The compatibility
 matrix classifies each resulting profile independently; their union is not a
 supported Cartesian product.
+
+The integrated reference suite composes the public preparation, recovery and
+rollback commands. It captures PostgreSQL, S3 and Redis state, deletes all three
+sources and the original component artifact, reconstructs a certified candidate,
+restores the three targets, packages and publishes a plan-bound OCI image,
+activates it in a disposable Kubernetes cluster, and then verifies reverse-order
+rollback of Kubernetes and every state backend. The image contains and checks
+the certified finite-state candidate; it is not evidence of generated HTTP server
+code. The separate Linux matrix validates clean-clone control-plane builds and
+non-Docker tests for arm64 and emulated x86_64.

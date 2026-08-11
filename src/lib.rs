@@ -15,6 +15,7 @@ pub mod model;
 pub mod operations;
 pub mod oracle;
 pub mod protocol;
+pub mod reference;
 pub mod sandbox;
 pub mod service;
 pub mod state_store;

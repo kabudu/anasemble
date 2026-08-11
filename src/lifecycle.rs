@@ -11,6 +11,8 @@ use crate::canonical::{bytes_digest, encode};
 use crate::model::Error;
 use crate::operations::OperationsConfig;
 
+const MAX_INSTALL_FILE_BYTES: u64 = 256 * 1024 * 1024;
+
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(deny_unknown_fields)]
 pub struct CompatibilityManifest {
@@ -91,11 +93,11 @@ impl Default for CompatibilityManifest {
                 profile("macos-arm64-p2-local-state", "macos", "aarch64", &["postgresql-18", "minio-s3-api", "redis-stream-8.8"], "trusted-loopback", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Supported, &["tests/p2_stateful.rs", "docs/P2_STATEFUL_RECOVERY.md"], &["writers must be quiesced", "no cross-backend transaction"]),
                 profile("macos-arm64-docker-activation", "macos", "aarch64", &["oci-distribution-v2", "docker-engine-29"], "local-docker-daemon", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Supported, &["tests/p3_activation.rs", "docs/P3_ISOLATED_ACTIVATION.md"], &["single host", "Docker daemon and host kernel are trusted"]),
                 profile("macos-arm64-kind-kubernetes-activation", "macos", "aarch64", &["kubernetes-1.36", "kubectl-1.36", "kind-0.32"], "local-kind-cluster", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p3_activation.rs", "docs/P3_ISOLATED_ACTIVATION.md"], &["control objects and switching are tested", "NetworkPolicy enforcement is not tested"]),
-                profile("linux-arm64-control-plane", "linux-gnu", "aarch64", &["control-plane"], "local", ImplementationStatus::Implemented, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["requires a native clean-clone validation run"]),
-                profile("linux-x86_64-control-plane", "linux-gnu", "x86_64", &["control-plane"], "local", ImplementationStatus::Partial, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["portable Rust code exists but the target has not been built or run"]),
+                profile("linux-arm64-control-plane", "linux-gnu", "aarch64", &["control-plane"], "local-container", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Experimental, &["scripts/ci-linux-matrix.sh", "docs/LINUX_MATRIX.md"], &["tested in a clean Debian-based Linux container on an arm64 Docker host", "production distribution and kernel combinations remain unverified"]),
+                profile("linux-x86_64-control-plane", "linux-gnu", "x86_64", &["control-plane"], "emulated-local-container", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["scripts/ci-linux-matrix.sh", "docs/LINUX_MATRIX.md"], &["built and executed under Docker amd64 emulation on an arm64 host", "native x86_64 hardware and production distribution combinations remain unverified"]),
                 profile("generic-s3-compatible-https", "provider-managed", "provider-dependent", &["s3-compatible-object-store"], "https", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p2_stateful.rs"], &["only the MinIO S3 API fixture is tested", "provider-specific behavior is unverified"]),
                 profile("production-kubernetes-enforcing-cni", "linux-gnu", "provider-dependent", &["kubernetes-1.36", "networkpolicy-enforcing-cni"], "authenticated-kubernetes-api", ImplementationStatus::Implemented, ValidationStatus::PartiallyTested, SupportStatus::Experimental, &["tests/p3_activation.rs"], &["no named production CNI has been validated"]),
-                profile("integrated-recovery-to-activation", "macos", "aarch64", &["p2-state-restoration", "p3-runtime-activation", "public-operations-cli"], "mixed-local", ImplementationStatus::Partial, ValidationStatus::Untested, SupportStatus::Experimental, &[], &["P2 and P3 are separate drills", "the public operations CLI does not orchestrate the complete lifecycle"]),
+                profile("integrated-recovery-to-activation", "macos", "aarch64", &["reconstruction", "postgresql-18", "minio-s3-api", "redis-stream-8.8", "oci-distribution-v2", "kubernetes-1.36", "public-reference-cli"], "mixed-local", ImplementationStatus::Implemented, ValidationStatus::Tested, SupportStatus::Experimental, &["tests/reference_workflow.rs", "docs/QUICKSTART.md"], &["the packaged finite-state candidate is health-checked as an artifact and is not a generated HTTP server", "kind control objects are tested but NetworkPolicy enforcement is not", "rollback evidence must be retained until operator acceptance"]),
                 profile("remote-postgresql-or-redis", "provider-managed", "provider-dependent", &["postgresql", "redis-stream"], "remote-network", ImplementationStatus::NotImplemented, ValidationStatus::Untested, SupportStatus::Unsupported, &[], &["authenticated TLS transports and credential references are required"]),
             ],
         }
@@ -187,7 +189,7 @@ pub fn install(prefix: &Path) -> Result<InstallReceipt, Error> {
     fs::create_dir(&bin)?;
     fs::create_dir(&share)?;
     let executable = std::env::current_exe()?;
-    let executable_bytes = read_regular(&executable, 128 * 1024 * 1024)?;
+    let executable_bytes = read_regular(&executable, MAX_INSTALL_FILE_BYTES)?;
     let compatibility = encode(&CompatibilityManifest::default())?;
     let config = encode(&OperationsConfig::default())?;
     let payloads = [
@@ -281,7 +283,7 @@ pub fn uninstall(prefix: &Path) -> Result<UninstallReceipt, Error> {
     for file in &manifest.files {
         validate_relative(&file.relative_path)?;
         let path = prefix.join(&file.relative_path);
-        let bytes = read_regular(&path, 128 * 1024 * 1024)?;
+        let bytes = read_regular(&path, MAX_INSTALL_FILE_BYTES)?;
         if bytes_digest(&bytes) != file.sha256 {
             return Err(invalid("installed file changed; uninstallation refused"));
         }
