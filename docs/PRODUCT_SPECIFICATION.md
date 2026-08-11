@@ -32,6 +32,15 @@ Unsupported protocols, effects, state backends, consistency models, or deploymen
 
 ## Current status
 
-The implementation is complete for the exact arm64, protocol, state, transport, and activation profiles in `COMPATIBILITY.md`. It reconstructs and certifies the bounded kernel, restores each supported state model, activates immutable artifacts under declared isolation, and provides restart-safe operator jobs, audit, diagnostics, installation, removal, and runbooks. It still does not outperform a surviving centralized contract on the synthetic corpus and does not support arbitrary services, hidden effects, undeclared state, remote PostgreSQL or Redis, or a cross-backend distributed transaction.
+The implementation is complete for the exact profiles marked `Supported` in
+`COMPATIBILITY.md`. Other implemented paths are explicitly experimental until
+their named evidence gap is closed. Anasemble reconstructs and certifies the
+bounded kernel, restores each supported state model, activates immutable
+artifacts under the supported Docker isolation profile, and provides
+restart-safe operator jobs, audit, diagnostics, installation, removal, and
+runbooks. It still does not outperform a surviving centralized contract on the
+synthetic corpus and does not support arbitrary services, hidden effects,
+undeclared state, remote PostgreSQL or Redis, or a cross-backend distributed
+transaction.
 
 Implementation completion is not release authority or a claim of universal production suitability. Public release, deployment, package publication, legal clearance, and visibility remain separate explicit decisions. Independent reproduction and external review are optional post-release assurance.

@@ -89,7 +89,7 @@ fn representative_http_recovery_binds_and_restores_all_p2_backends() {
             "POSTGRES_PASSWORD=p2-password",
             "--publish",
             "127.0.0.1::5432",
-            "postgres:18-alpine",
+            "postgres@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15",
         ],
     );
     let postgres_port = postgres_container.port("5432/tcp");
@@ -150,7 +150,7 @@ fn representative_http_recovery_binds_and_restores_all_p2_backends() {
             "MINIO_ROOT_PASSWORD=p2-secret-password",
             "--publish",
             "127.0.0.1::9000",
-            "quay.io/minio/minio:latest",
+            "quay.io/minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e",
             "server",
             "/data",
         ],
@@ -212,7 +212,7 @@ fn representative_http_recovery_binds_and_restores_all_p2_backends() {
         &[
             "--publish",
             "127.0.0.1::6379",
-            "redis:8.8.0-alpine",
+            "redis@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005",
             "redis-server",
             "--appendonly",
             "yes",

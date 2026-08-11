@@ -20,6 +20,8 @@ const MAX_RECORD_BYTES: u64 = 65_536;
 const MAX_WORKSPACE_FILES: usize = 1_024;
 const MAX_WORKSPACE_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_RESULT_BYTES: usize = 16 * 1024 * 1024;
+const LOCK_RETRY_ATTEMPTS: usize = 100;
+const LOCK_RETRY_DELAY: Duration = Duration::from_millis(5);
 
 #[derive(Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
 #[serde(deny_unknown_fields)]
@@ -811,20 +813,26 @@ fn atomic_replace(parent: &Path, path: &Path, temporary: &str, bytes: &[u8]) -> 
 struct Lock(PathBuf);
 impl Lock {
     fn acquire(path: &Path) -> Result<Self, Error> {
-        OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .mode(0o600)
-            .open(path)
-            .map_err(|error| {
-                if error.kind() == std::io::ErrorKind::AlreadyExists {
-                    invalid("operations store is locked")
-                } else {
-                    Error::Io(error)
+        for attempt in 0..LOCK_RETRY_ATTEMPTS {
+            match OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .mode(0o600)
+                .open(path)
+            {
+                Ok(file) => {
+                    file.sync_all()?;
+                    return Ok(Self(path.into()));
                 }
-            })?
-            .sync_all()?;
-        Ok(Self(path.into()))
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+                    if attempt + 1 < LOCK_RETRY_ATTEMPTS {
+                        thread::sleep(LOCK_RETRY_DELAY);
+                    }
+                }
+                Err(error) => return Err(Error::Io(error)),
+            }
+        }
+        Err(invalid("operations store is locked"))
     }
 }
 

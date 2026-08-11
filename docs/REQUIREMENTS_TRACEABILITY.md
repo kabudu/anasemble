@@ -34,6 +34,7 @@
 | OPS-2 | Bound admission and execution while exposing actionable operations state | queue backpressure, fixed batch size, single store lock, derived metrics, and diagnostic codes | P4 saturation, 128-job sustained, metrics, and status tests |
 | SEC-7 | Produce useful support evidence without exposing recovery inputs or secrets | allowlisted support schema containing identifiers, digests, states, counts, and refusal codes only | P4 path and private-diagnostic exclusion assertions |
 | COMP-1 | Install, migrate, upgrade, roll back, and remove without implicit mutation or data deletion | out-of-place config migration, atomic exact-prefix installation, digest-verified manifest removal, preserved operations root | P4 public CLI migration/install/uninstall test and lifecycle contracts |
+| COMP-2 | Distinguish implemented, tested, supported, experimental, and unsupported combinations without implying a Cartesian product | versioned evidence-linked compatibility profiles with independent implementation, validation, and support status | installed-manifest profile uniqueness, evidence existence, and supported-status invariant assertions in the P4 public lifecycle test |
 | PROD-4 | Map every supported production claim and failure path to retained evidence and operator action | compatibility manifest, staging matrix, disaster runbook, curated preview, roadmap and traceability audit | repository checker plus complete local CI |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2

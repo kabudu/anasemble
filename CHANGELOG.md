@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replace the list-shaped compatibility contract with an evidence-linked matrix
+  that independently records implementation, validation, and support status;
+  pin destructive-test container images by digest, and bound transient
+  operations-lock retries so runner heartbeats cannot spuriously fail a batch.
 - Add the Rust M0 executable research contract, bounded finite-state
   reconstruction, independent certification, loss attestation, deterministic
   CLI, and private repository local CI.

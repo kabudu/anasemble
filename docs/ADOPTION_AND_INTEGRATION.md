@@ -14,4 +14,10 @@ cost rather than treating it as free.
 
 M3 quantifies that cost for the synthetic turnstile but does not establish user demand, onboarding effort, or ecosystem priority. P4 provides a removable exact-prefix binary, migrated bounded operations configuration, a disaster runbook, redacted support artifacts, and a complete local staging drill. The initial adoption motion is therefore a time-boxed catastrophe exercise on one disposable supported component, compared directly with its ordinary backup path.
 
-Adopters should begin with the reference arm64 local profile, preserve the prior binary prefix, retain ordinary backups, and stop when the compatibility manifest refuses an adapter or transport. Success means the operator can prepare evidence before loss, execute the runbook without developer intervention, explain every refusal and rollback, and remove the product without deleting state or evidence. It does not mean Anasemble should replace the team's primary recovery system.
+Adopters should begin with a row marked `Supported` in the compatibility matrix,
+currently the macOS arm64 local profiles, preserve the prior binary prefix,
+retain ordinary backups, and stop when the manifest refuses an adapter or
+transport. Success means the operator can prepare evidence before loss, execute
+the runbook without developer intervention, explain every refusal and rollback,
+and remove the product without deleting state or evidence. It does not mean
+Anasemble should replace the team's primary recovery system.

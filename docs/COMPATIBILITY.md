@@ -1,19 +1,75 @@
 # Compatibility Contract
 
-## Supported platforms
+## Status contract
 
-Anasemble `0.0.1` supports the Rust 1.97.0 control plane on arm64 macOS and arm64 Linux. The macOS profile supports local operations, reconstruction, evidence, filesystem state, Docker, and Kubernetes control. PostgreSQL 18, S3-compatible HTTPS object storage, Redis 8 Streams, OCI Distribution v2, Docker Engine 29, Kubernetes 1.36, `kubectl` 1.36, and kind 0.32 are the verified adapter versions. Other versions are unsupported until the local matrix is rerun.
+Compatibility is recorded across three independent dimensions. `Implemented`
+means the bounded code path exists; `Partial` means only part of the named
+profile exists; `Not implemented` means it does not exist. `Tested` requires
+retained evidence for the exact profile; `Partially tested` covers only the
+named boundaries; `Untested` has no retained execution evidence. `Supported`
+means maintainers accept defects for that exact profile; `Experimental` permits
+evaluation without that commitment; `Unsupported` must be refused.
 
-The machine-readable manifest installed at `share/compatibility-v1.json` is authoritative for protocol and adapter identifiers. Support requires the exact pinned Rust dependency graph in `Cargo.lock`.
+An entry is not supported merely because its components appear in separate
+rows. The matrix does not imply a Cartesian product. Evidence paths name the
+authoritative repository drills and documentation for each tested claim.
+
+## Compatibility matrix
+
+| Profile | Platform and transport | Components | Implementation | Validation | Support | Retained evidence and limits |
+| --- | --- | --- | --- | --- | --- | --- |
+| macOS arm64 control plane | macOS, aarch64, local filesystem | Rust 1.97.0 control plane, `filesystem-v1`, operations lifecycle | Implemented | Tested | Supported | `scripts/ci-local.sh`; `tests/p4_product_readiness.rs`; exact locked dependency graph required |
+| macOS arm64 local state | macOS, aarch64, trusted loopback | PostgreSQL 18, MinIO S3 API, Redis Streams 8.8 | Implemented | Tested | Supported | `tests/p2_stateful.rs`; writers must be quiesced; no cross-backend transaction |
+| macOS arm64 Docker activation | macOS, aarch64, local Docker daemon | OCI Distribution v2, Docker Engine 29 | Implemented | Tested | Supported | `tests/p3_activation.rs`; single host; Docker daemon and kernel are trusted |
+| macOS arm64 kind activation | macOS, aarch64, local kind cluster | Kubernetes 1.36, kubectl 1.36, kind 0.32 | Implemented | Partially tested | Experimental | Control objects, leases, switching, and rollback are tested; NetworkPolicy enforcement is not |
+| Linux arm64 control plane | Linux GNU, aarch64, local | Rust control plane | Implemented | Untested | Experimental | Native clean-clone validation is required before support |
+| Linux x86_64 control plane | Linux GNU, x86_64, local | Rust control plane | Partial | Untested | Experimental | Portable Rust code exists, but the target has not been built or run |
+| Generic S3-compatible HTTPS | Provider-managed HTTPS | S3-compatible object adapter | Implemented | Partially tested | Experimental | MinIO exercises the S3 API; named provider behavior remains unverified |
+| Production Kubernetes with enforcing CNI | Linux, provider-dependent Kubernetes API | Kubernetes 1.36 and NetworkPolicy-enforcing CNI | Implemented | Partially tested | Experimental | No named production CNI has been validated |
+| Integrated recovery through activation | macOS, aarch64, mixed local transports | P2 state restoration, P3 activation, public operations CLI | Partial | Untested | Experimental | P2 and P3 remain separate drills; the CLI does not orchestrate the complete lifecycle |
+| Remote PostgreSQL or Redis | Provider-managed remote network | PostgreSQL or Redis Streams | Not implemented | Untested | Unsupported | Authenticated TLS transports and credential references are required |
+
+The installed `share/compatibility-v2.json` manifest carries the same status
+definitions, exact profiles, evidence paths, and limitations. Version 2 replaces
+the earlier list-shaped manifest because independent status and combination
+semantics are a schema change. Support also requires the exact dependency graph
+in `Cargo.lock` and the digest-pinned test images in `scripts/ci-local.sh`.
+
+## Verified local fixture identities
+
+The authoritative macOS arm64 drill uses PostgreSQL 18, Redis 8.8.0, OCI
+Distribution v2, Docker Engine 29, Kubernetes 1.36, kubectl 1.36, and kind 0.32.
+PostgreSQL, MinIO, Redis, registry, client, Debian, and kind node images are
+selected by immutable digest in local CI and the destructive tests. A tag or
+newer compatible-looking version is not automatically supported.
 
 ## Protocol and configuration compatibility
 
-`fsm-v1`, `service-v1`, `activation-plan-v1`, `operations-config-v1`, `recovery-job-v1`, and `support-bundle-v1` reject unknown fields. Legacy `operations-config-v0` is accepted only by `migrate-operations-config`, which maps all five fields without inference and writes a new file exclusively. No in-place configuration mutation occurs.
+`fsm-v1`, `service-v1`, `activation-plan-v1`, `operations-config-v1`,
+`recovery-job-v1`, and `support-bundle-v1` reject unknown fields. Legacy
+`operations-config-v0` is accepted only by `migrate-operations-config`, which
+maps all five fields without inference and writes a new file exclusively. No
+in-place configuration mutation occurs.
 
-Upgrades must preserve the operations root, create a separate migrated configuration, validate it with `init-operations` in a disposable root, stop job runners, install to a new prefix, execute the disaster drill, and then move the operator-controlled executable reference. Downgrade is replacement of that reference with the preserved prior prefix. Job records are not downgraded or rewritten.
+Upgrades must preserve the operations root, create a separate migrated
+configuration, validate it with `init-operations` in a disposable root, stop job
+runners, install to a new prefix, execute the disaster drill, and then move the
+operator-controlled executable reference. Downgrade replaces that reference
+with the preserved prior prefix. Job records are not downgraded or rewritten.
 
 ## Backup interoperability
 
-Ordinary backups remain mandatory. Anasemble does not replace backup, replication, database point-in-time recovery, object versioning, or queue durability. Snapshot and evidence exports must be captured through the backend contracts before catastrophe, stored independently of deployable artifacts, and tested alongside native restore. If a native backup survives and satisfies the recovery objective, operators should prefer it. Anasemble is the bounded path for the declared total-artifact-loss case.
+Ordinary backups remain mandatory. Anasemble does not replace backup,
+replication, database point-in-time recovery, object versioning, or queue
+durability. Snapshot and evidence exports must be captured through the backend
+contracts before catastrophe, stored independently of deployable artifacts, and
+tested alongside native restore. If a native backup survives and satisfies the
+recovery objective, operators should prefer it. Anasemble is the bounded path
+for the declared total-artifact-loss case.
 
-PostgreSQL and Redis remote transports are not supported in this version. S3-compatible production endpoints require HTTPS. Kubernetes requires a CNI that enforces NetworkPolicy. Unsupported architecture, protocol, backend version, transport, CNI, or configuration version must be treated as a refusal, not presumed compatible.
+PostgreSQL and Redis remote transports are unsupported. S3-compatible
+production endpoints require HTTPS. Kubernetes evaluation requires a CNI that
+enforces NetworkPolicy, but that production enforcement profile remains
+experimental until a named CNI drill is retained. Unsupported architecture,
+protocol, backend version, transport, CNI, configuration version, or combination
+must be refused rather than presumed compatible.

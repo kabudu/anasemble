@@ -2,6 +2,7 @@ mod common;
 
 use std::fs;
 use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
 use std::process::Command;
 use std::sync::mpsc;
 use std::thread;
@@ -169,6 +170,26 @@ fn bounded_scheduler_sustains_128_durable_jobs_without_growth() {
 }
 
 #[test]
+fn operations_retry_transient_lock_contention_but_refuse_a_persistent_lock() {
+    let directory = tempdir().unwrap();
+    let root = directory.path().join("operations");
+    let store = OperationsStore::create(&root, config(8, 4)).unwrap();
+    let lock = root.join(".operations.lock");
+    fs::write(&lock, b"transient").unwrap();
+    let transient = lock.clone();
+    let remover = thread::spawn(move || {
+        thread::sleep(Duration::from_millis(25));
+        fs::remove_file(transient).unwrap();
+    });
+    assert!(store.status().is_ok());
+    remover.join().unwrap();
+
+    fs::write(&lock, b"persistent").unwrap();
+    assert!(store.status().is_err());
+    fs::remove_file(lock).unwrap();
+}
+
+#[test]
 fn public_cli_runs_recovery_reports_status_migrates_config_and_uninstalls_exactly() {
     let directory = tempdir().unwrap();
     let fixture = common::build_workspace(&directory.path().join("fixture"), true);
@@ -236,7 +257,39 @@ fn public_cli_runs_recovery_reports_status_migrates_config_and_uninstalls_exactl
     assert!(lifecycle::uninstall(&prefix).is_err());
     assert!(prefix.join("bin/anasemble").exists());
     fs::remove_file(extra).unwrap();
-    let compatibility = prefix.join("share/compatibility-v1.json");
+    let compatibility = prefix.join("share/compatibility-v2.json");
+    let matrix: lifecycle::CompatibilityManifest =
+        serde_json::from_slice(&fs::read(&compatibility).unwrap()).unwrap();
+    assert_eq!(matrix.version, "compatibility-v2");
+    let mut profile_ids = std::collections::BTreeSet::new();
+    for profile in &matrix.profiles {
+        assert!(profile_ids.insert(&profile.id), "duplicate profile id");
+        for evidence in &profile.evidence {
+            assert!(
+                Path::new(evidence).is_file(),
+                "missing evidence: {evidence}"
+            );
+        }
+        if profile.support == lifecycle::SupportStatus::Supported {
+            assert_eq!(
+                profile.implementation,
+                lifecycle::ImplementationStatus::Implemented
+            );
+            assert_eq!(profile.validation, lifecycle::ValidationStatus::Tested);
+            assert!(!profile.evidence.is_empty());
+        }
+    }
+    assert!(matrix.profiles.iter().any(|profile| {
+        profile.id == "macos-arm64-p2-local-state"
+            && profile.validation == lifecycle::ValidationStatus::Tested
+            && profile.support == lifecycle::SupportStatus::Supported
+            && !profile.evidence.is_empty()
+    }));
+    assert!(matrix.profiles.iter().any(|profile| {
+        profile.id == "remote-postgresql-or-redis"
+            && profile.implementation == lifecycle::ImplementationStatus::NotImplemented
+            && profile.support == lifecycle::SupportStatus::Unsupported
+    }));
     let original = fs::read(&compatibility).unwrap();
     fs::write(&compatibility, b"changed").unwrap();
     assert!(lifecycle::uninstall(&prefix).is_err());
