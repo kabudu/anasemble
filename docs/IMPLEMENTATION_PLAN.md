@@ -68,10 +68,12 @@ The decision and evidence are recorded in [M3_DECISION](M3_DECISION.md). Externa
 
 ### P1 - production identity and evidence distribution
 
-- [ ] Replace fixture HMAC identities with pluggable production signing and verification, rotation, revocation, expiry, and audit policy.
-- [ ] Add independently administered fragment-store adapters with authenticated reads, bounded parallelism, timeouts, retry budgets, quorum policy, and provenance attestations.
-- [ ] Protect sensitive semantic evidence with encryption at rest and in transit, explicit retention, deletion, and recovery-key procedures.
-- [ ] Exit: a multi-domain drill survives registered store loss and rejects compromised, revoked, replayed, or equivocated issuers.
+- [x] **P1.1 Production signatures:** add Ed25519 issuer identities and restrictive operator key files while retaining HMAC only for legacy research fixtures.
+- [x] **P1.2 Identity lifecycle:** enforce bounded key rotation sets, validity intervals, revocation, issuer replay floors, equivocation rejection, and structured verification audit events.
+- [x] **P1.3 Fragment stores:** add signed local-directory and HTTPS bundle adapters with distinct administrative domains, generation floors, bounded parallel reads, TLS, timeouts, retry budgets, quorum, and provenance receipts.
+- [x] **P1.4 Evidence protection:** seal evidence with XChaCha20-Poly1305, support recovery-key rotation, enforce retention, protect key-file permissions, and provide exact materialization and deletion workflows.
+- [x] **P1.5 Adversarial drill:** survive one registered store loss and reject a compromised store signature, revoked key, replayed sequence, issuer equivocation, tampered ciphertext, expired evidence, and insecure remote transport.
+- [x] Exit: a multi-domain drill survives registered store loss and rejects compromised, revoked, replayed, or equivocated issuers.
 
 ### P2 - stateful service recovery
 

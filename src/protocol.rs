@@ -8,7 +8,9 @@ use serde::{Deserialize, Serialize};
 use crate::canonical::digest;
 use crate::checker::{Coverage, certify};
 use crate::checker_wire::encode_candidate as encode_checker_candidate;
-use crate::fragments::{FragmentKind, IssuerPolicy, collect};
+use crate::fragments::{
+    FragmentKind, IssuerPolicy, VerificationAudit, collect, validate_issuer_policy,
+};
 use crate::model::{Candidate, Error, FragmentContent, Grammar, RefusalCode};
 use crate::oracle::{LossAttestation, attest_absence};
 use crate::sandbox::{SandboxEvidence, compile as compile_wasm, verify as verify_wasm};
@@ -74,6 +76,8 @@ pub struct Certificate {
     survivor_envelope_digests: Vec<String>,
     normalized_constraints_digest: String,
     failure_domains: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verification_audit: Option<Vec<VerificationAudit>>,
     grammar_version: String,
     search_bounds: SearchBounds,
     candidate_digest: String,
@@ -246,6 +250,11 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         survivor_envelope_digests,
         normalized_constraints_digest: digest(&all_contents)?,
         failure_domains: evidence.domains,
+        verification_audit: evidence
+            .audit
+            .iter()
+            .any(|event| event.key_id != "legacy-hmac")
+            .then_some(evidence.audit),
         grammar_version: registry.grammar.version.clone(),
         search_bounds: SearchBounds {
             max_candidates: registry.grammar.max_candidates,
@@ -405,13 +414,7 @@ fn validate_registry(registry: &Registry) -> Result<(), Error> {
         ));
     }
     for policy in registry.trusted_issuers.values() {
-        if policy.failure_domain.is_empty()
-            || hex::decode(&policy.hmac_sha256_key).map_or(true, |key| key.len() != 32)
-        {
-            return Err(Error::InvalidRegistry(
-                "issuer policy requires a domain and 32-byte hex key".into(),
-            ));
-        }
+        validate_issuer_policy(policy)?;
     }
     Ok(())
 }

@@ -7,6 +7,8 @@ use std::process::ExitCode;
 use anasemble::campaign::run_campaign;
 use anasemble::corpus::run_corpus;
 use anasemble::deployment::{StateSnapshot, StateTransform, deploy, rollback};
+use anasemble::evidence_plane::{self, StoreBundle};
+use anasemble::fragments::{self, Envelope};
 use anasemble::ledger::persist;
 use anasemble::protocol::{RecoveryResult, run};
 use anasemble::service::ServiceManifest;
@@ -31,6 +33,120 @@ fn main() -> ExitCode {
 fn execute() -> Result<bool, Box<dyn std::error::Error>> {
     let mut arguments = env::args_os().skip(1);
     let command = arguments.next().ok_or("command is required")?;
+    if command == "create-signing-key" {
+        let path = PathBuf::from(arguments.next().ok_or("signing key path is required")?);
+        let key_id = utf8_argument(arguments.next(), "key id")?;
+        let created_at = utf8_argument(arguments.next(), "created_at")?;
+        reject_extra(
+            &mut arguments,
+            "create-signing-key accepts path, key id, and created_at",
+        )?;
+        fragments::create_signing_key(&path, &key_id, &created_at)?;
+        write_json_stdout(&serde_json::json!({"created": true, "key_id": key_id}))?;
+        return Ok(true);
+    }
+    if command == "sign-fragment" {
+        let input = PathBuf::from(arguments.next().ok_or("fragment path is required")?);
+        let key_path = PathBuf::from(arguments.next().ok_or("signing key path is required")?);
+        let output = PathBuf::from(
+            arguments
+                .next()
+                .ok_or("signed fragment output is required")?,
+        );
+        reject_extra(
+            &mut arguments,
+            "sign-fragment accepts input, key, and output",
+        )?;
+        let envelope: Envelope = serde_json::from_slice(&read_bounded_regular(&input)?)?;
+        let key = fragments::read_signing_key(&key_path)?;
+        write_new_json(&output, &fragments::sign_with_key_file(envelope, &key)?)?;
+        return Ok(true);
+    }
+    if command == "create-recovery-key" {
+        let path = PathBuf::from(arguments.next().ok_or("recovery key path is required")?);
+        let key_id = utf8_argument(arguments.next(), "key id")?;
+        let created_at = utf8_argument(arguments.next(), "created_at")?;
+        reject_extra(
+            &mut arguments,
+            "create-recovery-key accepts path, key id, and created_at",
+        )?;
+        evidence_plane::create_recovery_key(&path, &key_id, &created_at)?;
+        write_json_stdout(&serde_json::json!({"created": true, "key_id": key_id}))?;
+        return Ok(true);
+    }
+    if command == "seal-evidence" {
+        let input = PathBuf::from(arguments.next().ok_or("signed fragment path is required")?);
+        let key_path = PathBuf::from(arguments.next().ok_or("recovery key path is required")?);
+        let created_at = utf8_argument(arguments.next(), "created_at")?;
+        let delete_after = utf8_argument(arguments.next(), "delete_after")?;
+        let output = PathBuf::from(
+            arguments
+                .next()
+                .ok_or("sealed evidence output is required")?,
+        );
+        reject_extra(
+            &mut arguments,
+            "seal-evidence accepts fragment, key, created_at, delete_after, and output",
+        )?;
+        let envelope: Envelope = serde_json::from_slice(&read_bounded_regular(&input)?)?;
+        let key = evidence_plane::read_recovery_key(&key_path)?;
+        write_new_json(
+            &output,
+            &evidence_plane::seal(&envelope, &key, &created_at, &delete_after)?,
+        )?;
+        return Ok(true);
+    }
+    if command == "sign-store-bundle" {
+        let input = PathBuf::from(arguments.next().ok_or("store bundle path is required")?);
+        let key_path = PathBuf::from(
+            arguments
+                .next()
+                .ok_or("store signing key path is required")?,
+        );
+        let output = PathBuf::from(arguments.next().ok_or("signed bundle output is required")?);
+        reject_extra(
+            &mut arguments,
+            "sign-store-bundle accepts bundle, key, and output",
+        )?;
+        let bundle: StoreBundle = serde_json::from_slice(&read_bounded_bundle(&input)?)?;
+        let key = fragments::read_signing_key(&key_path)?;
+        write_new_json(
+            &output,
+            &evidence_plane::sign_bundle_with_key_file(bundle, &key)?,
+        )?;
+        return Ok(true);
+    }
+    if command == "retrieve-evidence" {
+        let config = PathBuf::from(arguments.next().ok_or("evidence config path is required")?);
+        let output = PathBuf::from(arguments.next().ok_or("evidence output path is required")?);
+        reject_extra(
+            &mut arguments,
+            "retrieve-evidence accepts config and output directory",
+        )?;
+        let receipt = evidence_plane::materialize(&config, &output)?;
+        write_json_stdout(&receipt)?;
+        return Ok(true);
+    }
+    if command == "delete-evidence" {
+        let output = PathBuf::from(arguments.next().ok_or("evidence output path is required")?);
+        reject_extra(
+            &mut arguments,
+            "delete-evidence accepts only an output directory",
+        )?;
+        let removed = evidence_plane::delete_materialized(&output)?;
+        write_json_stdout(&serde_json::json!({"removed_files": removed}))?;
+        return Ok(true);
+    }
+    if command == "delete-store-bundle" {
+        let bundle = PathBuf::from(arguments.next().ok_or("store bundle path is required")?);
+        reject_extra(
+            &mut arguments,
+            "delete-store-bundle accepts only a bundle path",
+        )?;
+        let digest = evidence_plane::delete_store_bundle(&bundle)?;
+        write_json_stdout(&serde_json::json!({"deleted_bundle_sha256": digest}))?;
+        return Ok(true);
+    }
     if command == "validate-service" {
         let path = PathBuf::from(
             arguments
@@ -178,7 +294,7 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
             .all(|entry| entry.result.is_certified()));
     }
     if command != "recover" {
-        return Err("usage: anasemble validate-service <manifest> | snapshot-state <store> <source> <component> <schema> <revision> | restore-state <store> <destination> | rollback-state <destination> | commit-state <destination> | recover <workspace> [--output <path>] [--ledger <path>] | recover-corpus <root> | evaluate-campaign <root> | deploy <workspace> <state> <transform> <deployment-root> | rollback <deployment-root>".into());
+        return Err("usage: anasemble <create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
     }
     let workspace = PathBuf::from(arguments.next().ok_or("workspace path is required")?);
     let mut output = None;
@@ -222,10 +338,52 @@ fn write_json_stdout<T: serde::Serialize>(value: &T) -> Result<(), Box<dyn std::
     Ok(())
 }
 
+fn write_new_json<T: serde::Serialize>(
+    path: &std::path::Path,
+    value: &T,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(path)?;
+    let mut bytes = anasemble::canonical::encode(value)?;
+    bytes.push(b'\n');
+    file.write_all(&bytes)?;
+    file.sync_all()?;
+    Ok(())
+}
+
+fn utf8_argument(
+    argument: Option<std::ffi::OsString>,
+    label: &str,
+) -> Result<String, Box<dyn std::error::Error>> {
+    argument
+        .and_then(|value| value.into_string().ok())
+        .ok_or_else(|| format!("{label} is required and must be UTF-8").into())
+}
+
+fn reject_extra(
+    arguments: &mut impl Iterator<Item = std::ffi::OsString>,
+    usage: &str,
+) -> Result<(), Box<dyn std::error::Error>> {
+    if arguments.next().is_some() {
+        return Err(usage.into());
+    }
+    Ok(())
+}
+
 fn read_bounded_regular(path: &std::path::Path) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let metadata = fs::symlink_metadata(path)?;
     if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 65_536 {
         return Err("state input must be a regular file no larger than 64 KiB".into());
+    }
+    Ok(fs::read(path)?)
+}
+
+fn read_bounded_bundle(path: &std::path::Path) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let metadata = fs::symlink_metadata(path)?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() || metadata.len() > 16_777_216 {
+        return Err("bundle input must be a regular file no larger than 16 MiB".into());
     }
     Ok(fs::read(path)?)
 }

@@ -7,14 +7,18 @@ description = "Bounded service-reconstruction research harness"
 publish = false
 
 [dependencies]
+chacha20poly1305 = "0.11.0"
+ed25519-dalek = "3.0.0"
 hex = "0.4.3"
 hmac = "0.13.0"
 jiff = "0.2.35"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 sha2 = "0.11.0"
+ureq = { version = "3.4.0", default-features = false, features = ["rustls"] }
 wasm-encoder = { version = "0.256.0", default-features = false, features = ["std"] }
 wasmi = { version = "1.1.0", default-features = false, features = ["std", "prefer-btree-collections"] }
+zeroize = "1.9.0"
 
 [dev-dependencies]
 tempfile = "3.27.0"

@@ -16,6 +16,7 @@ const REQUIRED: &[&str] = &[
     "docs/M3_DECISION.md",
     "docs/M3_DILIGENCE_LOG.md",
     "docs/P0_PRODUCTION_FOUNDATIONS.md",
+    "docs/P1_EVIDENCE_PLANE.md",
     "docs/INDEPENDENT_REPRODUCTION.md",
     "docs/RELEASE.md",
     "docs/REQUIREMENTS_TRACEABILITY.md",
@@ -93,6 +94,11 @@ fn validate() -> Result<(), String> {
         "- [x] **P0.1 Service manifest:**",
         "- [x] **P0.2 Filesystem state adapter:**",
         "## Optional post-release assurance",
+        "- [x] **P1.1 Production signatures:**",
+        "- [x] **P1.2 Identity lifecycle:**",
+        "- [x] **P1.3 Fragment stores:**",
+        "- [x] **P1.4 Evidence protection:**",
+        "- [x] **P1.5 Adversarial drill:**",
     ] {
         if !plan.contains(completed) {
             return Err(format!(

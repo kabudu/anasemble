@@ -6,6 +6,7 @@ pub mod checker;
 pub mod checker_wire;
 pub mod corpus;
 pub mod deployment;
+pub mod evidence_plane;
 pub mod fragments;
 pub mod ledger;
 pub mod model;

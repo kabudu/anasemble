@@ -78,3 +78,9 @@ The M0 through M2 implementation is the reconstruction and certification kernel,
 The Rust CLI remains the initial control plane and the file protocol remains the compatibility boundary. New adapters implement narrow traits inside the same process until measured scaling or isolation requirements justify a service split. No network daemon, scheduler, database, or plugin runtime is introduced merely for architectural symmetry.
 
 [TCB_LEDGER](TCB_LEDGER.md) records each trusted element and its failure consequence. Each production adapter expands the TCB and therefore needs explicit invariants, resource bounds, adversarial tests, and removal behavior before it becomes supported.
+
+## P1 evidence plane
+
+P1 adds an in-process evidence plane rather than a daemon or plugin runtime. Issuer envelopes and store bundles have separate Ed25519 identities. Store workers fetch one bounded signed bundle each through a local-directory or HTTPS transport, then return to a deterministic coordinator that enforces store quorum, decrypts retained evidence, deduplicates exact replicas, and invokes the existing collector. XChaCha20-Poly1305 protects each signed envelope independently, so a store cannot read or silently alter semantic evidence.
+
+Concurrency is bounded by configured batches rather than one thread per store. HTTPS performs one request per attempt and has a global timeout and retry budget. The output boundary is an explicitly temporary owner-only directory compatible with the existing kernel; deletion is a separate fail-closed operator action.

@@ -19,7 +19,7 @@ total artifact loss, with explicit refusal when evidence is insufficient.
 
 ## Status
 
-M0 through M2 establish a viable bounded reconstruction kernel. M3 now continues into production engineering: real service contracts, durable state adapters, production identity and evidence distribution, isolated runtime activation, and operational control must be implemented before Anasemble is called production-complete. Independent reproduction and external security review are optional post-release assurance, not implementation gates. Anasemble is not yet approved for public release, production recovery, or arbitrary service reconstruction claims. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and the production roadmap is in [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md).
+M0 through M2 establish a viable bounded reconstruction kernel. P0 adds real-service contracts and durable local-file state; P1 adds Ed25519 identity lifecycle, signed multi-domain stores, bounded quorum retrieval, encrypted retention, provenance, and deletion workflows. P2 through P4 still require production state backends, isolated runtime activation, and operational control before Anasemble is called production-complete. Independent reproduction and external security review are optional post-release assurance, not implementation gates. Anasemble is not yet approved for public release, production recovery, or arbitrary service reconstruction claims. Claim boundaries are in [NOVELTY](docs/NOVELTY.md), and the production roadmap is in [IMPLEMENTATION_PLAN](docs/IMPLEMENTATION_PLAN.md).
 
 Install the pinned Rust toolchain with `rustup show`, fetch dependencies once with
 `cargo fetch --locked`, then run the authoritative private-repository CI with
