@@ -9,6 +9,7 @@ use chacha20poly1305::{XChaCha20Poly1305, XNonce};
 use ed25519_dalek::{Signature, Signer, SigningKey, VerifyingKey};
 use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
+use zeroize::Zeroize;
 
 use crate::canonical::{digest, encode};
 use crate::fragments::{CollectedEvidence, Envelope, IssuerPolicy, collect_at};
@@ -19,13 +20,19 @@ const MAX_BUNDLE_BYTES: u64 = 16_777_216;
 const MAX_STORES: usize = 32;
 const MAX_PARALLEL: usize = 8;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct RecoveryKeyFile {
     pub version: String,
     pub key_id: String,
     pub key_hex: String,
     pub created_at: String,
+}
+
+impl Drop for RecoveryKeyFile {
+    fn drop(&mut self) {
+        self.key_hex.zeroize();
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -654,10 +661,12 @@ fn validate_key_file(key: &RecoveryKeyFile) -> Result<(), Error> {
 }
 
 fn cipher(key: &RecoveryKeyFile) -> Result<XChaCha20Poly1305, Error> {
-    let bytes = hex::decode(&key.key_hex)
+    let mut bytes = hex::decode(&key.key_hex)
         .map_err(|_| Error::InvalidRegistry("recovery key is not hex".into()))?;
-    XChaCha20Poly1305::new_from_slice(&bytes)
-        .map_err(|_| Error::InvalidRegistry("recovery key length is invalid".into()))
+    let result = XChaCha20Poly1305::new_from_slice(&bytes)
+        .map_err(|_| Error::InvalidRegistry("recovery key length is invalid".into()));
+    bytes.zeroize();
+    result
 }
 
 fn validate_id(label: &str, value: &str) -> Result<(), Error> {

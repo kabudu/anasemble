@@ -10,13 +10,14 @@ use hmac::{Hmac, KeyInit, Mac};
 use jiff::Timestamp;
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
+use zeroize::Zeroize;
 
 use crate::canonical::{digest, encode};
 use crate::model::{Error, FragmentContent};
 
 type HmacSha256 = Hmac<Sha256>;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct SigningKeyFile {
     pub version: String,
@@ -66,8 +67,16 @@ pub fn read_signing_key(path: &Path) -> Result<SigningKeyFile, Error> {
 
 pub fn sign_with_key_file(envelope: Envelope, key: &SigningKeyFile) -> Result<Envelope, Error> {
     validate_signing_key(key)?;
-    let secret = key.secret_bytes()?;
-    sign_ed25519(envelope, &key.key_id, &secret)
+    let mut secret = key.secret_bytes()?;
+    let result = sign_ed25519(envelope, &key.key_id, &secret);
+    secret.zeroize();
+    result
+}
+
+impl Drop for SigningKeyFile {
+    fn drop(&mut self) {
+        self.secret_key_hex.zeroize();
+    }
 }
 
 impl SigningKeyFile {

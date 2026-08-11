@@ -28,6 +28,7 @@ dependencies = [
  "ureq",
  "wasm-encoder",
  "wasmi",
+ "zeroize",
 ]
 
 [[package]]
