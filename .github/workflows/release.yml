@@ -89,6 +89,8 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ inputs.release_tag || github.ref }}
+      - name: Validate the clean crates.io package
+        run: cargo package --locked
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
           pattern: release-*
@@ -100,7 +102,6 @@ jobs:
         run: |
           version=${RELEASE_TAG#v}
           test "${RELEASE_TAG}" = "v$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')"
-          cargo package --locked
           sha256sum dist/* | sort -k2 > dist/SHA256SUMS
           gh release create "${RELEASE_TAG}" dist/* \
             --draft \
