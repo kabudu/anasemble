@@ -66,10 +66,15 @@ recovery path and the backup/replica, trace-only, and centralized-contract
 baselines. It retains typed decisions and registered metric observations. This is
 local file transactionality, not a distributed deployment protocol.
 
-## M3 architecture conclusion
+## Production architecture direction
 
-No new runtime component is justified. The present limiting factors are external
-evidence, centralized-contract differentiation, and cost, not missing control
-plane machinery. [TCB_LEDGER](TCB_LEDGER.md) records each trusted element and its
-failure consequence. Further architecture work is gated on a larger corpus and
-independent review rather than speculative product surface.
+The M0 through M2 implementation is the reconstruction and certification kernel, not the complete product. Production usefulness requires four additional bounded planes around it:
+
+1. **Contract plane:** versioned service interfaces, effects, state dependencies, compatibility, and resource policies become certificate-bound inputs.
+2. **Evidence plane:** independently administered, authenticated, encrypted fragment stores operate under bounded concurrency, timeout, retry, rotation, revocation, and retention policies.
+3. **State plane:** backend-specific adapters acquire consistent snapshots, verify integrity and invariants, plan migrations, restore transactionally, and retain native rollback evidence.
+4. **Activation plane:** an isolated runtime and operator-controlled deployment coordinator stage immutable artifacts, enforce capabilities, evaluate health, serialize activation, and roll back without exposing secrets to synthesis.
+
+The Rust CLI remains the initial control plane and the file protocol remains the compatibility boundary. New adapters implement narrow traits inside the same process until measured scaling or isolation requirements justify a service split. No network daemon, scheduler, database, or plugin runtime is introduced merely for architectural symmetry.
+
+[TCB_LEDGER](TCB_LEDGER.md) records each trusted element and its failure consequence. Each production adapter expands the TCB and therefore needs explicit invariants, resource bounds, adversarial tests, and removal behavior before it becomes supported.

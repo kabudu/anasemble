@@ -168,18 +168,13 @@ Material findings resolved:
   identities, loss oracle, and shared checker types inside the trust boundary.
 - Required certified campaign expectations to pin candidate identity and linked
   the retained M3 comparison back to the executable M2 campaign.
-- Recorded a continue-as-research decision and explicitly prohibited product,
-  brand, package, public-release, tag, hosted-CI, and production work.
+- Superseded the initial continue-as-research decision with a production-engineering roadmap while retaining separate authority for public release, tags, hosted CI, and deployment.
 
-No new runtime architecture was added because M3's unmet requirements are
-evidence and independent review, not another in-process abstraction. The simplest
-sufficient increment is a reproducible evidence packet, honest comparison, cost
-record, TCB audit, and gated decision.
+P0 adds only the two foundations required by the production roadmap: a certificate-bound service contract and a bounded local-file state transaction. Network services, generic plugin machinery, and speculative control-plane distribution remain unjustified until later adapter and scaling requirements demand them.
 
 Residual blockers:
 
-- No person or team independent of this implementation process has reproduced
-  the results or reviewed security and soundness.
+- No person or team independent of this implementation process has reproduced the results or reviewed security and soundness; both remain optional post-release assurance.
 - Novelty, patents, freedom to operate, and trademark viability lack expert or
   legal conclusions.
 - The corpus remains synthetic and too small to establish generality, operational
@@ -187,5 +182,4 @@ Residual blockers:
 - The current comparison shows no advantage over surviving centralized contracts.
 - Warm-cache local timing and one fixture's bytes do not predict production cost.
 
-M3 remains in progress with one unchecked external-evidence gate. Merging this
-decision record must not be described as M3 completion or research release.
+M3 remains in progress because the internal production-complete roadmap is unfinished. P0.1 and P0.2 are complete; P1 through P4 remain unchecked. External reproduction and review are optional post-release assurance, not the remaining gate. Merging this work must not be described as production completion or a release.

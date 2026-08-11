@@ -12,6 +12,7 @@ use crate::fragments::{FragmentKind, IssuerPolicy, collect};
 use crate::model::{Candidate, Error, FragmentContent, Grammar, RefusalCode};
 use crate::oracle::{LossAttestation, attest_absence};
 use crate::sandbox::{SandboxEvidence, compile as compile_wasm, verify as verify_wasm};
+use crate::service::ServiceManifest;
 use crate::synthesizer::reconstruct;
 
 #[derive(Debug, Deserialize)]
@@ -27,6 +28,8 @@ pub struct Registry {
     experiment: ExperimentRegistration,
     #[serde(default)]
     evidence_window: Option<EvidenceWindow>,
+    #[serde(default)]
+    service_manifest: Option<ServiceManifest>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -66,6 +69,8 @@ pub struct Certificate {
     protocol_version: &'static str,
     component: String,
     interface_version: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    service_manifest_digest: Option<String>,
     survivor_envelope_digests: Vec<String>,
     normalized_constraints_digest: String,
     failure_domains: Vec<String>,
@@ -237,6 +242,7 @@ fn recover(workspace: &Path, mode: RecoveryMode) -> Result<RecoveryResult, Error
         protocol_version: "regeneration-v0",
         component: registry.component.clone(),
         interface_version: registry.interface_version,
+        service_manifest_digest: registry.service_manifest.as_ref().map(digest).transpose()?,
         survivor_envelope_digests,
         normalized_constraints_digest: digest(&all_contents)?,
         failure_domains: evidence.domains,
@@ -337,6 +343,16 @@ fn validate_registry(registry: &Registry) -> Result<(), Error> {
         return Err(Error::InvalidRegistry(
             "component and interface version are mandatory".into(),
         ));
+    }
+    if let Some(manifest) = &registry.service_manifest {
+        manifest.validate()?;
+        if manifest.component != registry.component
+            || manifest.interface_version != registry.interface_version
+        {
+            return Err(Error::InvalidRegistry(
+                "service manifest identity does not match the recovery registry".into(),
+            ));
+        }
     }
     if registry.required_domains == 0
         || registry.resource_limits.max_fragments == 0

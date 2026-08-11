@@ -7,33 +7,29 @@ artifact for one component is lost or untrusted but other nodes retain partial
 knowledge of its protocol and behavior. Anasemble tests whether deliberately
 distributed semantic evidence can support construction of a bounded replacement.
 
-## Research user and job
+## Product user and job
 
-A resilience researcher defines a component in a finite typed DSL, distributes
-contracts and observations across failure domains, destroys all original
-artifacts, and asks the system to produce either a certified non-identical
-replacement or a precise refusal.
+A resilience engineer registers a supported service interface, declared effects, state dependencies, consistency policy, recovery bounds, contracts, and observations across independent failure domains. After a declared artifact-loss event, the operator asks Anasemble to produce either a staged, certified, state-bound replacement with rollback evidence or a precise refusal.
 
 Inputs are signed executable contracts, typed protocol traces, state-schema
 fragments, a synthesis grammar, resource bounds, and survivor provenance. Outputs
 are a candidate component, proof/test certificate, confidence-independent
 coverage report, and deployment/refusal decision.
 
-## First vertical
+## Proven kernel
 
 Stateless and explicitly stateful request/response components over finite data
 types. No unrestricted networking, reflection, native code, hidden clocks, or
 unbounded storage.
 
-Success requires restoring declared behavior after total artifact deletion,
-rejecting poisoned or ambiguous evidence, and outperforming trace-only synthesis
-and backup/replica baselines on the stated failure model.
+The finite-state vertical proves bounded reconstruction, certification, refusal, and local transactional deployment. It remains the reference semantics and regression kernel.
 
-## M3 status
+## Production-complete acceptance boundary
 
-The implementation satisfies the bounded technical behaviors and outperforms the
-unavailable backup and trace-only baselines under the stipulated total-loss scope.
-It does not outperform a surviving centralized contract on the synthetic corpus.
-That result, the narrow state model, and absent independent reproduction block
-productisation. The supported user remains a resilience researcher running an
-offline disposable experiment.
+The product is implementation-complete only when it supports at least one real HTTP service runtime, production identity and independently administered evidence stores, filesystem plus database/object/queue state, OS-level candidate isolation, a production orchestrator and artifact registry, operator-approved activation, durable recovery jobs, health observation, audit, rollback, installation, upgrade, and removal. Each supported combination must pass a destructive staging drill and publish exact compatibility and loss bounds.
+
+Unsupported protocols, effects, state backends, consistency models, or deployment targets must refuse before synthesis or mutation. Anasemble never infers that undeclared state or side effects are safe to discard.
+
+## Current status
+
+The implementation satisfies the bounded kernel behaviors and outperforms unavailable backup and trace-only baselines under the stipulated total-loss scope. It does not outperform a surviving centralized contract on the synthetic corpus. The narrow state and runtime model, not absent external review, blocks a production-complete claim. Product engineering proceeds through the dependency-ordered roadmap in `IMPLEMENTATION_PLAN.md`; independent reproduction and external review are optional post-release assurance.

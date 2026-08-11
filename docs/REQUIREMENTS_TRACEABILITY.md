@@ -13,10 +13,12 @@
 | EXP-1 | Execute matched baselines and metrics | bounded campaign runner | `campaign_retains_positive_refusal_timeout_disagreement_and_negative_results` |
 | SEC-3 | Refuse stale or adversarial evidence | freshness window and fail-closed collector | M2 evidence and trust campaign tests |
 | REL-3 | Revert failed deployment | synchronized active and rollback bundles | partial failure and rollback test |
-| NOV-1 | Maintain a falsifiable contribution boundary | dated diligence and prior-art matrix | M3 search log and external challenge gate |
+| NOV-1 | Maintain a falsifiable contribution boundary | dated diligence and prior-art matrix | M3 search log and optional external challenge track |
 | REL-4 | Enable independent reproduction without overstating it | clean-room packet and authoritative local CI | local packet verification; independent attestation remains open |
 | PERF-1 | Quantify bounded research cost | retained M3 cost record | fixture byte counts and timed local CI |
-| BRD-1 | Gate product and brand work on evidence and approval | explicit continue-as-research decision | M3 decision and unchanged private-release policy |
+| BRD-1 | Gate product and brand work on evidence and approval | explicit production-engineering decision with separate release authority | M3 decision and unchanged private-release policy |
+| PROD-1 | Bind supported service behavior and resource policy to certification | `service-v1` HTTP manifest in the recovery registry and certificate digest | service unit tests and `service_manifest_is_validated_by_cli_and_bound_to_certificate` |
+| STATE-1 | Preserve bounded filesystem state through recovery | content-addressed immutable object, versioned manifest, atomic restore, rollback sidecar, and commit | production-foundation corruption, lock, failure-injection, round-trip, and public CLI tests |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

@@ -2,18 +2,11 @@
 
 ## Decision
 
-**Continue as research. Do not productise.**
+**Continue into production engineering. Do not claim production completeness yet.**
 
-The bounded mechanism is technically viable inside the frozen FSM model, and the
-searched material did not reveal an exact match for the complete catastrophe
-protocol. That is not enough for a product decision. The current corpus is
-synthetic and small, independent reproduction is absent, centralized surviving
-contracts match the successful Anasemble outcome, and the semantic evidence costs
-more bytes and authoring effort than the disposable fixture artifact.
+The bounded mechanism is technically viable inside the frozen FSM model, and the searched material did not reveal an exact match for the complete catastrophe protocol. The proven kernel justifies production engineering, not a general disaster-recovery claim. The current corpus is synthetic and small, centralized surviving contracts match the successful Anasemble outcome, and semantic evidence costs more bytes and authoring effort than the disposable fixture artifact.
 
-This decision authorizes private research maintenance only. It does not authorize
-a tag, package, GitHub Release, public repository, hosted CI, website, production
-deployment, trademark filing, customer claim, or product brand.
+This decision authorizes private implementation of the production-complete roadmap. It does not authorize a tag, package, GitHub Release, public repository, hosted CI, website, production deployment, trademark filing, or customer claim.
 
 ## Requirement audit
 
@@ -22,11 +15,11 @@ deployment, trademark filing, customer claim, or product brand.
 | Current novelty, product, name, standards, and patent diligence | Completed internally | `NOVELTY.md`, `PRIOR_ART_MATRIX.md`, `M3_DILIGENCE_LOG.md` |
 | Internal security, sandbox, TCB, and soundness review | Completed | `TCB_LEDGER.md`, `ENGINEERING_REVIEW.md`, existing adversarial suites |
 | Clean-room reproduction packet | Published and locally verified | `INDEPENDENT_REPRODUCTION.md`, `./scripts/ci-local.sh` |
-| Independent reproduction and expert review | Not completed | requires a person or team outside this implementation process |
+| Independent reproduction and expert review | Optional post-release | not represented as completed and not a productisation gate |
 | Matched comparison | Completed for the synthetic registered scope | `experiments/m3-comparison.json` and M2 campaign |
 | Cost quantification | Completed for the synthetic registered scope | `experiments/m3-costs.json` |
-| Productisation decision | Completed | continue as research |
-| Brand, adoption, packaging, and public release | Not triggered | productisation was not approved |
+| Productisation decision | Completed | continue into production engineering under bounded claims |
+| Production-complete implementation | In progress | dependency-ordered P0 through P4 roadmap |
 
 ## Matched comparison
 
@@ -117,21 +110,8 @@ Primary and direct sources:
 - <https://www.uspto.gov/trademarks/search>
 - <https://www.euipo.europa.eu/en/search>
 
-## Reconsideration gates
+## Production gates
 
-Reconsider productisation only after all of the following:
+Implementation completeness requires the internal P0 through P4 roadmap: supported real-service contracts, production identity and evidence distribution, stateful backend recovery, isolated runtime activation, durable operations, compatibility, destructive staging drills, and release readiness. Claims remain limited to supported and tested combinations, and ordinary backups remain a required comparison and interoperability path.
 
-1. an independent party reproduces the retained results from a clean clone and
-   publishes the completed attestation;
-2. an independent security reviewer assesses the checker, Wasmi embedding,
-   provenance model, loss oracle, state transaction, and supply chain;
-3. a larger pre-registered corpus demonstrates a benefit over centralized
-   contracts at a credible matched multi-domain failure scope;
-4. semantic authoring, storage, compute, state-loss, and operating costs are
-   acceptable against protected backups and ordinary contract systems;
-5. legal counsel completes patent and trademark review if public or commercial
-   use is contemplated;
-6. the owner explicitly approves a new productisation decision.
-
-Failure of the first four gates should trigger a stop decision rather than broader
-claims or additional product surface.
+Independent clean-clone reproduction, external security and soundness review, and broader third-party deployment are optional post-release assurance. Their absence must not be described as completion, but it does not block implementation or productisation. Legal review remains a separate release or commercialisation decision when proportionate.

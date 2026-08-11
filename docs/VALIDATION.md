@@ -83,8 +83,6 @@ the current corpus does not establish differentiated recovery value.
 3.22-second warm-cache local CI run on arm64 macOS with Rust 1.97.0. These are
 bounded engineering observations, not production estimates.
 
-The clean-room protocol is in `INDEPENDENT_REPRODUCTION.md`. It has been checked
-for completeness and rerun locally, but no independent party has supplied the
-required attestation. The project therefore records continue-as-research and
-keeps independent reproduction, external security review, and productisation
-open or prohibited as specified in `M3_DECISION.md`.
+The clean-room protocol is in `INDEPENDENT_REPRODUCTION.md`. It has been checked for completeness and rerun locally, but no independent party has supplied an attestation. The project proceeds into production engineering because independent reproduction and external security review are optional post-release assurance, not implementation gates. Their absence remains explicit.
+
+P0 verification adds module and public-CLI tests for a certificate-bound service manifest and a bounded content-addressed filesystem state adapter. The state tests cover integrity corruption, exclusion locking, stale staging, round-trip restore, commit, rollback, and injected failure after rollback preparation. These foundations do not verify HTTP runtime generation or non-filesystem backends.
