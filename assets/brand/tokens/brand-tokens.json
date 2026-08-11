@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "colour": {
+    "ink": "#0B1628",
+    "mineral": "#2457A6",
+    "teal": "#169C8C",
+    "amber": "#E57A2F",
+    "paper": "#FFFFFF",
+    "mist": "#F1F5F9",
+    "slate": "#334155",
+    "refusal": "#B42318",
+    "uncertain": "#9A6700"
+  },
+  "typography": {
+    "ui": "Inter, ui-sans-serif, system-ui, sans-serif",
+    "technical": "ui-monospace, SFMono-Regular, Consolas, Liberation Mono, monospace"
+  },
+  "space": { "clear_mark_units": 16, "minimum_symbol_px": 16, "minimum_lockup_px": 120 },
+  "motion": { "duration_fast_ms": 120, "duration_standard_ms": 200, "reduced_motion": "none" }
+}

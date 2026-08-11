@@ -32,6 +32,11 @@ The private implementation productisation boundary is recorded in
 [PRODUCTISATION](docs/PRODUCTISATION.md), and the final internal Lazarus security
 sweep is retained in [FINAL_SECURITY_SWEEP](docs/FINAL_SECURITY_SWEEP.md).
 
+The enduring Semantic Fit visual and verbal system is defined in
+[BRAND_IDENTITY](docs/BRAND_IDENTITY.md). Canonical sources, deterministic SVG
+exports, accessible tokens, templates, provenance and the digest manifest live
+under `assets/brand`; release maturity remains a separate overlay.
+
 ## Repository policy
 
 This is a private local repository. Its required remote is a private repository in

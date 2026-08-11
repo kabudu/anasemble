@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Anasemble Semantic Fit monochrome symbol</title>
+  <desc id="desc">Three distinct fragments fit around an open semantic interface.</desc>
+  <g fill="#0B1628" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round"><path d="M64 8 107 33 91 61H72V49a8 8 0 1 0-16 0v12H37L21 33Z"/><path d="m17 41 32 19v20H37a8 8 0 1 0 0 16h12v18H17L5 93Z"/><path d="m111 41 12 21v5h-14v22h14v4l-32 21-32-19V76h12a8 8 0 1 0 0-16H59v-1l32-19Z"/></g>
+  <path fill="none" stroke="#0B1628" stroke-width="4" stroke-linecap="round" d="M109 70v16"/>
+</svg>

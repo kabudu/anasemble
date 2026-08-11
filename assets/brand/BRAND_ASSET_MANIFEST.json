@@ -1,0 +1,270 @@
+{
+  "schema": "anasemble-brand-asset-manifest-v1",
+  "brand_version": "1.0.0",
+  "entries": [
+    {
+      "path": "assets/brand/LICENSES/OWNED-ASSETS.md",
+      "sha256": "0061eb062557018bf62128f82951dbd87ebc621dc7252fdfdccde419d74dc243",
+      "source_sha256": "0061eb062557018bf62128f82951dbd87ebc621dc7252fdfdccde419d74dc243",
+      "dimensions": "not applicable",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-horizontal.svg",
+      "sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "source_sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-result-icons.svg",
+      "sha256": "4794bdc96b415ea379d8cb72f3dd303fe491d867e9c57b1a51d85ce1938ffc0f",
+      "source_sha256": "4794bdc96b415ea379d8cb72f3dd303fe491d867e9c57b1a51d85ce1938ffc0f",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-small.svg",
+      "sha256": "e80433445e4d582547aba438cef3748d2d51814aca7a9ab611b8511a06a7f7e5",
+      "source_sha256": "e80433445e4d582547aba438cef3748d2d51814aca7a9ab611b8511a06a7f7e5",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-stacked.svg",
+      "sha256": "6e98574a7e78226a6661923ac63ee211056204bd01dc84afa4ee98a2e3c06e50",
+      "source_sha256": "6e98574a7e78226a6661923ac63ee211056204bd01dc84afa4ee98a2e3c06e50",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-symbol-mono.svg",
+      "sha256": "75318e17c38b1174cb68421710bd1b7b8c7aea4c9c1faab8df1b908b60933a7e",
+      "source_sha256": "75318e17c38b1174cb68421710bd1b7b8c7aea4c9c1faab8df1b908b60933a7e",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-symbol-reversed.svg",
+      "sha256": "c2fdde402a6eeec5c3b9698c60a525e4214ab1802c7deb50a9a46aa53e423961",
+      "source_sha256": "c2fdde402a6eeec5c3b9698c60a525e4214ab1802c7deb50a9a46aa53e423961",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-symbol.svg",
+      "sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "source_sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-wordmark.svg",
+      "sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
+      "source_sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-horizontal.svg",
+      "sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "source_sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-result-icons.svg",
+      "sha256": "4794bdc96b415ea379d8cb72f3dd303fe491d867e9c57b1a51d85ce1938ffc0f",
+      "source_sha256": "4794bdc96b415ea379d8cb72f3dd303fe491d867e9c57b1a51d85ce1938ffc0f",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-small.svg",
+      "sha256": "e80433445e4d582547aba438cef3748d2d51814aca7a9ab611b8511a06a7f7e5",
+      "source_sha256": "e80433445e4d582547aba438cef3748d2d51814aca7a9ab611b8511a06a7f7e5",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-stacked.svg",
+      "sha256": "6e98574a7e78226a6661923ac63ee211056204bd01dc84afa4ee98a2e3c06e50",
+      "source_sha256": "6e98574a7e78226a6661923ac63ee211056204bd01dc84afa4ee98a2e3c06e50",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-symbol-mono.svg",
+      "sha256": "75318e17c38b1174cb68421710bd1b7b8c7aea4c9c1faab8df1b908b60933a7e",
+      "source_sha256": "75318e17c38b1174cb68421710bd1b7b8c7aea4c9c1faab8df1b908b60933a7e",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-symbol-reversed.svg",
+      "sha256": "c2fdde402a6eeec5c3b9698c60a525e4214ab1802c7deb50a9a46aa53e423961",
+      "source_sha256": "c2fdde402a6eeec5c3b9698c60a525e4214ab1802c7deb50a9a46aa53e423961",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-symbol.svg",
+      "sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "source_sha256": "5687b1d6890962f9bdd0bc632477e4aa808f453dd2acb8ee2ca76f2344212cfa",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-wordmark.svg",
+      "sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
+      "source_sha256": "e2a1bc491198cca11be85a1a585d24911304a141690b7fa85abc0ac6e6fbc303",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/templates/chart-key.svg",
+      "sha256": "e2fb2bb65f92ade01dba52a4a66068c351f2e09f262b3445beb52a63f79e545f",
+      "source_sha256": "e2fb2bb65f92ade01dba52a4a66068c351f2e09f262b3445beb52a63f79e545f",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/templates/diagram-key.svg",
+      "sha256": "1326cebc6706ccff86aae64c87001f271588aee55464ab48df48e3e4fb9bf8b0",
+      "source_sha256": "1326cebc6706ccff86aae64c87001f271588aee55464ab48df48e3e4fb9bf8b0",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/templates/presentation-title.svg",
+      "sha256": "1e6ec8e13d0b47c231ba21c3d6d4c372cfde4fb7b5403137a31417044683db01",
+      "source_sha256": "1e6ec8e13d0b47c231ba21c3d6d4c372cfde4fb7b5403137a31417044683db01",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/templates/release-card.svg",
+      "sha256": "72d9c342d5988db71c0100c3d79b0b3005e25afc5d5ca80568a2a0240f906bac",
+      "source_sha256": "72d9c342d5988db71c0100c3d79b0b3005e25afc5d5ca80568a2a0240f906bac",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/templates/social-card.svg",
+      "sha256": "93bbc4e8c5c643855ccdc017859ad104141bfe95c066ed59732361674e8fb582",
+      "source_sha256": "93bbc4e8c5c643855ccdc017859ad104141bfe95c066ed59732361674e8fb582",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/tokens/brand-tokens.css",
+      "sha256": "601ceb30d8eddbe066cea4f74b6fa6a78a77a34f5b0bddb3130d458dc18a1419",
+      "source_sha256": "601ceb30d8eddbe066cea4f74b6fa6a78a77a34f5b0bddb3130d458dc18a1419",
+      "dimensions": "not applicable",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/tokens/brand-tokens.json",
+      "sha256": "23c7b35dc6a3163c36e2f94940e1daba3165ec44f6a20f1f0d4327814ffa05a9",
+      "source_sha256": "23c7b35dc6a3163c36e2f94940e1daba3165ec44f6a20f1f0d4327814ffa05a9",
+      "dimensions": "not applicable",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "project-owned; all rights reserved pending release licensing",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    }
+  ]
+}

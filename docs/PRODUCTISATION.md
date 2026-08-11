@@ -10,6 +10,14 @@ procedures. The integrated reference profile is implemented and tested but
 remains experimental because the candidate is not a generated HTTP server and
 the kind fixture does not prove production CNI enforcement.
 
+The owner-selected Semantic Fit identity is productised independently of release
+maturity. Its brand platform, complete vector family, tokens, semantic icons,
+channel templates, licensing/provenance record, deterministic exports,
+digest-bound manifest and validation are retained under `assets/brand`. Release
+stage, support and assurance remain separate overlays. Legal name and mark review
+is still a release or commercialisation gate, not an internal productisation
+claim.
+
 ## Operator lifecycle
 
 The product lifecycle is preparation, declared loss, certified reconstruction,

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Replaced the preliminary fragment ring with the owner-selected Semantic Fit
+  identity and added its complete vector family, accessible tokens, templates,
+  provenance, deterministic exports, digest manifest and Rust validation.
+
 - Seal and cross-validate integrated recovery receipts, preserve restored state
   across uncertain Kubernetes switch outcomes, enforce loopback-only PostgreSQL
   and Redis transports, constrain S3 schemes, and add adversarial receipt tests.
