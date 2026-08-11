@@ -12,7 +12,11 @@ published limitations.
 
 The M3 decision authorizes production engineering, not release. P4 completes the implementation roadmap for the profiles in `COMPATIBILITY.md`, but no tag, GitHub Release, package, hosted CI, visibility change, or deployment is authorized without a new explicit user decision. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
 
-`v0.1.0-rc.1` is the prepared first public source candidate. The owner has authorized publication of the existing `anasemble` Rust package from the exact release tag through the protected release workflow. Hosted recovery, real service traces, container publication, production deployment and commercial claims each require a separate gate.
+`v0.1.0-rc.1` is the first public prerelease. The existing `anasemble` Rust
+package and native static Linux archives were published from the exact annotated
+tag through the protected release workflow. Hosted recovery, real service
+traces, container publication, production deployment and commercial claims each
+require a separate gate.
 
 The first release artifact set is defined in `docs/RELEASE_ARTIFACTS.md`: the
 annotated source tag, GitHub source archives, the `anasemble` crates.io package,

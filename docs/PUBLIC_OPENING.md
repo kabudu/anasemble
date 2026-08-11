@@ -25,15 +25,20 @@ support beyond `docs/COMPATIBILITY.md`.
 
 ## Final private gates
 
-- [ ] Refresh exact and similar name and trademark review at the publication date.
-- [ ] Confirm no confidential agreement, third-party code, customer data or private evidence is present.
-- [ ] Run `gitleaks git --redact` against all reachable history and review every finding.
-- [ ] Run `./scripts/ci-local.sh` on the exact release commit.
-- [ ] Run `./scripts/ci-linux-matrix.sh` on the exact release commit.
-- [ ] Build the release binary from a clean source archive and exercise install, upgrade, rollback and uninstall.
-- [ ] Render the exact release notes at desktop and narrow widths and verify every link.
-- [ ] Inspect the rendered README, About description and repository topics on GitHub.
-- [ ] Obtain explicit owner approval for visibility change, hosted CI activation, tag and GitHub Release as separate actions.
+- [x] Refresh exact and similar name and trademark review at the publication date.
+- [x] Confirm no confidential agreement, third-party code, customer data or private evidence is present.
+- [x] Run `gitleaks git --redact` against all reachable history and review every finding.
+- [x] Run `./scripts/ci-local.sh` on the exact release commit.
+- [x] Run `./scripts/ci-linux-matrix.sh` on the exact release commit.
+- [x] Build the release binary from a clean source archive and exercise install, upgrade, rollback and uninstall.
+- [x] Render the exact release notes at desktop and narrow widths and verify every link.
+- [x] Inspect the rendered README, About description and repository topics on GitHub.
+- [x] Obtain explicit owner approval for visibility change, hosted CI activation, tag and GitHub Release as separate actions.
+
+The transition completed on 2026-08-11. Public CI remains non-required until a
+true unprivileged fork run can be performed from an identity other than the
+repository owner; its workflow exposes no pull-request secrets and does not use
+`pull_request_target`.
 
 ## Visibility transition
 
