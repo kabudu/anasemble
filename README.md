@@ -1,9 +1,9 @@
 # Anasemble
 
-<img src="assets/anasemble-mark.svg" alt="Anasemble Semantic Fit mark" width="112">
-
-**Recover a lost service component from evidence stored beyond the component's
-failure domain.**
+<picture>
+  <source media="(max-width: 600px)" srcset="assets/brand/exports/anasemble-readme-hero-narrow.svg">
+  <img src="assets/brand/exports/anasemble-readme-hero.svg" alt="Anasemble: Regrow function from surviving meaning. Recover a lost service component from evidence stored beyond its failure domain." width="100%">
+</picture>
 
 Anasemble is a Rust disaster-recovery control plane for the case ordinary
 deployment artifacts do not survive. It reconstructs bounded service behaviour

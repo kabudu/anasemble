@@ -1,6 +1,6 @@
 {
   "schema": "anasemble-brand-asset-manifest-v1",
-  "brand_version": "1.1.0",
+  "brand_version": "1.2.0",
   "entries": [
     {
       "path": "assets/brand/LICENSES/OWNED-ASSETS.md",
@@ -28,6 +28,28 @@
       "path": "assets/brand/exports/anasemble-horizontal.svg",
       "sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
       "source_sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-readme-hero-narrow.svg",
+      "sha256": "191d26e1bf763d9d2a50525635565287976bccb09985646acb2aa77316cfa141",
+      "source_sha256": "191d26e1bf763d9d2a50525635565287976bccb09985646acb2aa77316cfa141",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/exports/anasemble-readme-hero.svg",
+      "sha256": "13f8c0b03daffeb50b683b9df5c297dd5f025a732a9cd49348303659c69b91cc",
+      "source_sha256": "13f8c0b03daffeb50b683b9df5c297dd5f025a732a9cd49348303659c69b91cc",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -127,6 +149,28 @@
       "path": "assets/brand/source/anasemble-horizontal.svg",
       "sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
       "source_sha256": "5175ce280e10ca87a15ff986febad8b7e8549f385dcf19bd8ce2b9d4f094b5bf",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-readme-hero-narrow.svg",
+      "sha256": "191d26e1bf763d9d2a50525635565287976bccb09985646acb2aa77316cfa141",
+      "source_sha256": "191d26e1bf763d9d2a50525635565287976bccb09985646acb2aa77316cfa141",
+      "dimensions": "scalable SVG viewBox",
+      "colour_space": "sRGB tokens; monochrome-safe",
+      "licence": "Apache-2.0; trademark rights excluded",
+      "provenance": "owner-selected Semantic Fit; project-authored vector or text source",
+      "allowed_use": "private product, documentation, repository and release preparation",
+      "export_command": "cargo run --locked --offline --bin brand_assets -- generate"
+    },
+    {
+      "path": "assets/brand/source/anasemble-readme-hero.svg",
+      "sha256": "13f8c0b03daffeb50b683b9df5c297dd5f025a732a9cd49348303659c69b91cc",
+      "source_sha256": "13f8c0b03daffeb50b683b9df5c297dd5f025a732a9cd49348303659c69b91cc",
       "dimensions": "scalable SVG viewBox",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",
@@ -279,8 +323,8 @@
     },
     {
       "path": "assets/brand/tokens/brand-tokens.json",
-      "sha256": "10986a8bb2c47416c04501edd32a486b46b938ebdc0aef2c711ca7a56fc6236e",
-      "source_sha256": "10986a8bb2c47416c04501edd32a486b46b938ebdc0aef2c711ca7a56fc6236e",
+      "sha256": "6c96bdaf672c531a782ad4322430bb1386d3fabad8d5ac2b0bc9676eeff63ad2",
+      "source_sha256": "6c96bdaf672c531a782ad4322430bb1386d3fabad8d5ac2b0bc9676eeff63ad2",
       "dimensions": "not applicable",
       "colour_space": "sRGB tokens; monochrome-safe",
       "licence": "Apache-2.0; trademark rights excluded",

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">Anasemble: Regrow function from surviving meaning</title>
+  <desc id="desc">Compact Semantic Fit artwork and Anasemble's evidence-bound service recovery promise for narrow screens.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="720" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1628"/><stop offset="0.62" stop-color="#12335A"/><stop offset="1" stop-color="#0B3A37"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#FFFFFF" stroke-opacity="0.035"/>
+    </pattern>
+  </defs>
+  <rect width="720" height="420" rx="24" fill="url(#bg)"/><rect width="720" height="420" rx="24" fill="url(#grid)"/>
+  <circle cx="650" cy="12" r="150" fill="#169C8C" opacity="0.08"/>
+  <g transform="translate(34 30) scale(.8)" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round">
+    <path fill="#2457A6" d="M64 8 107 33 91 61H72V49a8 8 0 1 0-16 0v12H37L21 33Z"/>
+    <path fill="#0B1628" d="m17 41 32 19v20H37a8 8 0 1 0 0 16h12v18H17L5 93Z"/>
+    <path fill="#169C8C" d="m111 41 12 21v5h-14v22h14v4l-32 21-32-19V76h12a8 8 0 1 0 0-16H59v-1l32-19Z"/>
+    <path fill="none" stroke="#E57A2F" stroke-width="4" stroke-linecap="round" d="M109 70v16"/>
+  </g>
+  <g font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+    <text x="150" y="68" fill="#8BE1D5" font-size="14" font-weight="700" letter-spacing="2.4">EVIDENCE-BOUND</text>
+    <text x="150" y="94" fill="#DCEAFF" font-size="14" font-weight="650" letter-spacing="1.5">SERVICE RECOVERY</text>
+    <text x="34" y="176" fill="#FFFFFF" font-size="34" font-weight="720">Regrow function from</text>
+    <text x="34" y="218" fill="#FFFFFF" font-size="34" font-weight="720">surviving meaning.</text>
+    <rect x="34" y="242" width="566" height="3" rx="1.5" fill="#E57A2F"/>
+    <text x="34" y="286" fill="#DCEAFF" font-size="23">Recover a lost service component from evidence</text>
+    <text x="34" y="320" fill="#DCEAFF" font-size="23">stored beyond its failure domain.</text>
+    <g font-size="13" font-weight="700" letter-spacing="1">
+      <rect x="34" y="354" width="128" height="34" rx="17" fill="#2457A6"/><text x="60" y="376" fill="#FFFFFF">CERTIFY</text>
+      <rect x="174" y="354" width="130" height="34" rx="17" fill="#11695F"/><text x="199" y="376" fill="#FFFFFF">RESTORE</text>
+      <rect x="316" y="354" width="138" height="34" rx="17" fill="#11695F"/><text x="341" y="376" fill="#FFFFFF">ACTIVATE</text>
+      <rect x="466" y="354" width="148" height="34" rx="17" fill="#5A341A" stroke="#E57A2F"/><text x="490" y="376" fill="#FFD2AC">ROLL BACK</text>
+    </g>
+  </g>
+</svg>

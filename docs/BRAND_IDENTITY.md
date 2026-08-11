@@ -2,12 +2,13 @@
 
 ## Status and version
 
-Brand version `1.1.0` defines the owner-selected, maturity-neutral Semantic Fit
+Brand version `1.2.0` defines the owner-selected, maturity-neutral Semantic Fit
 identity. Software maturity, support and assurance are separate overlays and must
 never be added to the canonical mark, wordmark, tagline, palette or asset names.
 
-Version 1.1.0 adds the canonical architecture illustration without changing the
-mark, platform, palette, typography or semantic state system.
+Version 1.1.0 added the canonical architecture illustration. Version 1.2.0 adds
+the compact README hero composition. Neither changes the mark, platform,
+palette, typography or semantic state system.
 
 ## Platform
 

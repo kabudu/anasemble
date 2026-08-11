@@ -8,6 +8,8 @@ const ROOT: &str = "assets/brand";
 const SOURCES: &[&str] = &[
     "anasemble-architecture.svg",
     "anasemble-horizontal.svg",
+    "anasemble-readme-hero-narrow.svg",
+    "anasemble-readme-hero.svg",
     "anasemble-result-icons.svg",
     "anasemble-small.svg",
     "anasemble-stacked.svg",
@@ -96,7 +98,7 @@ pub fn generate(root: &Path) -> Result<(), String> {
     }
     let manifest = Manifest {
         schema: "anasemble-brand-asset-manifest-v1".into(),
-        brand_version: "1.1.0".into(),
+        brand_version: "1.2.0".into(),
         entries,
     };
     let mut encoded = serde_json::to_vec_pretty(&manifest)
@@ -112,7 +114,7 @@ pub fn validate(root: &Path) -> Result<(), String> {
         .map_err(|error| format!("could not read brand manifest: {error}"))?;
     let manifest: Manifest = serde_json::from_slice(&manifest_bytes)
         .map_err(|error| format!("brand manifest is invalid: {error}"))?;
-    if manifest.schema != "anasemble-brand-asset-manifest-v1" || manifest.brand_version != "1.1.0" {
+    if manifest.schema != "anasemble-brand-asset-manifest-v1" || manifest.brand_version != "1.2.0" {
         return Err("brand manifest schema or version is unsupported".into());
     }
     let actual = inventory(&brand)?
@@ -235,8 +237,8 @@ fn validate_tokens(path: &Path) -> Result<(), String> {
         &fs::read(path).map_err(|error| format!("could not read tokens: {error}"))?,
     )
     .map_err(|error| format!("tokens are invalid JSON: {error}"))?;
-    if value["version"] != "1.1.0" {
-        return Err("brand token version must match brand 1.1.0".into());
+    if value["version"] != "1.2.0" {
+        return Err("brand token version must match brand 1.2.0".into());
     }
     for pair in [
         ("#0B1628", "#FFFFFF"),
