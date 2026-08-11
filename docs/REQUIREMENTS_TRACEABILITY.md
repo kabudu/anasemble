@@ -19,6 +19,9 @@
 | BRD-1 | Gate product and brand work on evidence and approval | explicit production-engineering decision with separate release authority | M3 decision and unchanged private-release policy |
 | PROD-1 | Bind supported service behavior and resource policy to certification | `service-v1` HTTP manifest in the recovery registry and certificate digest | service unit tests and `service_manifest_is_validated_by_cli_and_bound_to_certificate` |
 | STATE-1 | Preserve bounded filesystem state through recovery | content-addressed immutable object, versioned manifest, atomic restore, rollback sidecar, and commit | production-foundation corruption, lock, failure-injection, round-trip, and public CLI tests |
+| ID-1 | Authenticate production issuers without shared verifier secrets | Ed25519 key IDs, bounded rotation policy, validity, revocation, replay floor, and audit events | P1 rotation, revoked-key, replay, equivocation, and audit tests |
+| EVID-1 | Retrieve evidence from independent stores under bounded failure | signed generation bundles, unique administrative domains, local/HTTPS transports, batched workers, timeouts, retries, quorum, and provenance | P1 loss, compromised-store, quorum, and insecure-transport tests |
+| SEC-4 | Protect semantic evidence and make retention explicit | XChaCha20-Poly1305 seals, restrictive recovery-key files, authenticated retention deadline, temporary materialization, and exact deletion commands | P1 tamper, expiry, materialization, and deletion tests |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational

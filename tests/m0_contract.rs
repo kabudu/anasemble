@@ -5,7 +5,7 @@ use std::fs;
 use anasemble::canonical::encode;
 use anasemble::checker::certify;
 use anasemble::checker_wire::encode_candidate;
-use anasemble::fragments::{Envelope, FragmentKind, IssuerPolicy, collect, sign};
+use anasemble::fragments::{Envelope, FragmentKind, IssuerPolicy, LegacyHmacPolicy, collect, sign};
 use anasemble::model::{Candidate, Error, RefusalCode};
 use anasemble::oracle::attest_absence;
 use anasemble::protocol::{RecoveryResult, run};
@@ -189,10 +189,10 @@ fn collector_refuses_dependency_cycle() {
     .unwrap();
     let policies = BTreeMap::from([(
         "contract-authority".into(),
-        IssuerPolicy {
+        IssuerPolicy::LegacyHmac(LegacyHmacPolicy {
             hmac_sha256_key: hex::encode(CONTRACT_KEY),
             failure_domain: "domain-a".into(),
-        },
+        }),
     )]);
     let error = collect(vec![first, second], &policies, 1, "turnstile", "1").unwrap_err();
     assert!(matches!(error, Error::InvalidEvidence(_)));

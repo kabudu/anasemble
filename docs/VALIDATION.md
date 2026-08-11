@@ -86,3 +86,9 @@ bounded engineering observations, not production estimates.
 The clean-room protocol is in `INDEPENDENT_REPRODUCTION.md`. It has been checked for completeness and rerun locally, but no independent party has supplied an attestation. The project proceeds into production engineering because independent reproduction and external security review are optional post-release assurance, not implementation gates. Their absence remains explicit.
 
 P0 verification adds module and public-CLI tests for a certificate-bound service manifest and a bounded content-addressed filesystem state adapter. The state tests cover integrity corruption, exclusion locking, stale staging, round-trip restore, commit, rollback, and injected failure after rollback preparation. These foundations do not verify HTTP runtime generation or non-filesystem backends.
+
+## P1 identity and evidence validation
+
+The P1 suite executes the real key-generation, retrieval, materialization, and deletion CLI boundary plus focused cryptographic and policy functions. It proves that two signed administrative stores recover six independently signed and encrypted fragments when a third store is lost; every fragment must meet copy quorum. A store with invalid ciphertext is excluded without blocking recovery when two complete stores survive.
+
+Negative paths cover a compromised store signature, insufficient store quorum, insufficient per-fragment copies, issuer revocation, replay floors, equivocation, verification-time key expiry, ciphertext tampering, retention expiry, permissive secret-file exposure, and cleartext remote URLs. HTTPS success is implemented through Rustls/WebPKI but does not yet have a repository-owned live TLS fixture; the local signed-store drill is the retained P1 end-to-end evidence.

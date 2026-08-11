@@ -16,6 +16,10 @@ P0.1 treats the service manifest as untrusted input. Unknown fields, unsafe iden
 
 P0.2 treats state source files, manifests, content-addressed objects, destination files, locks, staging files, and rollback files as untrusted local inputs. It rejects symbolic links at each direct file boundary, bounds state at 64 MiB, verifies SHA-256 and length before mutation, serializes store and destination operations, and restores the prior destination after an injected activation failure. Ancestor-directory substitution, a compromised host, storage firmware faults, and malicious processes with equal filesystem authority remain outside this local adapter's guarantees. Production isolation and remote state backends remain unchecked roadmap work.
 
+P1 assumes stores can be unavailable, stale, corrupted, malicious, or mutually replicated. Store identity, administrative-domain uniqueness, signed generation, authenticated encryption, issuer policy, store quorum, and per-fragment copy quorum are checked independently. HTTPS prevents cleartext remote transport but does not make a store trustworthy. Bounded workers, one-request bundles, timeouts, retry ceilings, body limits, fragment limits, and store limits constrain resource exhaustion.
+
+Issuer signing keys and recovery keys are high-impact secrets. The CLI creates owner-only files, refuses permissive key files, and excludes secret bytes from receipts. Equal-authority host compromise, copied secrets, weak administrator-domain assertions, TLS-root compromise, rollback of the configuration itself, memory disclosure, filesystem snapshots, and secure erasure remain outside P1 guarantees. Revocation rejects all evidence under that key; recovery floors and store generation floors must be advanced after a replay incident.
+
 Controls include signed canonical envelopes, domain attestations, explicit
 dependencies, separate interpreters, held-out tests, capability isolation,
 resource limits, deterministic search, transactional deployment, and fail-closed
