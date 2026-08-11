@@ -377,6 +377,25 @@ fn public_reference_workflow_recovers_activates_and_rolls_back_every_boundary() 
         recovered["plan_sha256"].as_str().unwrap()[..63]
     );
 
+    let tampered_receipt = directory.path().join("tampered-recovery-receipt.json");
+    let mut tampered: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt_path).unwrap()).unwrap();
+    tampered["redis"]["target_resource"] = "unrelated-events".into();
+    write_json(&tampered_receipt, &tampered);
+    fs::set_permissions(&tampered_receipt, fs::Permissions::from_mode(0o600)).unwrap();
+    let refused = Command::new(env!("CARGO_BIN_EXE_anasemble"))
+        .args([
+            "rollback-reference-recovery",
+            path(&config_path),
+            path(&tampered_receipt),
+        ])
+        .output()
+        .unwrap();
+    assert!(!refused.status.success());
+    assert!(String::from_utf8_lossy(&refused.stderr).contains("receipt digest is invalid"));
+    assert_eq!(redis.xlen::<_, i64>("active-events").unwrap(), 1);
+    assert_eq!(kube_selector(&context, &namespace), new_selector);
+
     command(&[
         "rollback-reference-recovery",
         path(&config_path),
@@ -392,6 +411,55 @@ fn public_reference_workflow_recovers_activates_and_rolls_back_every_boundary() 
     assert_eq!(
         kube_selector(&context, &namespace),
         prior_plan().plan_sha256[..63]
+    );
+
+    kubectl(
+        &context,
+        &[
+            "delete",
+            "deployment",
+            &format!(
+                "turnstile-stage-{}",
+                &recovered["plan_sha256"].as_str().unwrap()[..12]
+            ),
+            "-n",
+            &namespace,
+            "--wait=true",
+            "--timeout=30s",
+        ],
+    );
+    assert!(
+        Command::new("docker")
+            .args(["image", "rm", &local_image])
+            .status()
+            .unwrap()
+            .success()
+    );
+    let accepted_receipt = directory.path().join("accepted-recovery-receipt.json");
+    command(&[
+        "recover-activate-reference",
+        path(&config_path),
+        path(&bundle),
+        path(&accepted_receipt),
+    ]);
+    command(&[
+        "commit-reference-recovery",
+        path(&config_path),
+        path(&accepted_receipt),
+    ]);
+    let rollback_after_commit = Command::new(env!("CARGO_BIN_EXE_anasemble"))
+        .args([
+            "rollback-reference-recovery",
+            path(&config_path),
+            path(&accepted_receipt),
+        ])
+        .output()
+        .unwrap();
+    assert!(!rollback_after_commit.status.success());
+    assert_eq!(redis.xlen::<_, i64>("active-events").unwrap(), 1);
+    assert_eq!(
+        kube_selector(&context, &namespace),
+        recovered["plan_sha256"].as_str().unwrap()[..63]
     );
 
     cleanup.containers.clear();

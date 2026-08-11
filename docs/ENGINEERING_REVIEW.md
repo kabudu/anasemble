@@ -221,3 +221,19 @@ Review required queue capacity to include running work, same-store runners to fa
 The 128-job sustained profile, public operator lifecycle, destructive backend/runtime matrix, offline build, RustSec audit, Cargo Deny advisory/ban/source checks, compatibility contract, runbook, release preview, and repository completion audit are retained. Cargo Deny's duplicate transitive-version findings remain warning-level dependency-convergence work; no advisory, ban, or untrusted-source failure exists. No critical or high internal finding remains.
 
 Residual limitations are explicit: a trusted operator supplies time; the filesystem and host remain trusted; one store supports one runner at a time; there is no distributed transaction across state and activation; remote PostgreSQL and Redis are unsupported; support digests remain metadata; the project licence and public release still require explicit authority. These limit the supported profiles but do not leave a P4 implementation requirement unchecked.
+
+## Final security and productisation review
+
+The final whole-repository Lazarus sweep is retained in
+`FINAL_SECURITY_SWEEP.md`. It corrected unsealed composite rollback authority,
+Kubernetes Service-switch ambiguity, unenforced loopback state transports and the
+missing integrated acceptance lifecycle. Same-plan rollback or commit can take
+over an interrupted activation lease only after the Service switch establishes
+the commit point; competing plans remain refused.
+
+The public integrated workflow now covers preparation, certified recovery,
+three-backend restoration, immutable publication, approved activation, receipt
+tamper refusal, reverse-order rollback and preflight-verified acceptance. No
+critical or high internal finding remains. Productisation is complete only for
+the private, compatibility-bounded implementation; release preparation remains
+separate and unauthorized.

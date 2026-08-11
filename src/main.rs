@@ -199,6 +199,18 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
         }))?;
         return Ok(true);
     }
+    if command == "commit-reference-recovery" {
+        let config = PathBuf::from(arguments.next().ok_or("config path is required")?);
+        let receipt = PathBuf::from(arguments.next().ok_or("receipt path is required")?);
+        if arguments.next().is_some() {
+            return Err("commit-reference-recovery accepts config and receipt paths".into());
+        }
+        let config = anasemble::reference::read_config(&config)?;
+        let receipt = anasemble::reference::read_receipt(&receipt)?;
+        anasemble::reference::commit_recovery(&config, &receipt)?;
+        write_json_stdout(&serde_json::json!({"committed": true}))?;
+        return Ok(true);
+    }
     if command == "create-signing-key" {
         let path = PathBuf::from(arguments.next().ok_or("signing key path is required")?);
         let key_id = utf8_argument(arguments.next(), "key id")?;
@@ -460,7 +472,7 @@ fn execute() -> Result<bool, Box<dyn std::error::Error>> {
             .all(|entry| entry.result.is_certified()));
     }
     if command != "recover" {
-        return Err("usage: anasemble <install|uninstall|init-operations|migrate-operations-config|enqueue-recovery|run-jobs|operations-status|job-result|create-support-bundle|prune-jobs|prepare-reference-recovery|recover-activate-reference|rollback-reference-recovery|create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
+        return Err("usage: anasemble <install|uninstall|init-operations|migrate-operations-config|enqueue-recovery|run-jobs|operations-status|job-result|create-support-bundle|prune-jobs|prepare-reference-recovery|recover-activate-reference|rollback-reference-recovery|commit-reference-recovery|create-signing-key|sign-fragment|create-recovery-key|seal-evidence|sign-store-bundle|retrieve-evidence|delete-evidence|delete-store-bundle|validate-service|snapshot-state|restore-state|rollback-state|commit-state|recover|recover-corpus|evaluate-campaign|deploy|rollback> ...".into());
     }
     let workspace = PathBuf::from(arguments.next().ok_or("workspace path is required")?);
     let mut output = None;

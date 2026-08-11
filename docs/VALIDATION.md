@@ -159,3 +159,11 @@ server behavior. kind control-object checks do not establish CNI enforcement.
 build and bounded control-plane validation on Linux arm64 and Linux x86_64. The
 2026-08-11 arm64 run used the host ISA; the x86_64 run used Docker emulation on
 the arm64 host. Exact scope and promotion gaps are in `LINUX_MATRIX.md`.
+
+The integrated drill also mutates a sealed receipt and proves refusal before
+external state changes. After exercising rollback, it repeats recovery, removes
+stale staged evaluation resources, accepts the new state through
+`commit-reference-recovery`, and proves the active Kubernetes selector and three
+backend states survive while rollback becomes unavailable. Unit validation
+rejects remote PostgreSQL, PostgreSQL host overrides, remote Redis, Redis TLS
+profiles outside the supported loopback contract, and unsupported S3 schemes.

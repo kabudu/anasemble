@@ -747,10 +747,13 @@ impl KubernetesOrchestrator {
         let current = self.kube_json_optional(&spec.namespace, "service", &spec.service)?;
         let current_plan = current
             .as_ref()
-            .and_then(|value| value.pointer("/spec/selector/anasemble.plan"))
+            .and_then(|value| value.pointer("/metadata/annotations/anasemble.active-plan"))
             .and_then(serde_json::Value::as_str)
             .map(str::to_owned);
-        if current_plan.as_deref() == Some(plan_label) {
+        if let Some(current_plan) = &current_plan {
+            validate_digest(current_plan)?;
+        }
+        if current_plan.as_deref() == Some(plan) {
             self.kube_delete(&spec.namespace, "lease", &lease)?;
             return Ok(kube_receipt(
                 spec,
@@ -781,16 +784,47 @@ impl KubernetesOrchestrator {
             return Err(interrupted("after Kubernetes stage became ready"));
         }
         let rollback_plan = current_plan.clone();
-        let annotations = rollback_plan
-            .as_ref()
-            .map(|value| BTreeMap::from([("anasemble.rollback-plan", value)]));
+        let mut annotations = BTreeMap::from([("anasemble.active-plan", plan)]);
+        if let Some(value) = &rollback_plan {
+            annotations.insert("anasemble.rollback-plan", value);
+        }
         let service = serde_json::json!({"apiVersion":"v1","kind":"Service","metadata":{"name":spec.service,"namespace":spec.namespace,"annotations":annotations},"spec":{"selector":{"anasemble.service":spec.service,"anasemble.plan":plan_label},"ports":[{"name":"http","port":spec.service_port,"targetPort":spec.container_port}]}});
-        self.kube_apply(&service)?;
+        if let Err(error) = self.kube_apply(&service) {
+            return match self.is_plan_active(&spec.namespace, &spec.service, plan) {
+                Ok(true) => Ok(kube_receipt(spec, approval, rollback_plan.is_some(), false)),
+                Ok(false) => Err(error),
+                Err(observation_error) => Err(Error::ExternalStateUncertain(format!(
+                    "Kubernetes Service update outcome is uncertain; preserve restored state and reconcile plan {plan}: {error}; observation failed: {observation_error}"
+                ))),
+            };
+        }
         if failure == ActivationFailurePoint::AfterServiceSwitched {
             return Err(interrupted("after Kubernetes Service selector switched"));
         }
-        self.kube_delete(&spec.namespace, "lease", &lease)?;
+        // The Service selector is the commit point. A cleanup failure after it
+        // must not turn a successful activation into a state rollback.
+        let _ = self.kube_delete(&spec.namespace, "lease", &lease);
         Ok(kube_receipt(spec, approval, rollback_plan.is_some(), false))
+    }
+    pub fn is_plan_active(
+        &self,
+        namespace: &str,
+        service: &str,
+        plan_sha256: &str,
+    ) -> Result<bool, Error> {
+        validate_kube_name(namespace)?;
+        validate_kube_name(service)?;
+        validate_digest(plan_sha256)?;
+        Ok(self
+            .kube_json_optional(namespace, "service", service)?
+            .and_then(|value| {
+                value
+                    .pointer("/metadata/annotations/anasemble.active-plan")
+                    .and_then(serde_json::Value::as_str)
+                    .map(str::to_owned)
+            })
+            .as_deref()
+            == Some(plan_sha256))
     }
     pub fn rollback(&self, namespace: &str, service: &str) -> Result<(), Error> {
         validate_kube_name(namespace)?;
@@ -801,12 +835,14 @@ impl KubernetesOrchestrator {
             .and_then(serde_json::Value::as_str)
             .ok_or_else(|| invalid("Kubernetes rollback is unavailable"))?;
         let current_plan = current
-            .pointer("/spec/selector/anasemble.plan")
+            .pointer("/metadata/annotations/anasemble.active-plan")
             .and_then(serde_json::Value::as_str)
             .ok_or_else(|| invalid("Kubernetes active plan is unavailable"))?;
+        validate_digest(rollback)?;
+        validate_digest(current_plan)?;
         let lease = format!("{service}-anasemble-lease");
         self.acquire_operation_lease(namespace, &lease, &format!("rollback:{current_plan}"))?;
-        let patch = serde_json::json!({"spec":{"selector":{"anasemble.service":service,"anasemble.plan":rollback}},"metadata":{"annotations":{"anasemble.rollback-plan":null}}});
+        let patch = serde_json::json!({"spec":{"selector":{"anasemble.service":service,"anasemble.plan":&rollback[..63]}},"metadata":{"annotations":{"anasemble.active-plan":rollback,"anasemble.rollback-plan":null}}});
         self.kube_patch(namespace, "service", service, &patch)?;
         self.kube_delete(namespace, "lease", &lease)
     }
@@ -815,15 +851,17 @@ impl KubernetesOrchestrator {
         validate_kube_name(service)?;
         let current = self.kube_json(namespace, "service", service)?;
         let current_plan = current
-            .pointer("/spec/selector/anasemble.plan")
+            .pointer("/metadata/annotations/anasemble.active-plan")
             .and_then(serde_json::Value::as_str)
             .ok_or_else(|| invalid("Kubernetes active plan is unavailable"))?;
+        validate_digest(current_plan)?;
         let lease = format!("{service}-anasemble-lease");
         self.acquire_operation_lease(namespace, &lease, &format!("commit:{current_plan}"))?;
         if let Some(rollback) = current
             .pointer("/metadata/annotations/anasemble.rollback-plan")
             .and_then(serde_json::Value::as_str)
         {
+            validate_digest(rollback)?;
             self.kube_delete(
                 namespace,
                 "deployment",
@@ -842,14 +880,23 @@ impl KubernetesOrchestrator {
         holder: &str,
     ) -> Result<(), Error> {
         if let Some(value) = self.kube_json_optional(namespace, "lease", lease)? {
-            if value
+            let existing = value
                 .pointer("/spec/holderIdentity")
                 .and_then(serde_json::Value::as_str)
-                == Some(holder)
-            {
+                .ok_or_else(|| invalid("Kubernetes operation lease holder is invalid"))?;
+            if existing == holder {
                 return Ok(());
             }
-            return Err(invalid("another Kubernetes operation owns the service"));
+            let requested_plan = holder
+                .strip_prefix("rollback:")
+                .or_else(|| holder.strip_prefix("commit:"));
+            if requested_plan.is_some_and(|plan| existing == format!("activate:{plan}")) {
+                // A Service switch is the activation commit point. Rollback or
+                // commit may take over its same-plan lease after interruption.
+                self.kube_delete(namespace, "lease", lease)?;
+            } else {
+                return Err(invalid("another Kubernetes operation owns the service"));
+            }
         }
         let resource = serde_json::json!({"apiVersion":"coordination.k8s.io/v1","kind":"Lease","metadata":{"name":lease,"namespace":namespace},"spec":{"holderIdentity":holder}});
         self.kube_create(&resource)
