@@ -58,3 +58,4 @@ independence.
 
 M1 implements the bounded SEC-1 candidate ABI. M2 tests the generated ABI and
 denial paths, not general third-party WebAssembly or process isolation.
+| EVID-2 | Provide a generic signed evidence envelope and reconstruction events without breaking fragment files | `anasemble-evidence`, `anasemble-events` | `a1_generic_protocol` and crate unit tests |

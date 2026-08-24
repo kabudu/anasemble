@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://anasemble.dev/schema/evidence-envelope-v1.schema.json",
+  "title": "Anasemble EvidenceEnvelopeV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "observation_id",
+    "tenant_id",
+    "source",
+    "subject",
+    "kind",
+    "trust",
+    "observed_at",
+    "valid",
+    "received_at",
+    "payload_media_type",
+    "payload_digest",
+    "payload",
+    "collection",
+    "labels",
+    "signature"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "observation_id": { "type": "string", "format": "uuid" },
+    "tenant_id": { "type": "string", "format": "uuid" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "instance"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "instance": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity_type", "canonical_external_identity"],
+      "properties": {
+        "entity_type": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "canonical_external_identity": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "kind": { "type": "string" },
+    "trust": { "type": "string" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "source_time": { "type": ["string", "null"], "format": "date-time" },
+    "valid": {
+      "type": "object",
+      "required": ["start"],
+      "properties": {
+        "start": { "type": "string", "format": "date-time" },
+        "end": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "received_at": { "type": "string", "format": "date-time" },
+    "payload_media_type": { "type": "string" },
+    "payload_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "payload": { "type": "object" },
+    "predecessor": { "type": ["string", "null"] },
+    "collection": { "type": "object" },
+    "labels": { "type": "object", "maxProperties": 32 },
+    "signature": { "type": "object" }
+  }
+}

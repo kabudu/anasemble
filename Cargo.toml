@@ -1,3 +1,12 @@
+[workspace]
+resolver = "3"
+members = [
+    ".",
+    "crates/anasemble-core",
+    "crates/anasemble-evidence",
+    "crates/anasemble-events",
+]
+
 [package]
 name = "anasemble"
 version = "0.1.0-rc.1"
@@ -34,6 +43,9 @@ url = "2.5.7"
 wasm-encoder = { version = "0.256.0", default-features = false, features = ["std"] }
 wasmi = { version = "1.1.0", default-features = false, features = ["std", "prefer-btree-collections"] }
 zeroize = "1.9.0"
+anasemble-core = { path = "crates/anasemble-core", version = "0.1.0-rc.1" }
+anasemble-evidence = { path = "crates/anasemble-evidence", version = "0.1.0-rc.1" }
+anasemble-events = { path = "crates/anasemble-events", version = "0.1.0-rc.1" }
 
 [dev-dependencies]
 tempfile = "3.27.0"
