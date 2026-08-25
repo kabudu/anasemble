@@ -89,6 +89,8 @@ const REQUIRED: &[&str] = &[
     "assets/brand/LICENSES/OWNED-ASSETS.md",
     "release/0.1.0-rc.1.md",
     "release/0.1.0-rc.1.title",
+    "release/0.1.0-rc.2.md",
+    "release/0.1.0-rc.2.title",
     "release/BINARY_INSTALLATION.md",
     ".github/workflows/ci.yml",
     ".github/workflows/pages.yml",
@@ -209,8 +211,10 @@ fn validate() -> Result<(), String> {
     service
         .validate()
         .map_err(|error| format!("service example is invalid: {error}"))?;
-    let release = fs::read_to_string("release/0.1.0-rc.1.md")
-        .map_err(|error| format!("could not read release candidate notes: {error}"))?;
+    let version = package_version()?;
+    let release_notes = format!("release/{version}.md");
+    let release = fs::read_to_string(&release_notes)
+        .map_err(|error| format!("could not read {release_notes}: {error}"))?;
     for required in [
         "## Highlights",
         "## Installation",
@@ -364,16 +368,38 @@ fn validate_product_readme() -> Result<(), String> {
     Ok(())
 }
 
+fn package_version() -> Result<String, String> {
+    let manifest = fs::read_to_string("Cargo.toml")
+        .map_err(|error| format!("could not read Cargo.toml: {error}"))?;
+    let mut in_package = false;
+    for line in manifest.lines() {
+        let trimmed = line.trim();
+        if trimmed == "[package]" {
+            in_package = true;
+            continue;
+        }
+        if trimmed.starts_with('[') {
+            in_package = false;
+            continue;
+        }
+        if in_package && let Some(version) = trimmed.strip_prefix("version = \"") {
+            return Ok(version.trim_end_matches('"').to_owned());
+        }
+    }
+    Err("package version is absent from Cargo.toml".into())
+}
+
 fn validate_open_source_metadata() -> Result<(), String> {
+    let version = package_version()?;
     let manifest = fs::read_to_string("Cargo.toml")
         .map_err(|error| format!("could not read Cargo.toml: {error}"))?;
     for required in [
-        "version = \"0.1.0-rc.1\"",
-        "license = \"Apache-2.0\"",
-        "repository = \"https://github.com/kabudu/anasemble\"",
-        "publish = [\"crates-io\"]",
+        format!("version = \"{version}\""),
+        "license = \"Apache-2.0\"".to_owned(),
+        "repository = \"https://github.com/kabudu/anasemble\"".to_owned(),
+        "publish = [\"crates-io\"]".to_owned(),
     ] {
-        if !manifest.contains(required) {
+        if !manifest.contains(&required) {
             return Err(format!(
                 "open-source package metadata is absent: {required}"
             ));
@@ -387,15 +413,16 @@ fn validate_open_source_metadata() -> Result<(), String> {
     {
         return Err("LICENSE is not the complete Apache License 2.0 text".into());
     }
-    let title = fs::read_to_string("release/0.1.0-rc.1.title")
-        .map_err(|error| format!("could not read release title: {error}"))?;
-    if title.trim() != "Anasemble v0.1.0-rc.1: Evidence-bound recovery"
-        || title.lines().count() != 1
-    {
+    let title_path = format!("release/{version}.title");
+    let expected_title = format!("Anasemble v{version}: Generic evidence envelopes");
+    let title = fs::read_to_string(&title_path)
+        .map_err(|error| format!("could not read {title_path}: {error}"))?;
+    if title.trim() != expected_title || title.lines().count() != 1 {
         return Err("curated release title is missing or malformed".into());
     }
-    let notes = fs::read_to_string("release/0.1.0-rc.1.md")
-        .map_err(|error| format!("could not read release notes: {error}"))?;
+    let notes_path = format!("release/{version}.md");
+    let notes = fs::read_to_string(&notes_path)
+        .map_err(|error| format!("could not read {notes_path}: {error}"))?;
     if notes.lines().any(|line| line.starts_with("# "))
         || notes.contains(title.trim())
         || notes

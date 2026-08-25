@@ -151,3 +151,11 @@ Productisation completion means the private repository is implementation-complet
 - [x] Obtain explicit owner approval to make the GitHub repository public.
 - [x] Add and prove least-privilege hosted CI after public visibility in a separate reviewed pull request.
 - [x] Approve and create the annotated `v0.1.0-rc.1` tag and matching GitHub Release.
+
+## Generic evidence protocol for downstream consumers
+
+- [x] A1: EvidenceEnvelopeV1, provenance, canonical CBOR, Ed25519, XChaCha20-Poly1305 seals, admission validator.
+- [x] A5: Reconstruction event log with predecessor digests and gap refusal.
+- [ ] A2: behavioural traces.
+- [ ] A3: semantic snapshots and diffs.
+- [ ] A4: contract evolution and verifier traits.

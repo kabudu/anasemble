@@ -34,8 +34,8 @@ jobs:
       - name: Validate the non-destructive public subset
         run: |
           cargo fmt --all --check
-          cargo clippy --lib --bins --tests --locked --offline -- -D warnings
-          cargo test --locked --offline --lib --bins \
+          cargo clippy --workspace --lib --bins --tests --locked --offline -- -D warnings
+          cargo test --locked --offline --workspace --lib --bins \
             --test cli_e2e \
             --test m0_contract \
             --test m1_loop \
@@ -43,8 +43,8 @@ jobs:
             --test p1_evidence_plane \
             --test p4_product_readiness \
             --test production_foundations
-          cargo doc --no-deps --all-features --locked --offline
-          cargo package --locked --offline
+          cargo doc --workspace --no-deps --all-features --locked --offline
+          cargo package --locked --offline -p anasemble-core
           cargo run --quiet --locked --offline --bin repo_check
       - name: Verify the static website build
         run: |

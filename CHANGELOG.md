@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.1.0-rc.2 - 2026-08-25
+
+- Extract `anasemble-core`, `anasemble-evidence`, and `anasemble-events` for the generic EvidenceEnvelopeV1 protocol and gap-closed reconstruction events. Existing fragment files and JSON certificate digests remain unchanged.
+
+
 ## 0.1.0-rc.1 - 2026-08-11
 
 - Prepare a static TailwindCSS GitHub Pages product foundation, record its bounded
