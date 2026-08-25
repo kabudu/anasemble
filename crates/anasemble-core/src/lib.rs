@@ -5,15 +5,22 @@
 
 #![forbid(unsafe_code)]
 
+mod budget;
 mod cbor;
 mod error;
 mod ids;
 mod json;
+mod temporal;
 
+pub use budget::Budget;
 pub use cbor::{MAX_CBOR_DEPTH, decode_to_json, encode_canonical_cbor};
 pub use error::CoreError;
-pub use ids::{BoundedText, IdError, MAX_BOUNDED_TEXT_BYTES, ObservationId, RunId, TenantId};
+pub use ids::{
+    BoundedText, CertificateId, ClaimId, ContractId, DiffId, IdError, MAX_BOUNDED_TEXT_BYTES,
+    ObservationId, RunId, SnapshotId, TenantId, TraceId,
+};
 pub use json::{bytes_digest, digest_hex, encode_json};
+pub use temporal::{CompatibilityClass, TemporalCut};
 
 use sha2::{Digest as _, Sha256};
 

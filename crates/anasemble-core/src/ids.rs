@@ -116,6 +116,12 @@ uuid_id!(
     "Accepted or rejected observation identifier."
 );
 uuid_id!(RunId, "Reconstruction or certification run identifier.");
+uuid_id!(TraceId, "Behavioural trace identifier.");
+uuid_id!(SnapshotId, "Canonical semantic snapshot identifier.");
+uuid_id!(DiffId, "Semantic diff identifier.");
+uuid_id!(ContractId, "Stable contract identity across versions.");
+uuid_id!(ClaimId, "Individually addressed verification claim.");
+uuid_id!(CertificateId, "Signed verification certificate identifier.");
 
 #[cfg(test)]
 mod tests {

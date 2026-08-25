@@ -20,4 +20,7 @@ pub enum CoreError {
     /// Input exceeded a configured byte or depth ceiling.
     #[error("input exceeded a configured bound")]
     Bound,
+    /// A named resource budget was exhausted.
+    #[error("budget exhausted")]
+    Budget,
 }

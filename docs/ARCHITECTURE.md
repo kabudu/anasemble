@@ -30,6 +30,13 @@ fragment identity policy, canonical schemas, resource monitor, independent
 checker, deployment transaction, and ledger integrity. Synthesizer and checker
 must not share an interpreter.
 
+Versioned public crates own generic protocol: `anasemble-core` (digests, ids, budgets),
+`anasemble-evidence` (envelopes), `anasemble-events` (reconstruction events),
+`anasemble-trace` (replayable traces), `anasemble-semantic` (snapshots and diffs),
+`anasemble-contract` (contract versions), and `anasemble-verification` (claims and
+certificates). The root package re-exports those types. Existing fragment files and
+JSON certificates remain on the historical JSON path.
+
 ## Safety posture
 
 Candidates receive capability-scoped I/O. Search, execution, memory, and output

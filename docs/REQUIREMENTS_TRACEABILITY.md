@@ -51,6 +51,10 @@
 | PROD-5 | Let an operator accept a verified integrated recovery and retire rollback resources safely | read-only preflight across PostgreSQL, S3 and Redis followed by idempotent backend and Kubernetes commit | public `commit-reference-recovery` path in `tests/reference_workflow.rs` |
 | SEC-9 | Refuse unauthenticated or identity-ambiguous remote state transport | rustls PostgreSQL CA and DNS verification, authenticated TLS URIs, and bounded database/cache timeouts | transport policy unit tests plus `aws_remote_state_profiles_restore_and_rollback_over_tls` |
 | COMP-3 | Promote mainstream cloud profiles only from native and provider-specific evidence | tagged ephemeral AWS matrix with exact AMI, service, CNI, cost and deletion records | `tests/aws_compatibility.rs` and `docs/AWS_COMPATIBILITY.md` |
+| EVID-2 | Provide a generic signed evidence envelope and reconstruction events without breaking fragment files | `anasemble-evidence`, `anasemble-events` | `a1_generic_protocol` and crate unit tests |
+| EVID-3 | Provide replayable behavioural traces with default side-effect denial | `anasemble-trace` | crate unit tests and `a2_a4_semantic` |
+| EVID-4 | Provide content-addressed semantic snapshots and deterministic diffs | `anasemble-semantic` | crate unit tests and `a2_a4_semantic` |
+| EVID-5 | Provide contract versions and independently checkable verification certificates | `anasemble-contract`, `anasemble-verification` | crate unit tests and `a2_a4_semantic` |
 
 M2 satisfies SEM-4 only for explicitly enumerated FSM state. M0 through M2
 authenticate issuer-to-domain policy but do not claim hardware or organizational
@@ -58,4 +62,3 @@ independence.
 
 M1 implements the bounded SEC-1 candidate ABI. M2 tests the generated ABI and
 denial paths, not general third-party WebAssembly or process isolation.
-| EVID-2 | Provide a generic signed evidence envelope and reconstruction events without breaking fragment files | `anasemble-evidence`, `anasemble-events` | `a1_generic_protocol` and crate unit tests |

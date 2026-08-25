@@ -25,12 +25,21 @@ pub mod synthesizer;
 
 pub use model::{Error, RefusalCode};
 
+pub use anasemble_contract::ContractV1;
 pub use anasemble_core::{
-    BoundedText, Digest, ObservationId, RunId, TenantId, bytes_digest, digest_hex,
-    encode_canonical_cbor, encode_json,
+    BoundedText, Budget, CompatibilityClass, Digest, ObservationId, RunId, TemporalCut, TenantId,
+    TraceId, bytes_digest, digest_hex, encode_canonical_cbor, encode_json,
 };
 pub use anasemble_events::{EventLog, ReconstructionEventKind, ReconstructionEventV1};
 pub use anasemble_evidence::{
     EvidenceEnvelopeV1, EvidenceKind, ProvenanceEvent, ProvenanceEventKind, PublicKeyRecord,
     ReplayWindow, SignatureBlock, SigningKey, TrustLevel, validate_envelope,
+};
+pub use anasemble_semantic::{
+    CanonicalDiffer, DiffPolicy, GraphSnapshotter, SemanticDiff, SemanticDiffer, SemanticGraph,
+    SemanticSnapshotV1, SemanticSnapshotter,
+};
+pub use anasemble_trace::{Recorder, Replayer, TraceV1};
+pub use anasemble_verification::{
+    CertificateV1, DigestCandidate, DigestEqualityVerifier, VerificationReport, Verifier,
 };

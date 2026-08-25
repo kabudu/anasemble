@@ -1,0 +1,20 @@
+[package]
+name = "anasemble-semantic"
+version = "0.1.0-rc.2"
+edition = "2024"
+rust-version = "1.97"
+description = "Canonical semantic snapshots and deterministic diffs"
+license = "Apache-2.0"
+repository = "https://github.com/kabudu/anasemble"
+homepage = "https://github.com/kabudu/anasemble"
+keywords = ["snapshot", "diff", "semantic"]
+categories = ["data-structures"]
+publish = ["crates-io"]
+
+[dependencies]
+anasemble-core = { path = "../anasemble-core", version = "0.1.0-rc.2" }
+serde = { version = "1.0.229", features = ["derive"] }
+thiserror = "2.0.18"
+
+[lints.rust]
+unsafe_code = "forbid"
