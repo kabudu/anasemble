@@ -156,6 +156,6 @@ Productisation completion means the private repository is implementation-complet
 
 - [x] A1: EvidenceEnvelopeV1, provenance, canonical CBOR, Ed25519, XChaCha20-Poly1305 seals, admission validator.
 - [x] A5: Reconstruction event log with predecessor digests and gap refusal.
-- [ ] A2: behavioural traces.
-- [ ] A3: semantic snapshots and diffs.
-- [ ] A4: contract evolution and verifier traits.
+- [x] A2: behavioural traces.
+- [x] A3: semantic snapshots and diffs.
+- [x] A4: contract evolution and verifier traits.

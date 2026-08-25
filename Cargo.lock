@@ -16,9 +16,13 @@ dependencies = [
 name = "anasemble"
 version = "0.1.0-rc.2"
 dependencies = [
+ "anasemble-contract",
  "anasemble-core",
  "anasemble-events",
  "anasemble-evidence",
+ "anasemble-semantic",
+ "anasemble-trace",
+ "anasemble-verification",
  "chacha20poly1305",
  "ed25519-dalek",
  "futures-util",
@@ -40,6 +44,15 @@ dependencies = [
  "wasm-encoder",
  "wasmi",
  "zeroize",
+]
+
+[[package]]
+name = "anasemble-contract"
+version = "0.1.0-rc.2"
+dependencies = [
+ "anasemble-core",
+ "serde",
+ "thiserror",
 ]
 
 [[package]]
@@ -79,6 +92,40 @@ dependencies = [
  "serde_json",
  "thiserror",
  "zeroize",
+]
+
+[[package]]
+name = "anasemble-semantic"
+version = "0.1.0-rc.2"
+dependencies = [
+ "anasemble-core",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "anasemble-trace"
+version = "0.1.0-rc.2"
+dependencies = [
+ "anasemble-core",
+ "anasemble-evidence",
+ "ed25519-dalek",
+ "hex",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
+name = "anasemble-verification"
+version = "0.1.0-rc.2"
+dependencies = [
+ "anasemble-contract",
+ "anasemble-core",
+ "anasemble-evidence",
+ "ed25519-dalek",
+ "hex",
+ "serde",
+ "thiserror",
 ]
 
 [[package]]

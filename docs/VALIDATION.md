@@ -180,3 +180,10 @@ backend states survive while rollback becomes unavailable. Unit validation
 rejects unauthenticated, non-TLS, IP-addressed, unbounded, or
 parameter-ambiguous remote PostgreSQL and Redis endpoints and unsupported S3
 schemes. The AWS drill separately exercises the accepted provider transports.
+
+`tests/a2_a4_semantic.rs` and the protocol-crate unit tests prove replayable traces,
+content-addressed snapshots and diffs, contract versions, and signed verification
+certificates. Identical snapshot inputs share digests, independent checkers rebuild
+those digests, replay denies unmocked side effects, and budget exhaustion is a
+refusal rather than a truncated success. Existing fragment files and JSON
+certificate digests remain on the historical JSON path.

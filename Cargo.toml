@@ -5,6 +5,10 @@ members = [
     "crates/anasemble-core",
     "crates/anasemble-evidence",
     "crates/anasemble-events",
+    "crates/anasemble-contract",
+    "crates/anasemble-trace",
+    "crates/anasemble-semantic",
+    "crates/anasemble-verification",
 ]
 
 [package]
@@ -46,6 +50,10 @@ zeroize = "1.9.0"
 anasemble-core = { path = "crates/anasemble-core", version = "0.1.0-rc.2" }
 anasemble-evidence = { path = "crates/anasemble-evidence", version = "0.1.0-rc.2" }
 anasemble-events = { path = "crates/anasemble-events", version = "0.1.0-rc.2" }
+anasemble-contract = { path = "crates/anasemble-contract", version = "0.1.0-rc.2" }
+anasemble-trace = { path = "crates/anasemble-trace", version = "0.1.0-rc.2" }
+anasemble-semantic = { path = "crates/anasemble-semantic", version = "0.1.0-rc.2" }
+anasemble-verification = { path = "crates/anasemble-verification", version = "0.1.0-rc.2" }
 
 [dev-dependencies]
 tempfile = "3.27.0"

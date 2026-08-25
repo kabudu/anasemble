@@ -1,0 +1,24 @@
+[package]
+name = "anasemble-verification"
+version = "0.1.0-rc.2"
+edition = "2024"
+rust-version = "1.97"
+description = "Verifier traits, claims, and signed certificates"
+license = "Apache-2.0"
+repository = "https://github.com/kabudu/anasemble"
+homepage = "https://github.com/kabudu/anasemble"
+keywords = ["verification", "certificate", "evidence"]
+categories = ["data-structures"]
+publish = ["crates-io"]
+
+[dependencies]
+anasemble-contract = { path = "../anasemble-contract", version = "0.1.0-rc.2" }
+anasemble-core = { path = "../anasemble-core", version = "0.1.0-rc.2" }
+anasemble-evidence = { path = "../anasemble-evidence", version = "0.1.0-rc.2" }
+ed25519-dalek = "3.0.0"
+hex = "0.4.3"
+serde = { version = "1.0.229", features = ["derive"] }
+thiserror = "2.0.18"
+
+[lints.rust]
+unsafe_code = "forbid"
