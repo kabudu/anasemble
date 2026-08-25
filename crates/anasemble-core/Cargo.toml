@@ -1,12 +1,15 @@
 [package]
 name = "anasemble-core"
-version = "0.1.0-rc.1"
+version = "0.1.0-rc.2"
 edition = "2024"
 rust-version = "1.97"
 description = "Canonical values, digests, and bounded identifiers for Anasemble"
 license = "Apache-2.0"
 repository = "https://github.com/kabudu/anasemble"
-publish = false
+homepage = "https://github.com/kabudu/anasemble"
+keywords = ["evidence", "digest", "cbor"]
+categories = ["encoding", "data-structures"]
+publish = ["crates-io"]
 
 [dependencies]
 hex = "0.4.3"

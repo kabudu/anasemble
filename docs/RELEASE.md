@@ -12,9 +12,7 @@ published limitations.
 
 The M3 decision authorizes production engineering, not release. P4 completes the implementation roadmap for the profiles in `COMPATIBILITY.md`, but no tag, GitHub Release, package, hosted CI, visibility change, or deployment is authorized without a new explicit user decision. Independent reproduction and external security review are optional post-release assurance rather than release blockers.
 
-`v0.1.0-rc.1` is the first public prerelease. The existing `anasemble` Rust
-package and native static Linux archives were published from the exact annotated
-tag through the protected release workflow. Hosted recovery, real service
+`v0.1.0-rc.1` is the first public prerelease. `v0.1.0-rc.2` publishes the generic evidence protocol crates (`anasemble-core`, `anasemble-evidence`, `anasemble-events`) alongside the existing `anasemble` CLI package. Hosted recovery, real service
 traces, container publication, production deployment and commercial claims each
 require a separate gate.
 
