@@ -1,6 +1,6 @@
 [package]
 name = "anasemble-events"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 edition = "2024"
 rust-version = "1.97"
 description = "Append-only reconstruction and certification event protocol"
@@ -12,8 +12,8 @@ categories = ["data-structures"]
 publish = ["crates-io"]
 
 [dependencies]
-anasemble-core = { path = "../anasemble-core", version = "0.1.0-rc.2" }
-anasemble-evidence = { path = "../anasemble-evidence", version = "0.1.0-rc.2" }
+anasemble-core = { path = "../anasemble-core", version = "0.1.0-rc.3" }
+anasemble-evidence = { path = "../anasemble-evidence", version = "0.1.0-rc.3" }
 ed25519-dalek = "3.0.0"
 hex = "0.4.3"
 serde = { version = "1.0.229", features = ["derive"] }

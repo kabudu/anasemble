@@ -91,6 +91,8 @@ const REQUIRED: &[&str] = &[
     "release/0.1.0-rc.1.title",
     "release/0.1.0-rc.2.md",
     "release/0.1.0-rc.2.title",
+    "release/0.1.0-rc.3.md",
+    "release/0.1.0-rc.3.title",
     "release/BINARY_INSTALLATION.md",
     ".github/workflows/ci.yml",
     ".github/workflows/pages.yml",

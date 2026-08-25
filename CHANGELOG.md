@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0-rc.3 - 2026-08-25
+
 - Add `anasemble-trace`, `anasemble-semantic`, `anasemble-contract`, and `anasemble-verification` for replayable traces, content-addressed snapshots and diffs, contract versions, and signed verification certificates. Existing fragment files and JSON certificate digests remain unchanged.
 
 ## 0.1.0-rc.2 - 2026-08-25
