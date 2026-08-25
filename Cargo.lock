@@ -14,7 +14,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-contract",
  "anasemble-core",
@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-contract"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-core",
  "serde",
@@ -57,7 +57,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-core"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "hex",
  "serde",
@@ -69,7 +69,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-events"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-core",
  "anasemble-evidence",
@@ -81,7 +81,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-evidence"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-core",
  "chacha20poly1305",
@@ -96,7 +96,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-semantic"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-core",
  "serde",
@@ -105,7 +105,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-trace"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-core",
  "anasemble-evidence",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "anasemble-verification"
-version = "0.1.0-rc.2"
+version = "0.1.0-rc.3"
 dependencies = [
  "anasemble-contract",
  "anasemble-core",

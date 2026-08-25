@@ -15,7 +15,7 @@ Required release outputs are:
 | `anasemble-v0.1.0-rc.1-linux-x86_64.tar.gz` | Static Linux x86_64 command-line binary | Built and lifecycle-tested natively before publication |
 | `SHA256SUMS` | Download integrity | Covers every attached archive and provenance record |
 | Per-target provenance JSON | Build identity and reproduction input | Records commit, target, toolchain, command, and artifact digest without secrets |
-| crates.io packages `anasemble`, `anasemble-core`, `anasemble-evidence`, `anasemble-events` | Cargo installation and protocol crates | Protocol crates publish before the CLI package so `cargo package` of `anasemble` can resolve them |
+| crates.io packages `anasemble`, `anasemble-core`, `anasemble-evidence`, `anasemble-events`, `anasemble-contract`, `anasemble-trace`, `anasemble-semantic`, `anasemble-verification` | Cargo installation and protocol crates | Protocol crates publish before the CLI package so `cargo package` of `anasemble` can resolve them |
 
 Each binary archive contains the executable, `LICENSE`, `NOTICE`,
 `TRADEMARKS.md`, the compatibility manifest, and an installation README. Release
@@ -32,11 +32,9 @@ generic `--help` path; incomplete commands fail closed with the command inventor
 - No SBOM or signature bundle is claimed until its generator, schema, signer,
   verification instructions, and key lifecycle are repository-owned and tested.
 
-The published crate inventory at `v0.1.0-rc.2` is the `anasemble` CLI package plus
-`anasemble-core`, `anasemble-evidence`, and `anasemble-events`. The workspace also
-contains unpublished `anasemble-trace`, `anasemble-semantic`, `anasemble-contract`,
-and `anasemble-verification` crates. Those crates ship on the next authorized
-protocol release; they are not crates.io artifacts of `v0.1.0-rc.2`. Threniq is
-the first independent consumer of the protocol crates. The release can add other
-artifact classes later without changing the source opening or the supported
-recovery profiles.
+The published crate inventory at `v0.1.0-rc.3` is the `anasemble` CLI package plus
+the protocol crates `anasemble-core`, `anasemble-evidence`, `anasemble-events`,
+`anasemble-trace`, `anasemble-semantic`, `anasemble-contract`, and
+`anasemble-verification`. Threniq is the first independent consumer of the
+protocol crates. The release can add other artifact classes later without
+changing the source opening or the supported recovery profiles.
