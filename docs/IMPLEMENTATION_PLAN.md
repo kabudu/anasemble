@@ -159,3 +159,8 @@ Productisation completion means the private repository is implementation-complet
 - [x] A2: behavioural traces.
 - [x] A3: semantic snapshots and diffs.
 - [x] A4: contract evolution and verifier traits.
+
+## Website clarity
+
+- [x] Explain the code-loss use case, preparation requirements, recovery steps,
+  and supported environments in plain language, with links to exact limits.

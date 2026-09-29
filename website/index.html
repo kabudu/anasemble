@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Anasemble reconstructs lost service components from independently retained evidence, then restores, activates, and rolls them back under operator control.">
+    <meta name="description" content="Rebuild a supported service component after its code and deployable copies are lost, using behaviour records saved before the failure.">
     <meta name="theme-color" content="#071426">
-    <meta property="og:title" content="Anasemble | Regrow function from surviving meaning">
-    <meta property="og:description" content="Evidence-bound reconstruction, independent certification, state restoration, and operator-controlled activation.">
+    <meta property="og:title" content="Anasemble | Rebuild lost service behaviour">
+    <meta property="og:description" content="Rebuild from saved contracts and request/response records. Check the replacement, restore saved state, and approve it before it serves traffic.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kabudu.github.io/anasemble/">
     <meta name="twitter:card" content="summary">
-    <title>Anasemble | Evidence-bound service recovery</title>
+    <title>Anasemble | Rebuild lost service behaviour</title>
     <link rel="icon" href="assets/anasemble-symbol.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
   </head>
@@ -23,7 +23,7 @@
       </a>
       <nav class="flex items-center gap-3 text-sm font-semibold text-muted sm:gap-7" aria-label="Primary navigation">
         <a class="hidden no-underline hover:text-ink focus-visible:text-ink sm:block" href="#how">How it works</a>
-        <a class="hidden no-underline hover:text-ink focus-visible:text-ink md:block" href="#profiles">Support</a>
+        <a class="hidden no-underline hover:text-ink focus-visible:text-ink md:block" href="#profiles">Environments</a>
         <a class="rounded-full border border-line px-4 py-2 text-ink no-underline hover:border-fit-teal focus-visible:border-fit-teal" href="https://github.com/kabudu/anasemble">View source</a>
       </nav>
     </header>
@@ -32,14 +32,14 @@
       <section class="relative mx-auto grid min-h-[720px] w-[min(100%-2rem,1240px)] items-center gap-10 py-20 lg:grid-cols-[1.05fr_.95fr] lg:py-24" id="top">
         <div class="hero-grid pointer-events-none absolute inset-0 -z-20"></div>
         <div class="relative z-10">
-          <p class="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]"><span class="h-2 w-2 rounded-full bg-fit-teal shadow-[0_0_18px_#1ba38f]"></span>Evidence-bound disaster recovery</p>
-          <h1 class="mb-7 max-w-4xl text-[clamp(3.7rem,7.3vw,7.2rem)] leading-[.92] font-black tracking-[-.07em]">Regrow function from <em class="text-spectrum not-italic">surviving meaning.</em></h1>
-          <p class="max-w-2xl text-lg leading-8 text-[#c2d3e5] sm:text-xl">Anasemble reconstructs a lost service component from evidence stored beyond its failure domain, independently certifies the candidate, restores state, and activates only with operator approval.</p>
+          <p class="mb-5 flex items-center gap-3 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]"><span class="h-2 w-2 rounded-full bg-fit-teal shadow-[0_0_18px_#1ba38f]"></span>Recovery after code loss</p>
+          <h1 class="mb-7 max-w-4xl text-[clamp(3.7rem,7.3vw,7.2rem)] leading-[.92] font-black tracking-[-.07em]">Lost the code? <em class="text-spectrum not-italic">Rebuild its behaviour.</em></h1>
+          <p class="max-w-2xl text-lg leading-8 text-[#c2d3e5] sm:text-xl">When a component’s source code, binaries, container images, and replicas are gone, Anasemble can build a replacement for supported service types. It uses signed contracts and request/response records saved separately before the failure.</p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a class="inline-flex min-h-12 items-center gap-6 rounded-full bg-ink px-6 font-extrabold text-night no-underline hover:bg-[#6be0ce] focus-visible:bg-[#6be0ce]" href="https://github.com/kabudu/anasemble#quick-start">Run the evaluation <span aria-hidden="true">↗</span></a>
+            <a class="inline-flex min-h-12 items-center gap-6 rounded-full bg-ink px-6 font-extrabold text-night no-underline hover:bg-[#6be0ce] focus-visible:bg-[#6be0ce]" href="https://github.com/kabudu/anasemble#quick-start">Try the recovery demo <span aria-hidden="true">↗</span></a>
             <a class="inline-flex min-h-12 items-center gap-6 rounded-full border border-line px-6 font-extrabold no-underline hover:border-fit-teal focus-visible:border-fit-teal" href="https://github.com/kabudu/anasemble/blob/master/docs/COMPATIBILITY.md">Compatibility <span aria-hidden="true">↗</span></a>
           </div>
-          <p class="mt-6 max-w-2xl text-sm text-[#809bb7]"><strong class="text-[#b6cbdf]">Current boundary:</strong> fail closed by design. Anasemble complements backups and replication; it does not replace them.</p>
+          <p class="mt-6 max-w-2xl text-sm text-[#809bb7]"><strong class="text-[#b6cbdf]">Prepare first:</strong> you must save behaviour records and state snapshots in separate failure domains. The current replacement handles a bounded set of states and operations; it does not generate a general-purpose HTTP server.</p>
         </div>
 
         <div class="relative hidden h-[570px] place-items-center lg:grid" aria-hidden="true">
@@ -47,66 +47,69 @@
           <div class="orbit absolute h-[470px] w-[470px]"></div>
           <div class="orbit orbit-dashed absolute h-[550px] w-[550px]"></div>
           <img class="mark-float relative w-[360px] drop-shadow-[0_36px_60px_rgba(0,0,0,.45)]" src="assets/anasemble-symbol.svg" width="360" height="360" alt="">
-          <div class="absolute top-17 left-2 rounded-full border border-line bg-panel-deep/90 px-4 py-2 text-xs font-bold shadow-2xl backdrop-blur"><i class="mr-2 inline-block h-2 w-2 rounded-full bg-[#72a9f4]"></i>Independent evidence</div>
+          <div class="absolute top-17 left-2 rounded-full border border-line bg-panel-deep/90 px-4 py-2 text-xs font-bold shadow-2xl backdrop-blur"><i class="mr-2 inline-block h-2 w-2 rounded-full bg-[#72a9f4]"></i>Saved behaviour records</div>
           <div class="absolute top-48 right-[-1rem] rounded-full border border-line bg-panel-deep/90 px-4 py-2 text-xs font-bold shadow-2xl backdrop-blur"><i class="mr-2 inline-block h-2 w-2 rounded-full bg-[#5de2cf]"></i>Separate checker</div>
           <div class="absolute bottom-21 left-5 rounded-full border border-line bg-panel-deep/90 px-4 py-2 text-xs font-bold shadow-2xl backdrop-blur"><i class="mr-2 inline-block h-2 w-2 rounded-full bg-fit-orange"></i>Operator approval</div>
-          <div class="absolute right-0 bottom-27 rounded-2xl border border-[#c94a36] bg-[#291416] px-4 py-3 shadow-2xl"><b class="block text-[.68rem] tracking-[.16em] text-[#ff8f78]">REFUSE</b><span class="text-xs text-[#d5a39b]">when evidence diverges</span></div>
+          <div class="absolute right-0 bottom-27 rounded-2xl border border-[#c94a36] bg-[#291416] px-4 py-3 shadow-2xl"><b class="block text-[.68rem] tracking-[.16em] text-[#ff8f78]">REFUSE</b><span class="text-xs text-[#d5a39b]">when checks disagree</span></div>
         </div>
       </section>
 
       <section class="mx-auto w-[min(100%-2rem,1240px)] border-t border-line/60 py-28" id="how">
-        <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">The recovery path</p>
+        <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">How it works</p>
         <div class="grid gap-8 lg:grid-cols-[1fr_.82fr] lg:gap-24">
-          <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Recovery is a chain of bounded decisions.</h2>
-          <p class="text-lg leading-8 text-muted">The control plane never turns missing evidence, unsupported infrastructure, a timeout, or ambiguous external state into success. Each stage produces an identity-bound receipt for the next.</p>
+          <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Rebuild, check, then restore.</h2>
+          <p class="text-lg leading-8 text-muted">Anasemble tries replacements within limits you set, checks their behaviour, and restores saved state. If records are missing, checks disagree, or a step times out, recovery stops. You approve activation; Anasemble does not switch it on automatically.</p>
         </div>
         <ol class="mt-16 grid list-none overflow-hidden rounded-3xl border border-line/80 p-0 md:grid-cols-2 xl:grid-cols-5">
-          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">01</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Collect</h3><p class="text-sm leading-6 text-muted">Authenticate independently retained contracts, traces, policies, and snapshots.</p></li>
-          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 md:border-l xl:border-l-0 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">02</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Reconstruct</h3><p class="text-sm leading-6 text-muted">Search a finite typed grammar under explicit time, memory, and candidate budgets.</p></li>
-          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">03</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Certify</h3><p class="text-sm leading-6 text-muted">Use a separate checker and held-out obligations. Any ambiguity becomes refusal.</p></li>
-          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 md:border-l xl:border-l-0 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">04</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Recover</h3><p class="text-sm leading-6 text-muted">Restore state, publish an immutable artifact, and stage it inside isolation.</p></li>
-          <li class="min-h-62 bg-gradient-to-br from-panel to-panel-deep p-7 md:col-span-2 xl:col-span-1"><span class="font-mono text-xs font-bold text-[#6be0ce]">05</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Decide</h3><p class="text-sm leading-6 text-muted">Activate with signed approval, then preserve a sealed acceptance or rollback path.</p></li>
+          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">01</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Collect</h3><p class="text-sm leading-6 text-muted">Verify the signed contracts, request/response records, and state snapshots saved outside the failed system.</p></li>
+          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 md:border-l xl:border-l-0 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">02</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Reconstruct</h3><p class="text-sm leading-6 text-muted">Try programs built from an allowed set of operations, within time, memory, and attempt limits.</p></li>
+          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">03</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Check</h3><p class="text-sm leading-6 text-muted">Run a separate checker against the contracts and tests reserved for verification. Stop if it cannot establish a single valid replacement.</p></li>
+          <li class="min-h-62 border-b border-line/70 bg-gradient-to-br from-panel to-panel-deep p-7 md:border-l xl:border-l-0 xl:border-r xl:border-b-0"><span class="font-mono text-xs font-bold text-[#6be0ce]">04</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Restore</h3><p class="text-sm leading-6 text-muted">Restore saved state and run the replacement in an isolated environment before activation.</p></li>
+          <li class="min-h-62 bg-gradient-to-br from-panel to-panel-deep p-7 md:col-span-2 xl:col-span-1"><span class="font-mono text-xs font-bold text-[#6be0ce]">05</span><h3 class="mt-14 mb-3 text-xl font-extrabold">Approve</h3><p class="text-sm leading-6 text-muted">Sign approval to activate the replacement. Use the recorded recovery details to accept the result or roll it back.</p></li>
         </ol>
       </section>
 
-      <section class="mx-auto w-[min(100%-2rem,1440px)] py-24">
-        <div class="mx-auto mb-12 max-w-3xl text-center">
-          <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">Architecture</p>
-          <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Surviving meaning becomes recoverable function.</h2>
+      <section class="mx-auto w-[min(100%-2rem,1240px)] py-24">
+        <div class="grid gap-8 lg:grid-cols-[1fr_.82fr] lg:gap-24">
+          <div>
+            <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">The recovery drill</p>
+            <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Delete the original. Test the replacement.</h2>
+          </div>
+          <div class="text-lg leading-8 text-muted">
+            <p>The demo saves behaviour records and PostgreSQL, object-storage, and Redis snapshots. It then deletes the original component and source state, rebuilds the component, restores the data, and exercises activation and rollback.</p>
+            <p>The integrated demo is experimental: its replacement is a finite-state program, and its local Kubernetes setup does not prove network isolation. Use disposable infrastructure.</p>
+            <a class="font-extrabold text-[#6be0ce] underline decoration-[#6be0ce]/50 underline-offset-6" href="https://github.com/kabudu/anasemble/blob/master/docs/QUICKSTART.md">Read the drill and its limits ↗</a>
+          </div>
         </div>
-        <figure class="m-0 overflow-x-auto rounded-3xl border border-line/80 bg-panel-deep shadow-[0_40px_100px_rgba(0,0,0,.25)]" tabindex="0">
-          <img class="min-w-[920px]" src="assets/anasemble-architecture.svg" width="1776" height="1080" alt="Independent evidence enters a bounded Rust recovery pipeline. A separate checker certifies or refuses the candidate, and an operator controls restoration, activation, acceptance, and rollback.">
-          <figcaption class="border-t border-line/60 px-6 py-4 text-sm text-muted">Committed evidence and state remain distinct from the untrusted candidate. Refusal stays available through every boundary.</figcaption>
-        </figure>
       </section>
 
       <section class="mx-auto grid w-[min(100%-2rem,1240px)] gap-14 border-t border-line/60 py-28 lg:grid-cols-[.85fr_1.15fr]" id="profiles">
         <div>
-          <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">Supported release-candidate profiles</p>
-          <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Narrow evidence. Explicit promises.</h2>
-          <p class="mt-6 text-lg leading-8 text-muted">Support exists only where implementation and retained destructive validation agree. Unlisted combinations are never inferred.</p>
-          <a class="mt-7 inline-block font-extrabold text-[#6be0ce] underline decoration-[#6be0ce]/50 underline-offset-6" href="https://github.com/kabudu/anasemble/blob/master/docs/COMPATIBILITY.md">Inspect the complete contract ↗</a>
+          <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">Tested environments</p>
+          <h2 class="text-[clamp(2.7rem,5vw,4.3rem)] leading-[1.03] font-black tracking-[-.055em]">Check your environment first.</h2>
+          <p class="mt-6 text-lg leading-8 text-muted">The release candidate supports the exact combinations tested in recovery drills. Check the compatibility guide for versions, configuration requirements, and known limits.</p>
+          <a class="mt-7 inline-block font-extrabold text-[#6be0ce] underline decoration-[#6be0ce]/50 underline-offset-6" href="https://github.com/kabudu/anasemble/blob/master/docs/COMPATIBILITY.md">Read the compatibility guide ↗</a>
         </div>
         <div class="border-t border-line/70">
-          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold">Local operator path</h3><p class="m-0 text-muted">macOS arm64, Docker 29, PostgreSQL 18, S3-compatible storage, and Redis Streams 8.8.</p></article>
-          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold">Native Linux</h3><p class="m-0 text-muted">Exact Amazon Linux 2023 arm64 and x86_64 profiles with locked Rust 1.97.0 builds.</p></article>
+          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold">Local recovery</h3><p class="m-0 text-muted">macOS arm64, Docker 29, PostgreSQL 18, S3-compatible storage, and Redis Streams 8.8.</p></article>
+          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold">Native Linux</h3><p class="m-0 text-muted">Amazon Linux 2023 on arm64 and x86_64, using the documented configurations and Rust 1.97.0 builds.</p></article>
           <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold">AWS managed recovery</h3><p class="m-0 text-muted">RDS PostgreSQL 18.3, S3, ElastiCache Redis 7.1, and EKS 1.36 in eu-west-1.</p></article>
-          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold text-[#ff9a5b]">Everything else</h3><p class="m-0 text-muted">Experimental or refused until its own exact profile has retained evidence.</p></article>
+          <article class="grid gap-3 border-b border-line/70 py-7 sm:grid-cols-[.7fr_1.3fr]"><h3 class="font-extrabold text-[#ff9a5b]">Everything else</h3><p class="m-0 text-muted">Other combinations are experimental or rejected. They need their own recovery drill before they can be supported.</p></article>
         </div>
       </section>
 
       <section class="mx-auto w-[min(100%-2rem,1240px)] py-24">
         <div class="grid gap-12 rounded-[2rem] border border-[#aa4b36]/60 bg-gradient-to-br from-[#281418] to-panel-deep p-8 sm:p-14 lg:grid-cols-[1fr_.75fr]">
-          <div><p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#ff9a5b]">Refusal is a product result</p><h2 class="text-[clamp(2.5rem,5vw,4rem)] leading-[1.03] font-black tracking-[-.055em]">When evidence or boundaries are insufficient, Anasemble says no.</h2><p class="mt-6 text-lg text-[#c9a9a4]">It does not reconstruct arbitrary software, recover from no information, replace native backups, or silently promote an experimental platform into support.</p></div>
-          <ul class="grid list-none content-start gap-3 p-0 text-sm font-bold text-[#dcb9b2]"><li class="rounded-xl border border-[#743a32] px-4 py-3">No source, binary, image, or identical replica required</li><li class="rounded-xl border border-[#743a32] px-4 py-3">Independent evidence domains required</li><li class="rounded-xl border border-[#743a32] px-4 py-3">One certified candidate or explicit refusal</li><li class="rounded-xl border border-[#743a32] px-4 py-3">Operator approval before activation</li></ul>
+          <div><p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#ff9a5b]">Limits</p><h2 class="text-[clamp(2.5rem,5vw,4rem)] leading-[1.03] font-black tracking-[-.055em]">The records must describe what to rebuild.</h2><p class="mt-6 text-lg text-[#c9a9a4]">Anasemble rebuilds components that fit its supported operations and data types. Hidden side effects and undeclared state are outside that scope. It still needs saved behaviour records and state snapshots; keep your backups and replicas.</p></div>
+          <ul class="grid list-none content-start gap-3 p-0 text-sm font-bold text-[#dcb9b2]"><li class="rounded-xl border border-[#743a32] px-4 py-3">Can work without the original code or deployable copies</li><li class="rounded-xl border border-[#743a32] px-4 py-3">Requires records stored in separate failure domains</li><li class="rounded-xl border border-[#743a32] px-4 py-3">Stops if it cannot verify one valid replacement</li><li class="rounded-xl border border-[#743a32] px-4 py-3">Requires your approval before activation</li></ul>
         </div>
       </section>
 
       <section class="mx-auto flex w-[min(100%-2rem,1240px)] flex-col items-center border-t border-line/60 py-28 text-center">
         <img class="mb-7 w-24 drop-shadow-[0_25px_45px_rgba(27,163,143,.25)]" src="assets/anasemble-symbol.svg" width="96" height="96" alt="">
-        <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">Inspect the recovery boundary</p>
-        <h2 class="max-w-4xl text-[clamp(2.8rem,6vw,5.2rem)] leading-[.98] font-black tracking-[-.06em]">A recovery should be able to explain why it deserves traffic.</h2>
-        <div class="mt-9 flex flex-wrap justify-center gap-3"><a class="inline-flex min-h-12 items-center gap-6 rounded-full bg-ink px-6 font-extrabold text-night no-underline hover:bg-[#6be0ce]" href="https://github.com/kabudu/anasemble">Explore the repository ↗</a><a class="inline-flex min-h-12 items-center gap-6 rounded-full border border-line px-6 font-extrabold no-underline hover:border-fit-teal" href="https://github.com/kabudu/anasemble/blob/master/docs/QUICKSTART.md">Evaluation guide ↗</a></div>
+        <p class="mb-5 text-xs font-extrabold uppercase tracking-[.2em] text-[#6be0ce]">Try it</p>
+        <h2 class="max-w-4xl text-[clamp(2.8rem,6vw,5.2rem)] leading-[.98] font-black tracking-[-.06em]">Run a recovery before you need one.</h2>
+        <div class="mt-9 flex flex-wrap justify-center gap-3"><a class="inline-flex min-h-12 items-center gap-6 rounded-full bg-ink px-6 font-extrabold text-night no-underline hover:bg-[#6be0ce]" href="https://github.com/kabudu/anasemble">View the source ↗</a><a class="inline-flex min-h-12 items-center gap-6 rounded-full border border-line px-6 font-extrabold no-underline hover:border-fit-teal" href="https://github.com/kabudu/anasemble/blob/master/docs/QUICKSTART.md">Follow the demo guide ↗</a></div>
       </section>
     </main>
 

@@ -319,7 +319,8 @@ fn validate_website() -> Result<(), String> {
         .map_err(|error| format!("could not read generated website styles: {error}"))?;
     for required in [
         "Regrow function from surviving meaning.",
-        "fail closed by design.",
+        "recovery stops.",
+        "does not generate a general-purpose HTTP server.",
         "docs/COMPATIBILITY.md",
         "SECURITY.md",
         "prefers-reduced-motion",
