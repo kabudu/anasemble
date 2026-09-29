@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Raise the rustls minimum and locked version to 0.23.45 to fix
+  RUSTSEC-2026-0285, which allowed TLS 1.3 handshake messages at the wrong
+  encryption level.
+
 - Rewrite the website around code loss, saved behaviour records, the recovery
   steps, and supported environments so visitors can understand the use case
   and preparation requirements without internal terminology.

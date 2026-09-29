@@ -164,3 +164,6 @@ Productisation completion means the private repository is implementation-complet
 
 - [x] Explain the code-loss use case, preparation requirements, recovery steps,
   and supported environments in plain language, with links to exact limits.
+
+- [x] Raise rustls to the patched 0.23.45 minimum and lockfile version to remove
+  the dependency advisory blocking the website-copy merge.

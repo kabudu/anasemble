@@ -271,10 +271,20 @@ resolve in the built site. The CSS was regenerated with the pinned compiler.
 The site-policy checker passes in a clean checkout. No material copy or
 static-site finding remains from the Lazarus self-review.
 
-`./scripts/ci-local.sh` passed formatting, Clippy, all tests, documentation, and
-metadata, then failed at Cargo Audit: the existing lockfile contains rustls
-0.23.43, affected by RUSTSEC-2026-0285 (fixed in 0.23.45). The copy change does
-not alter dependencies. Merge remains blocked until the dependency gate passes;
-this review does not waive that gate or authorize deployment. A pre-existing
-untracked promotional PNG also fails the brand inventory in the primary
-checkout; clean-checkout site validation leaves that user file untouched.
+The initial copy-only `./scripts/ci-local.sh` passed formatting, Clippy, all
+tests, documentation, and metadata, then failed at Cargo Audit because the
+existing lockfile contained rustls 0.23.43 (RUSTSEC-2026-0285). The follow-up
+raises both the Cargo.toml minimum and locked version to 0.23.45, the first
+patched version listed by the local RustSec advisory. No other dependency,
+feature, TLS policy, or certificate-verification setting changes. The reviewed
+patch is limited to the rustls version and checksum; existing transport-policy
+and recovery tests remain the compatibility checks. Cargo Audit passes after
+the update, with its existing allowed yanked-package warning unchanged. The
+complete local CI gate is rerun on the final committed tree before merge, and
+its exact command and result are retained in the PR.
+
+Validation uses a clean checkout because a pre-existing untracked promotional
+PNG fails the brand inventory in the primary checkout. That user file remains
+untouched. The owner explicitly authorized merging the PR on 2026-09-29, which
+also authorizes its existing automatic Pages publication. No package or software
+release is part of this change.
