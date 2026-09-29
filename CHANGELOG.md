@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Raise the rustls minimum and locked version to 0.23.45 to fix
+  RUSTSEC-2026-0285, which allowed TLS 1.3 handshake messages at the wrong
+  encryption level.
+
+- Rewrite the website around code loss, saved behaviour records, the recovery
+  steps, and supported environments so visitors can understand the use case
+  and preparation requirements without internal terminology.
+
 ## 0.1.0-rc.3 - 2026-08-25
 
 - Add `anasemble-trace`, `anasemble-semantic`, `anasemble-contract`, and `anasemble-verification` for replayable traces, content-addressed snapshots and diffs, contract versions, and signed verification certificates. Existing fragment files and JSON certificate digests remain unchanged.

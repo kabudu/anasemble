@@ -252,3 +252,39 @@ tamper refusal, reverse-order rollback and preflight-verified acceptance. No
 critical or high internal finding remains. Productisation is complete only for
 the private, compatibility-bounded implementation; release preparation remains
 separate and unauthorized.
+
+## Website copy review (2026-09-29)
+
+The website now explains the code-loss scenario, records prepared before loss,
+reconstruction and checking, state restoration, approval, and exact supported
+environments. The hero states that the candidate does not generate a
+general-purpose HTTP server. The recovery-drill section states that the
+integrated demo is experimental and does not prove local Kubernetes network
+isolation. Claims were checked against README.md, QUICKSTART.md, and
+COMPATIBILITY.md. Canonical brand assets and the footer tagline are unchanged.
+
+The static site adds no runtime, external resources, data collection, or new
+trust boundary. Desktop (1280 px) and mobile (390 px) previews show readable
+headings and controls without clipping. All 13 link targets were checked for
+local anchors or existing repository documents, and all three image references
+resolve in the built site. The CSS was regenerated with the pinned compiler.
+The site-policy checker passes in a clean checkout. No material copy or
+static-site finding remains from the Lazarus self-review.
+
+The initial copy-only `./scripts/ci-local.sh` passed formatting, Clippy, all
+tests, documentation, and metadata, then failed at Cargo Audit because the
+existing lockfile contained rustls 0.23.43 (RUSTSEC-2026-0285). The follow-up
+raises both the Cargo.toml minimum and locked version to 0.23.45, the first
+patched version listed by the local RustSec advisory. No other dependency,
+feature, TLS policy, or certificate-verification setting changes. The reviewed
+patch is limited to the rustls version and checksum; existing transport-policy
+and recovery tests remain the compatibility checks. Cargo Audit passes after
+the update, with its existing allowed yanked-package warning unchanged. The
+complete local CI gate is rerun on the final committed tree before merge, and
+its exact command and result are retained in the PR.
+
+Validation uses a clean checkout because a pre-existing untracked promotional
+PNG fails the brand inventory in the primary checkout. That user file remains
+untouched. The owner explicitly authorized merging the PR on 2026-09-29, which
+also authorizes its existing automatic Pages publication. No package or software
+release is part of this change.
