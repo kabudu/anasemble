@@ -252,3 +252,29 @@ tamper refusal, reverse-order rollback and preflight-verified acceptance. No
 critical or high internal finding remains. Productisation is complete only for
 the private, compatibility-bounded implementation; release preparation remains
 separate and unauthorized.
+
+## Website copy review (2026-09-29)
+
+The website now explains the code-loss scenario, records prepared before loss,
+reconstruction and checking, state restoration, approval, and exact supported
+environments. The hero states that the candidate does not generate a
+general-purpose HTTP server. The recovery-drill section states that the
+integrated demo is experimental and does not prove local Kubernetes network
+isolation. Claims were checked against README.md, QUICKSTART.md, and
+COMPATIBILITY.md. Canonical brand assets and the footer tagline are unchanged.
+
+The static site adds no runtime, external resources, data collection, or new
+trust boundary. Desktop (1280 px) and mobile (390 px) previews show readable
+headings and controls without clipping. All 13 link targets were checked for
+local anchors or existing repository documents, and all three image references
+resolve in the built site. The CSS was regenerated with the pinned compiler.
+The site-policy checker passes in a clean checkout. No material copy or
+static-site finding remains from the Lazarus self-review.
+
+`./scripts/ci-local.sh` passed formatting, Clippy, all tests, documentation, and
+metadata, then failed at Cargo Audit: the existing lockfile contains rustls
+0.23.43, affected by RUSTSEC-2026-0285 (fixed in 0.23.45). The copy change does
+not alter dependencies. Merge remains blocked until the dependency gate passes;
+this review does not waive that gate or authorize deployment. A pre-existing
+untracked promotional PNG also fails the brand inventory in the primary
+checkout; clean-checkout site validation leaves that user file untouched.
